@@ -9,11 +9,11 @@ interface SubMenuProps {
 }
 const SubMenuView: React.FC<SubMenuProps> = ({settings, subMenu, setThoughtSpotObject}) => {
     return (
-        <div className='flex flex-col p-8 w-80 space-y-2' style={{background:settings.style.subMenuColor, borderRight: (settings.style.subMenuColor == '#ffffff' || settings.style.subMenuColor == settings.style.backgroundColor) ? '1px solid #cccccc' :'none' }}>
-            <div className="font-bold text-xl">{subMenu.name}</div>
+        <div className='flex flex-col p-8 fixed w-60 space-y-4' style={{height:'calc(100% - 4rem)', background:settings.style.subMenuColor, borderRight: (settings.style.subMenuColor == '#ffffff' || settings.style.subMenuColor == settings.style.backgroundColor) ? '1px solid #cccccc' :'none' }}>
+            <div className="font-bold text-xl mb-2">{subMenu.name}</div>
             {subMenu.objects.map((object, index) => {
                 return (
-                    <div onClick={()=>setThoughtSpotObject(object)} className="flex flex-row space-x-2">
+                    <div onClick={()=>setThoughtSpotObject(object)} className="flex flex-row space-x-2 hover:cursor-pointer hover:font-bold">
                         {object.name}
                     </div> 
                 );

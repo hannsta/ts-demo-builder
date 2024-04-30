@@ -9,7 +9,9 @@ export interface Settings {
     logo: string,
     subMenus: SubMenu[],
     style: Style
-
+    homePage: boolean,
+    myReports: boolean,
+    favorites: boolean,
 }
 interface SettingsProps {
     settings: Settings,
@@ -22,6 +24,9 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings})
     const [TSURL, setTSURL] = useState<string>(settings.TSURL)
     const [logo, setLogo] = useState<string>(settings.logo)
     const [subMenus, setSubMenus] = useState<SubMenu[]>(settings.subMenus ? settings.subMenus : []);
+    const [homePage, setHomePage] = useState<boolean>(settings.homePage);
+    const [myReports, setMyReports] = useState<boolean>(settings.myReports);
+    const [favorites, setFavorites] = useState<boolean>(settings.favorites);
     const [style, setStyle] = useState<Style>(settings.style)
     const imageInput = useRef<HTMLInputElement>(null)
 
@@ -40,7 +45,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings})
         <div className="flex flex-row justify-between">
             <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded"
-                onClick={() => setSettings({name, TSURL, logo, subMenus, style})}
+                onClick={() => setSettings({name, TSURL, logo, subMenus, style, homePage, myReports, favorites})}
             >
                 Save
             </button>
@@ -74,11 +79,32 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings})
         <div className="font-bold text-lg mb-2 mt-4">Styles</div>
         <StyleConfiguration style={style} setStyle={setStyle}/>
         <div className="font-bold text-lg mt-4 mb-2">Menus</div>
+        <div className="flex flex-row space-x-4">
+            <label className="font-bold">Home Page</label>
+            <input
+                type="checkbox"
+                checked={homePage}
+                onChange={(e) => setHomePage(e.target.checked)}
+            />
+            <label className="font-bold">My Reports</label>
+            <input
+                type="checkbox"
+                checked={myReports}
+                onChange={(e) => setMyReports(e.target.checked)}
+            />
+            <label className="font-bold">Favorites</label>
+            <input
+                type="checkbox"
+                checked={favorites}
+                onChange={(e) => setFavorites(e.target.checked)}
+            />
+        </div>
         <div className="flex flex-col space-y-2 pb-4">
         {subMenus && subMenus.map((subMenu, index) => (
             <SubMenuConfiguration
                 key={index}
                 subMenu={subMenu}
+                TSURL={TSURL}
                 setSubMenu={(newSubMenu) => {
                     const newSubMenus = [...subMenus]
                     newSubMenus[index] = newSubMenu
@@ -90,7 +116,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings})
         </div>
         <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => setSubMenus([...subMenus, {name: "", icon: "", objects: [], worksheet: "", sage: {askSage: true, sampleQuestions: [""]}}])}
+            onClick={() => setSubMenus([...subMenus, {name: "", icon: "", objects: [], filters:[],worksheet: "", sage: {askSage: true, sampleQuestions: [""]}}])}
         >
             Add SubMenu
         </button>

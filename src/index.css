@@ -15,3 +15,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+#tsEmbed-pre-render-wrapper-liveboardEmbed, #tsEmbed-pre-render-wrapper-liveboardEmbed{
+  top: 0;
+  left: 0;
+  z-index: 15;
+}
+.dropdown-content, .panel-content, .select-panel{
+  z-index: 20 !important;
+}
