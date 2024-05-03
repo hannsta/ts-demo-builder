@@ -6,6 +6,7 @@ import { Settings } from './SettingsConfiguration';
 import FiltersConfiguration, { Filter } from './FiltersConfiguration';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
 import ThoughtSpotObjectSearch from './ThoughtSpotObjectSearch';
+import { TSLoginContext } from '../App';
 
 
 export interface SubMenu {
@@ -30,6 +31,8 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
         setWorksheetSearchVisible(false);
     }, [subMenu]);
     return (
+        <TSLoginContext.Consumer>
+            {({isLoggedIn}) => (
         <div className='flex flex-col space-y-2 border-2 rounded-lg p-2 bg-slate-100'>
             <div className='flex flex-row space-x-4'>
                 <div className='flex flex-col'>
@@ -67,14 +70,15 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
                     <label className='font-bold'>Worksheet</label>
                     <div className='flex flex-row'>
                     <input
-                        className="border-2 border-gray-200 text-xl p-1 rounded-lg"
+                        className="border-2 w-96 border-gray-200 text-xl p-1 rounded-lg"
                         type="text"
                         value={subMenu.worksheet}
                         onChange={(e) => setSubMenu({...subMenu, worksheet: e.target.value})}
                     />
                     <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold h-8 px-4 rounded ml-2"
+                        className={(isLoggedIn ? "bg-blue-500 hover:bg-blue-700" : "bg-slate-400") + " text-white font-bold h-8 px-4 rounded ml-2"}
                         onClick={() => setWorksheetSearchVisible(!worksheetSearchVisible)}
+                        disabled={!isLoggedIn}
                     >
                         <HiMagnifyingGlass />
                     </button>
@@ -129,6 +133,8 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
         )}
 
         </div>
+    )}
+    </TSLoginContext.Consumer>
     );
         
 };

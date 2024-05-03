@@ -8,13 +8,16 @@ import LeftNav from './Views/LeftNav';
 import SubMenuView from './Views/SubMenuView';
 import { ThoughtSpotObject } from './Settings/ThoughtSpotObjectConfiguration';
 import ThoughtSpotObjectView from './Views/ThoughtSpotObjectView';
-import { AuthStatus, AuthType, HostEvent, LogLevel, RuntimeFilter, RuntimeFilterOp, init } from '@thoughtspot/visual-embed-sdk';
+import { Action, AuthStatus, AuthType, EmbedEvent, HostEvent, LogLevel, RuntimeFilter, RuntimeFilterOp, init } from '@thoughtspot/visual-embed-sdk';
 import { LiveboardEmbed, PreRenderedLiveboardEmbed, PreRenderedSageEmbed, SageEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
-import AskSage from './Views/AskSage';
-import MyReports from './Views/RestReportsList';
+import AskSageButton from './Views/AskSageButton';
 import RestReportsList from './Views/RestReportsList';
 import SageQuestionPrompt from './Views/SageQuestionPrompt';
-
+import LoginPopup from './Views/LoginPopup';
+import { createConfiguration, ServerConfiguration, ThoughtSpotRestApi } from '@thoughtspot/rest-api-sdk';
+import { createClientWithoutAuth } from './Util';
+import { HomePage } from './Settings/HomePageConfig';
+import { MyReports } from './Settings/MyReportsConfig';
 export enum PageType {
   HOME,
   FAVORITES,
@@ -26,6 +29,15 @@ export interface Page {
   type: PageType,
   subMenu?: SubMenu
 }
+
+export const TSLoginContext = React.createContext({
+  isLoggedIn: false,
+  setIsLoggedIn: (isLoggedIn: boolean) => {}
+});
+export const SettingsContext = React.createContext({
+  settings: {} as Settings,
+  setSettings: (settings: Settings) => {}
+});
 
 const defaultSettings: Settings = {
   name: 'ThoughtSpot',
@@ -42,9 +54,9 @@ const defaultSettings: Settings = {
     textColor:  "#000000",
     iconColor:  "#000000",
   },
-  homePage: true,
+  homePage: {enabled: true, name: 'Home', icon: 'HiHome'} as HomePage,
   favorites: true,
-  myReports: true
+  myReports: {enabled: true, name: 'My Reports', icon: 'HiDocumentReport', selfService: true} as MyReports
 }
 function App() {
   const [settings, setSettings] = useLocalStorage('settings', defaultSettings);
@@ -54,11 +66,11 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [showSage, setShowSage] = useState<boolean>(false);
   const [sagePrompt, setSagePrompt] = useState<string>('');
-
+  const [loginPopupVisible, setLoginPopupVisible] = useState<boolean>(false);
   const liveboardEmbedRef = useEmbedRef<typeof LiveboardEmbed>();
   const sageEmbedRef = useEmbedRef<typeof SageEmbed>();
   useEffect(() => {
-    let sageEmbed = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
+    let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
     if (!sageEmbed) return;
     if (showSage){
         setTimeout(() => {
@@ -68,6 +80,11 @@ function App() {
         }, 500);
     }else{
         sageEmbed.style.zIndex = "0";
+    }
+    if (sageEmbed.__tsEmbed){
+      sageEmbed.__tsEmbed.on(EmbedEvent.Data, (data: any) => {
+        console.log(data, "asdfasdf");
+      })
     }
   }, [showSage])
   useEffect(() => {
@@ -102,11 +119,37 @@ function App() {
                     "--ts-var-root-background": 'none',
                     "--ts-var-viz-border-radius": "5px",
                     "--ts-var-viz-box-shadow": "0 0 5px #efefef",
+                    //@ts-ignore
+                    "--ts-var-sage-bar-header-background-color": "#ffffff",
+
                 },
                 rules_UNSTABLE: {
                   '[data-testid="verifiedBannerId"]' : {
                     display: "none"
                   },
+                  ".eureka-search-box-module__eurekaSearchBar": {
+                    borderRadius: "5px",
+                    border: "1px solid #cccccc",
+                  },
+                  ".eureka-search-bar-module__withoutSage": {
+                    padding: '1rem'
+                  },
+                  ".eureka-ai-answer-module__aiAnswerContainer":{
+                    margin: '1rem'
+                  },
+                  ".eureka-ai-answer-title-description-module__aiAnswerSummary":{
+                    padding: '0rem'
+                  },
+                  ".eureka-ai-answer-module__aiExpandedAnswerWrapper":{
+                    margin: '0rem'
+                  },
+                  ".eureka-ai-answer-module__aiExpandedAnswerWrapper > .flex-layout-module__vertical":{
+                    height:"500px !important"
+                  },
+                  ".eureka-ai-answer-module__aiAnswerFooter":{
+                    display: "none !important"
+                  }
+                  
                   // ".pinboard-content-module__tile ":{
                   //   border: "2px solid #cccccc"
                   // }
@@ -116,13 +159,30 @@ function App() {
     }
 
     }).on(AuthStatus.SUCCESS, () => {
+      setLoginPopupVisible(false);
       setIsLoggedIn(true);
-    }).on(AuthStatus.FAILURE, (error) => {
+    })
+    .on(AuthStatus.FAILURE, (error) => {
       console.error('Error logging in', error);
     });
+    //test existing login with rest API call
+    let client =  createClientWithoutAuth(settings.TSURL);
+    client.getSystemInformation().then((data: any) => {
+      setIsLoggedIn(true);
+    }).catch((error: any) => {
+      console.log("Not logged in yet");
+    })
   }, [settings])
   if (!settings || !settings.style || !settings.style.headerColor){
     return <div>Loading...</div>
+  }
+
+  
+
+  const pinViz = (vizId: string) => {
+    if (liveboardEmbedRef.current){
+      //liveboardEmbedRef.current.trigger(HostEvent.PinViz, vizId);
+    }
   }
   const updateFilters = (runtimeFilters: RuntimeFilter[]) =>{
     if (sageEmbedRef.current){
@@ -133,7 +193,8 @@ function App() {
     }
   }
   return (
-    <>
+    <TSLoginContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
+      <SettingsContext.Provider value={{settings, setSettings}}>
     <div className="App">
       <header className="fixed z-20 flex w-full h-16" style={{backgroundColor:settings.style.headerColor, borderBottom: (settings.style.headerColor == "#ffffff") ? '1px solid #cccccc' : "none"}}>
         <div className="flex flex-row justify-between w-full px-4 py-2 h-16">
@@ -144,7 +205,9 @@ function App() {
             </div>
           </div>
           <div className='flex flex-row space-x-4'>
-            <AskSage isLoggedIn={isLoggedIn} settings={settings} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} setShowSage={setShowSage}/>
+
+            <button onClick={()=>setShowSage(true)} className="flex flex-row items-center p-2 rounded-lg hover:bg-gray-200"> Ask Sage </button>
+
             {showSage && (
                 <div className="absolute bg-white top-0 right-0 flex flex-col p-2 z-20 overflow-auto" style={{height:'calc(100vh - 4rem)',marginTop:'4rem',width:'600px',borderLeft:'1px solid #cccccc'}}>
                     {/* close button */}
@@ -160,10 +223,12 @@ function App() {
                             searchQuery: sagePrompt,
                             executeSearch: true
                           }}
-                        
                         />
+                    <button onClick={()=>pinViz("5f4f0d9c-6f4e-4b2d-9b9d-3d2f0f0f5b0b")} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pin Viz</button>
                 </div>                
             )}
+
+
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={() => setShowSettings(!showSettings)}
@@ -174,7 +239,7 @@ function App() {
           {showSettings && (
               <>
                 <div className="absolute bg-white right-0 flex p-2 z-70 overflow-auto" style={{top:'4rem',height:'calc(100vh - 4rem)',borderLeft:'1px solid #cccccc'}}>
-                  <SettingsConfiguration settings={settings} setSettings={setSettings} />
+                  <SettingsConfiguration settings={settings} setSettings={setSettings} setLoginPopupVisible={setLoginPopupVisible} />
                 </div>
               </>
             )}
@@ -194,10 +259,32 @@ function App() {
               <RestReportsList settings={settings} isMyReports={false} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
             )}
             <div className='absolute flex flex-col' style={{overflow:'auto',left:'15rem', width:'calc(100vw - 19rem)', height:'calc(100vh - 4rem)'}}>
-              {selectedThoughtSpotObject && (
+              {selectedThoughtSpotObject && isLoggedIn && (
                 <ThoughtSpotObjectView setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
               )}
+              {!isLoggedIn && (
+                <div className="flex flex-col items-center space-y-4 justify-center w-full h-full">
+                  <div className="text-2xl font-bold">Please login to your ThoughtSpot environment to view content.</div>
+                  {settings.TSURL ? (
+                    <>
+                    <div className="text-lg">{settings.TSURL}</div>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setLoginPopupVisible(true)}>Login</button>
+                    </>
+                  )
+                  : (
+                    <>
+                    <div className="text-lg">No URL Configured. Open "Settings" to configure the application.</div>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setShowSettings(true)}>Settings</button>
+                    </>
+                  )}
+                  {loginPopupVisible && (
+                    <LoginPopup setLoginPopupVisible={setLoginPopupVisible}/>
+                  )}
+                </div>
+              )           
+              }
             </div>
+
           </div>
 
       </div>
@@ -209,6 +296,8 @@ function App() {
           preRenderId="liveboardEmbed"
           liveboardId="" />
         <PreRenderedSageEmbed
+          hideSageAnswerHeader={true}
+          hideWorksheetSelector={true}
           ref={sageEmbedRef}
           preRenderId="sageEmbed"
           frameParams={{width: '100%', height: '100%'}}
@@ -216,12 +305,12 @@ function App() {
               searchQuery: "what are the top products?",
               executeSearch: true
             }}
+            hiddenActions={[Action.EditSageAnswer,Action.SageAnswerFeedback,Action.ModifySageAnswer]}
           />
         </div>
       )}
-
-                  
-    </>
+    </SettingsContext.Provider>      
+    </TSLoginContext.Provider>
   );
 }
 

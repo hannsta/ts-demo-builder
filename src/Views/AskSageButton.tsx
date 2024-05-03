@@ -5,13 +5,13 @@ import { PreRenderedSageEmbed, SageEmbed, useEmbedRef } from "@thoughtspot/visua
 import { HostEvent } from "@thoughtspot/visual-embed-sdk";
 import SageQuestionPrompt from "./SageQuestionPrompt";
 
-interface AskSageProps {
+interface AskSageButtonProps {
     settings: Settings,
     subMenu: SubMenu | null,
     isLoggedIn: boolean,
     setShowSage: (showSage: boolean) => void
 }
-const AskSage: React.FC<AskSageProps> = ({settings, subMenu, isLoggedIn}) => {
+const AskSageButton: React.FC<AskSageButtonProps> = ({settings, subMenu, isLoggedIn}) => {
     const [showSage, setShowSage] = useState<boolean>(false);
     const [sagePromptVisible, setSagePromptVisible] = useState<boolean>(false);
     const [sagePrompt, setSagePrompt] = useState<string>('');
@@ -38,4 +38,4 @@ const AskSage: React.FC<AskSageProps> = ({settings, subMenu, isLoggedIn}) => {
         </>
     );
 }
-export default AskSage;
+export default AskSageButton;

@@ -22,7 +22,7 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({thoughtSpo
         <div className='flex flex-col p-8 w-full h-full space-y-2' style={{background:settings.style.backgroundColor,overflow:'auto'}}>
             <div className="font-bold text-xl mb-4">{thoughtSpotObject.name}</div>
             {subMenu?.filters && subMenu.filters.length > 0 && (
-                <div className='flex flex-col space-y-2'>
+                <div className='flex flex-col space-y-2  mb-4'>
                     <div className="flex flex-row space-x-2">
                         {subMenu.filters.map((filter, index) => {
                             return (
@@ -35,7 +35,7 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({thoughtSpo
                 </div>
             )}
             {type == PageType.MYREPORTS && (
-                <button className="w-36 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded" onClick={() => {
+                <button className="w-36 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded mb-4" onClick={() => {
                     setShowSage(true);
                 }}>
                     Add a Viz

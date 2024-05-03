@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as HeroIcons from 'react-icons/hi2';
 import { Settings } from './SettingsConfiguration';
 import ThoughtSpotObjectSearch from './ThoughtSpotObjectSearch';
+import { TSLoginContext } from '../App';
 
 export interface ThoughtSpotObject {
     name: string,
@@ -24,6 +25,8 @@ const ThoughtSpotObjectConfiguration: React.FC<ThoughtSpotObjectConfigurationPro
         setSearchVisible(false);
     }, [object]);
     return (
+        <TSLoginContext.Consumer>
+            {({isLoggedIn}) => (
         <div className='flex flex-row space-x-2'>
             <div className='flex flex-col'>            
             <label>Name</label>
@@ -57,8 +60,9 @@ const ThoughtSpotObjectConfiguration: React.FC<ThoughtSpotObjectConfigurationPro
             <div className='flex flex-col'>
             <label>Search</label>
             <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold h-8 px-4 rounded ml-2"
+                className={(isLoggedIn ? "bg-blue-500 hover:bg-blue-700 " : "bg-slate-400 ") +  "text-white font-bold h-8 px-4 rounded ml-2"}
                 onClick={() => setSearchVisible(!searchVisible)}
+                disabled={!isLoggedIn}
             >
                 <HeroIcons.HiMagnifyingGlass />
             </button>
@@ -67,6 +71,8 @@ const ThoughtSpotObjectConfiguration: React.FC<ThoughtSpotObjectConfigurationPro
                 <ThoughtSpotObjectSearch isWorksheet={false} TSURL={TSURL} setObject={setObject}/>
             )}
         </div>
+        )}
+        </TSLoginContext.Consumer>
     );
 
 }

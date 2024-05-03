@@ -14,7 +14,7 @@ const SageQuestionPrompt: React.FC<SageQuestionPromptProps> = ({setSagePrompt, s
     }
     return (
         <div className="flex flex-col">
-            <div className="flex w-full h-12 bg-white border-slate-400 border rounded-2xl my-2 p-2"> 
+            {/* <div className="flex w-full h-12 bg-white border-slate-400 border rounded-2xl my-2 p-2"> 
                 <input onKeyUp={(e)=>{
                     if (e.key === 'Enter' || e.keyCode === 13) {
                         triggerSageSearch();
@@ -24,7 +24,7 @@ const SageQuestionPrompt: React.FC<SageQuestionPromptProps> = ({setSagePrompt, s
                 <div onClick={triggerSageSearch} className="ml-auto text-white  flex items-center bg-blue-400 hover:bg-blue-300 rounded-lg px-4 py-2 border-none">
                     GO!
                 </div>
-            </div>
+            </div> */}
             {subMenu &&  subMenu.sage && subMenu?.sage.sampleQuestions.length > 0 && (  
                 <>
                     <div className="font-bold text-lg mt-5 mb-1">Sample Questions</div>
