@@ -8,7 +8,7 @@ import LeftNav from './Views/LeftNav';
 import SubMenuView from './Views/SubMenuView';
 import { ThoughtSpotObject } from './Settings/ThoughtSpotObjectConfiguration';
 import ThoughtSpotObjectView from './Views/ThoughtSpotObjectView';
-import { Action, AuthStatus, AuthType, EmbedEvent, HostEvent, LogLevel, RuntimeFilter, RuntimeFilterOp, init } from '@thoughtspot/visual-embed-sdk';
+import { Action, AnswerService, AuthStatus, AuthType, EmbedEvent, HostEvent, LogLevel, RuntimeFilter, RuntimeFilterOp, init } from '@thoughtspot/visual-embed-sdk';
 import { LiveboardEmbed, PreRenderedLiveboardEmbed, PreRenderedSageEmbed, SageEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import AskSageButton from './Views/AskSageButton';
 import RestReportsList from './Views/RestReportsList';
@@ -82,9 +82,9 @@ function App() {
         sageEmbed.style.zIndex = "0";
     }
     if (sageEmbed.__tsEmbed){
-      sageEmbed.__tsEmbed.on(EmbedEvent.Data, (data: any) => {
-        console.log(data, "asdfasdf");
-      })
+        sageEmbed.__tsEmbed.on(EmbedEvent.ALL, (data: any) => {
+            console.log(data);
+        })
     }
   }, [showSage])
   useEffect(() => {
@@ -179,10 +179,15 @@ function App() {
 
   
 
-  const pinViz = (vizId: string) => {
-    if (liveboardEmbedRef.current){
-      //liveboardEmbedRef.current.trigger(HostEvent.PinViz, vizId);
+  const pinViz = async () => {
+    if (sageEmbedRef.current){
+      var element: any = document.querySelector("#tsEmbed-pre-render-wrapper-liveboardEmbed")
+      if (element && element.__tsEmbed){
+        console.log('pinning viz');
+        element.__tsEmbed.trigger(HostEvent.Pin);
+      }
     }
+    
   }
   const updateFilters = (runtimeFilters: RuntimeFilter[]) =>{
     if (sageEmbedRef.current){
@@ -216,6 +221,10 @@ function App() {
                     </div>
                     <SageQuestionPrompt setSagePrompt={setSagePrompt} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null}/>
                     <SageEmbed
+                              onData={(data) => {
+                                console.log('data', data);
+                              }}
+                              //all actions in the Actions enum
                         preRenderId="sageEmbed"   
                         dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : ''}
                         frameParams={{width: '100%', height: '100%'}}
@@ -224,7 +233,7 @@ function App() {
                             executeSearch: true
                           }}
                         />
-                    <button onClick={()=>pinViz("5f4f0d9c-6f4e-4b2d-9b9d-3d2f0f0f5b0b")} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pin Viz</button>
+                    <button onClick={()=>pinViz()} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pin Viz</button>
                 </div>                
             )}
 
@@ -296,6 +305,7 @@ function App() {
           preRenderId="liveboardEmbed"
           liveboardId="" />
         <PreRenderedSageEmbed
+          visibleActions={[Action.Save, Action.Pin]}
           hideSageAnswerHeader={true}
           hideWorksheetSelector={true}
           ref={sageEmbedRef}
@@ -305,7 +315,6 @@ function App() {
               searchQuery: "what are the top products?",
               executeSearch: true
             }}
-            hiddenActions={[Action.EditSageAnswer,Action.SageAnswerFeedback,Action.ModifySageAnswer]}
           />
         </div>
       )}
