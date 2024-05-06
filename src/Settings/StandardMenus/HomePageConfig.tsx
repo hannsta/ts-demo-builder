@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Settings } from "./SettingsConfiguration";
-import IconSelection from "./IconSelection";
+import { Settings } from "../SettingsConfiguration";
+import IconSelection from "../IconSelection";
 export interface HomePage {
     enabled: boolean,
     name: string,
@@ -13,7 +13,7 @@ export interface HomePageConfigProps {
 const HomePageConfig: React.FC<HomePageConfigProps> = ({homePage, setHomePage}) => {
 
     return (
-        <div className={(homePage.enabled ? 'bg-slate-100' : 'bg-gray-200') + 'flex flex-col space-y-2 border-2 rounded-lg p-2 bg-slate-100'}>
+        <div className={(homePage.enabled ? 'bg-slate-100' : 'bg-gray-200') + ' flex flex-col space-y-2 border-2 rounded-lg p-2'}>
             <div className='flex flex-row space-x-4'>
                 <div className='flex flex-col'>
                     <label className='font-bold'>Icon</label>
@@ -35,7 +35,7 @@ const HomePageConfig: React.FC<HomePageConfigProps> = ({homePage, setHomePage}) 
                     <div className='flex flex-col'>
                     <button
                         onClick={() => setHomePage({...homePage, enabled: !homePage.enabled})} 
-                        className={(homePage.enabled ? "bg-green-400 hover:bg-green-600" : "bg-gray-200 hover:bg-gray-400") +"w-24 h-12 text-black hover:text-white font-bold py-2 px-4 rounded"}>
+                        className={(homePage.enabled ? "bg-green-400 hover:bg-green-600" : "bg-gray-300 hover:bg-gray-400") +"w-24 h-12 text-black hover:text-white font-bold py-2 px-4 rounded"}>
                         {homePage.enabled ? "Enabled" : "Disabled"}
                     </button>
                     </div>

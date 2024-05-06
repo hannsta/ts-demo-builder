@@ -6,10 +6,11 @@ import { Page, PageType } from "../App";
 
 interface LeftNavProps {
     settings: Settings,
-    setSelectedPage: (page: Page) => void
+    showSettings: boolean,
+    setSelectedPage: (page: Page) => void,
+    setShowSettings: (show: boolean) => void
 }
-
-const LeftNav: React.FC<LeftNavProps> = ({settings, setSelectedPage}) => {
+const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPage, setShowSettings}) => {
     const [wideMode, setWideMode] = useState<boolean>(false);
     const [localTimeout, setLocalTimeout] = useState<any>(null);
     return (
@@ -24,11 +25,11 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, setSelectedPage}) => {
         }} 
             className={"fixed h-full flex flex-col p-3 z-30 " + (wideMode ? "w-64" : "w-16")} 
             style={{
-              top:'4rem', height:'calc(100v - 4rem)',
+              top:'4rem', height:'calc(100vh - 4rem)',
               backgroundColor:settings.style.leftNavColor, 
               borderRight: (settings.style.leftNavColor == "#ffffff") ? '1px solid #cccccc' : "none",
               transition: 'width .2s'}}>
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col space-y-3 h-full">
           {settings.homePage && (
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
@@ -107,6 +108,22 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, setSelectedPage}) => {
               )}
             </div>
           )}
+           <div className="flex flex-row h-full items-end p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
+              setWideMode(false);
+              setShowSettings(!showSettings)
+            }
+            } >
+              <div className="flex flex-col">
+                <div className="flex flex-row items-center align-center justify-center text-3xl rounded-lg hover:cursor-pointer">
+                  <HeroIcons.HiCog style={{color: settings.style.iconColor}}/>
+                </div>
+              </div>
+              {wideMode && (
+                  <div className="ml-3 text-lg" style={{color:settings.style.iconColor}}>
+                      Settings
+                  </div>                    
+              )}
+          </div>
         </div>
       </div>
     );

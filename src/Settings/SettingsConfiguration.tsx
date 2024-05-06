@@ -1,10 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import SubMenuConfiguration, { SubMenu } from "./SubMenuConfiguration";
 import  StyleConfiguration, { Style } from "./StyleConfiguration";
 import { convertBase64 } from "../Util";
 import { TSLoginContext } from "../App";
-import HomePageConfig, { HomePage } from "./HomePageConfig";
-import MyReportsConfig, { MyReports } from "./MyReportsConfig";
+import HomePageConfig, { HomePage } from "./StandardMenus/HomePageConfig";
+import MyReportsConfig, { MyReports } from "./StandardMenus/MyReportsConfig";
+import FavoritesConfig, { Favorites } from "./StandardMenus/FavoritesConfig";
 
 export interface Settings {
     name: string,
@@ -14,7 +15,7 @@ export interface Settings {
     style: Style
     homePage: HomePage,
     myReports: MyReports,
-    favorites: boolean,
+    favorites: Favorites,
 }
 interface SettingsProps {
     settings: Settings,
@@ -30,11 +31,17 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     const [subMenus, setSubMenus] = useState<SubMenu[]>(settings.subMenus ? settings.subMenus : []);
     const [homePage, setHomePage] = useState<HomePage>(settings.homePage);
     const [myReports, setMyReports] = useState<MyReports>(settings.myReports);
-    const [favorites, setFavorites] = useState<boolean>(settings.favorites);
+    const [favorites, setFavorites] = useState<Favorites>(settings.favorites);
     const [style, setStyle] = useState<Style>(settings.style)
     const imageInput = useRef<HTMLInputElement>(null)
 
-
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+          setSettings({name, TSURL, logo, subMenus, style, homePage, myReports, favorites})
+        }, 2000)
+    
+        return () => clearTimeout(delayDebounceFn)
+      }, [name, TSURL, logo, subMenus, style, homePage, myReports, favorites])
     const handleFileRead = async (event:any) => {
         const file = event.target.files[0]
         const base64:any = await convertBase64(file)
@@ -96,21 +103,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                 </div>
                 <div className="font-bold text-lg mb-2 mt-4">Styles</div>
                 <StyleConfiguration style={style} setStyle={setStyle}/>
-                <div className="font-bold text-lg mt-4 mb-2">Menus</div>
-                <div className="flex flex-row space-x-4">
-                    <label className="font-bold">Favorites</label>
-                    <input
-                        type="checkbox"
-                        checked={favorites}
-                        onChange={(e) => setFavorites(e.target.checked)}
-                    />
-                </div>
-                <div className="mb-2">
-                <HomePageConfig homePage={homePage} setHomePage={setHomePage}/>
-                </div>
-                <div className="mb-2">
-                <MyReportsConfig myReports={myReports} setMyReports={setMyReports}/>
-                </div>
+                <div className="font-bold text-lg mt-4 mb-2">Custom Menus</div>
                 <div className="flex flex-col space-y-2 pb-4">
                 {subMenus && subMenus.map((subMenu, index) => (
                     <SubMenuConfiguration
@@ -132,7 +125,16 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                 >
                     Add SubMenu
                 </button>
-
+                <div className="font-bold text-lg mt-4 mb-2">Standard Menus</div>
+                <div className="mb-2">
+                <FavoritesConfig favorites={favorites} setFavorites={setFavorites}/>
+                </div>
+                <div className="mb-2">
+                <HomePageConfig homePage={homePage} setHomePage={setHomePage}/>
+                </div>
+                <div className="mb-2">
+                <MyReportsConfig myReports={myReports} setMyReports={setMyReports}/>
+                </div>
                 </div>
             )}
         </TSLoginContext.Consumer>

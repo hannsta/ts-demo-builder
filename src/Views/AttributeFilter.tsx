@@ -45,6 +45,8 @@ const AttributeFilter: React.FC<AttributeFilterProps> = ({filter, worksheet, set
                 newOptions.push({label: values[i], value: values[i]})
             }
             setOptions(newOptions)
+        }).catch(()=>{
+            console.log("DEMO BUILDER - Bad column name please try a new one")
         })
     }, [])
     return (

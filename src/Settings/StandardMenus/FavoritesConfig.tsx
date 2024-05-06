@@ -1,12 +1,12 @@
-import IconSelection from "./IconSelection";
+import IconSelection from "../IconSelection";
 
-interface Favorites {
+export interface Favorites {
     enabled: boolean,
     name: string,
     icon: string,
 }
 
-interface FavoritesConfigProps {
+export interface FavoritesConfigProps {
     favorites: Favorites,
     setFavorites: (favorites: Favorites) => void
 }
@@ -35,7 +35,7 @@ const FavoritesConfig: React.FC<FavoritesConfigProps> = ({favorites, setFavorite
                     </div>
                     <button 
                         onClick={() => setFavorites({...favorites, enabled: !favorites.enabled})}
-                    className={(favorites.enabled ? "bg-green-400 hover:bg-green-600" : "bg-gray-300 hover:bg-gray-400") +"w-24 h-12 text-black hover:text-white font-bold py-2 px-4 rounded"}>
+                    className={(favorites.enabled ? "bg-green-400 hover:bg-green-600" : "bg-gray-300 hover:bg-gray-400") + " w-24 h-12 text-black hover:text-white font-bold py-2 px-4 rounded"}>
                         {favorites.enabled ? "Enabled" : "Disabled"}
                     </button>
                 </div>
@@ -44,3 +44,4 @@ const FavoritesConfig: React.FC<FavoritesConfigProps> = ({favorites, setFavorite
     );
 
 }
+export default FavoritesConfig;

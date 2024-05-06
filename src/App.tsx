@@ -16,8 +16,10 @@ import SageQuestionPrompt from './Views/SageQuestionPrompt';
 import LoginPopup from './Views/LoginPopup';
 import { createConfiguration, ServerConfiguration, ThoughtSpotRestApi } from '@thoughtspot/rest-api-sdk';
 import { createClientWithoutAuth } from './Util';
-import { HomePage } from './Settings/HomePageConfig';
-import { MyReports } from './Settings/MyReportsConfig';
+import { HomePage } from './Settings/StandardMenus/HomePageConfig';
+import { MyReports } from './Settings/StandardMenus/MyReportsConfig';
+import { Favorites } from './Settings/StandardMenus/FavoritesConfig';
+import { HiUser } from 'react-icons/hi2';
 export enum PageType {
   HOME,
   FAVORITES,
@@ -55,7 +57,7 @@ const defaultSettings: Settings = {
     iconColor:  "#000000",
   },
   homePage: {enabled: true, name: 'Home', icon: 'HiHome'} as HomePage,
-  favorites: true,
+  favorites: {enabled: true, icon: 'HiStar'} as Favorites,
   myReports: {enabled: true, name: 'My Reports', icon: 'HiDocumentReport', selfService: true} as MyReports
 }
 function App() {
@@ -82,8 +84,13 @@ function App() {
         sageEmbed.style.zIndex = "0";
     }
     if (sageEmbed.__tsEmbed){
-        sageEmbed.__tsEmbed.on(EmbedEvent.ALL, (data: any) => {
-            console.log(data);
+
+        sageEmbed.__tsEmbed.on(EmbedEvent.Pin, (data: any) => {
+          let liveboardId = data.data.liveboardId
+          let liveboardEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-liveboardEmbed");
+          console.log(data, "pinny",liveboardId)
+          liveboardEmbed.__tsEmbed.navigateToLiveboard("")
+          liveboardEmbed.__tsEmbed.navigateToLiveboard(liveboardId)
         })
     }
   }, [showSage])
@@ -121,6 +128,8 @@ function App() {
                     "--ts-var-viz-box-shadow": "0 0 5px #efefef",
                     //@ts-ignore
                     "--ts-var-sage-bar-header-background-color": "#ffffff",
+                    "--ts-var-chip-border-radius":"5px",
+                    "--ts-var-button-border-radius": '5px'
 
                 },
                 rules_UNSTABLE: {
@@ -135,19 +144,29 @@ function App() {
                     padding: '1rem'
                   },
                   ".eureka-ai-answer-module__aiAnswerContainer":{
-                    margin: '1rem'
+                    margin: '1rem',
+                    "box-shadow":"none !important"
+
                   },
                   ".eureka-ai-answer-title-description-module__aiAnswerSummary":{
                     padding: '0rem'
                   },
                   ".eureka-ai-answer-module__aiExpandedAnswerWrapper":{
-                    margin: '0rem'
+                    margin: '0rem',
+                    "border-bottom": "none !important"
                   },
                   ".eureka-ai-answer-module__aiExpandedAnswerWrapper > .flex-layout-module__vertical":{
-                    height:"500px !important"
+                    height:"600px !important",
+
                   },
                   ".eureka-ai-answer-module__aiAnswerFooter":{
                     display: "none !important"
+                  },
+                  ".answer-content-module__answerContentDivider":{
+                    display: "none !important"
+                  },
+                  ".ReactModal__Overlay":{
+                    'background':"none !important"
                   }
                   
                   // ".pinboard-content-module__tile ":{
@@ -236,14 +255,9 @@ function App() {
                     <button onClick={()=>pinViz()} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pin Viz</button>
                 </div>                
             )}
-
-
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => setShowSettings(!showSettings)}
-            >
-              Settings
-            </button>
+            <div className='w-12 h-12 p-2 flex bg-white border-2 text-3xl items-center justify-center' style={{borderRadius:'25px'}}>
+                          <HiUser style={{color:settings.style.iconColor}}/>
+            </div>
           </div>
           {showSettings && (
               <>
@@ -256,7 +270,7 @@ function App() {
       </header>
       <div className="absolute flex flex-row" style={{height:'calc(100vh - 4rem)', width:'100vw', top:'4rem'}}>
           
-          <LeftNav settings={settings} setSelectedPage={setSelectedPage}/>
+          <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings}/>
           <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)'}}>
             {selectedPage && selectedPage.subMenu && (
               <SubMenuView settings={settings}  subMenu={selectedPage.subMenu} setThoughtSpotObject={setSelectedThoughtSpotObject}/>

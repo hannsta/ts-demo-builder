@@ -1,5 +1,5 @@
 import { useState } from "react"
-import IconSelection from "./IconSelection"
+import IconSelection from "../IconSelection"
 
 export interface MyReports {
     enabled: boolean,
