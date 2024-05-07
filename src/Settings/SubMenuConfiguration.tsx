@@ -7,6 +7,7 @@ import FiltersConfiguration, { Filter } from './FiltersConfiguration';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
 import ThoughtSpotObjectSearch from './ThoughtSpotObjectSearch';
 import { TSLoginContext } from '../App';
+import KPIChartConfiguration, { KPIChart } from './KPIConfiguration';
 
 
 export interface SubMenu {
@@ -15,6 +16,7 @@ export interface SubMenu {
     objects: ThoughtSpotObject[],
     worksheet: string,
     filters: Filter[],
+    kpiChart: KPIChart,
     sage: Sage,
 }
 
@@ -66,7 +68,7 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
         </div>
         {showDetails && (
             <>
-                <div className='flex flex-col'>
+                <div className='flex flex-col mb-2'>
                     <label className='font-bold'>Worksheet</label>
                     <div className='flex flex-row'>
                     <input
@@ -84,7 +86,7 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
                     </button>
                     </div>
                 </div>
-                <label className='font-bold'>Links</label>
+                <label className='font-bold text-xl pt-2'>Links</label>
                 <div>
                 {subMenu.objects.map((object, index) => (
                     <div className='flex flex-row'>
@@ -111,15 +113,18 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
             >
                 Add Link
             </button>
-            <div className='flex flex-col mt-2'>
+            <div className='flex flex-col mt-4'>
                 <SageConfiguration
                     sage={subMenu.sage}
                     setSage={(sage) => setSubMenu({...subMenu, sage})}
                 />
             </div>
-            <div className='flex flex-col mt-2'>
+            <div className='flex flex-col mt-4'>
                 <FiltersConfiguration filters={subMenu.filters} setFilters={(filters) => setSubMenu({...subMenu, filters})}
                 />
+            </div>
+            <div className='flex flex-col mt-4'>
+                <KPIChartConfiguration kpi={subMenu.kpiChart} setKPI={(kpi) => setSubMenu({...subMenu, kpiChart: kpi})}/>
             </div>
             </div>
             {worksheetSearchVisible && (

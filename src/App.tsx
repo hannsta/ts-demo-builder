@@ -20,6 +20,7 @@ import { HomePage } from './Settings/StandardMenus/HomePageConfig';
 import { MyReports } from './Settings/StandardMenus/MyReportsConfig';
 import { Favorites } from './Settings/StandardMenus/FavoritesConfig';
 import { HiUser } from 'react-icons/hi2';
+import HomePageView from './Views/HomePage';
 export enum PageType {
   HOME,
   FAVORITES,
@@ -272,42 +273,48 @@ function App() {
           
           <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings}/>
           <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)'}}>
-            {selectedPage && selectedPage.subMenu && (
-              <SubMenuView settings={settings}  subMenu={selectedPage.subMenu} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
-            )}
-            {selectedPage && selectedPage.type == PageType.MYREPORTS && (
-              <RestReportsList settings={settings} isMyReports={true} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
-            )}
-            {selectedPage && selectedPage.type == PageType.FAVORITES && (
-              <RestReportsList settings={settings} isMyReports={false} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
-            )}
-            <div className='absolute flex flex-col' style={{overflow:'auto',left:'15rem', width:'calc(100vw - 19rem)', height:'calc(100vh - 4rem)'}}>
-              {selectedThoughtSpotObject && isLoggedIn && (
-                <ThoughtSpotObjectView setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
-              )}
-              {!isLoggedIn && (
-                <div className="flex flex-col items-center space-y-4 justify-center w-full h-full">
-                  <div className="text-2xl font-bold">Please login to your ThoughtSpot environment to view content.</div>
-                  {settings.TSURL ? (
-                    <>
-                    <div className="text-lg">{settings.TSURL}</div>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setLoginPopupVisible(true)}>Login</button>
-                    </>
-                  )
-                  : (
-                    <>
-                    <div className="text-lg">No URL Configured. Open "Settings" to configure the application.</div>
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setShowSettings(true)}>Settings</button>
-                    </>
+            {selectedPage && selectedPage.type == PageType.HOME ?
+              <HomePageView/>
+              : 
+              <>
+                {selectedPage && selectedPage.subMenu && (
+                  <SubMenuView settings={settings}  subMenu={selectedPage.subMenu} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+                )}
+                {selectedPage && selectedPage.type == PageType.MYREPORTS && (
+                  <RestReportsList settings={settings} isMyReports={true} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+                )}
+                {selectedPage && selectedPage.type == PageType.FAVORITES && (
+                  <RestReportsList settings={settings} isMyReports={false} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+                )}
+                <div className='absolute flex flex-col' style={{overflow:'auto',left:'15rem', width:'calc(100vw - 19rem)', height:'calc(100vh - 4rem)'}}>
+                  {selectedThoughtSpotObject && isLoggedIn && (
+                    <ThoughtSpotObjectView setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
                   )}
-                  {loginPopupVisible && (
-                    <LoginPopup setLoginPopupVisible={setLoginPopupVisible}/>
-                  )}
+                  {!isLoggedIn && (
+                    <div className="flex flex-col items-center space-y-4 justify-center w-full h-full">
+                      <div className="text-2xl font-bold">Please login to your ThoughtSpot environment to view content.</div>
+                      {settings.TSURL ? (
+                        <>
+                        <div className="text-lg">{settings.TSURL}</div>
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setLoginPopupVisible(true)}>Login</button>
+                        </>
+                      )
+                      : (
+                        <>
+                        <div className="text-lg">No URL Configured. Open "Settings" to configure the application.</div>
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setShowSettings(true)}>Settings</button>
+                        </>
+                      )}
+                      {loginPopupVisible && (
+                        <LoginPopup setLoginPopupVisible={setLoginPopupVisible}/>
+                      )}
+                    </div>
+                  )           
+                  
+                  }
                 </div>
-              )           
-              }
-            </div>
-
+              </>
+            }
           </div>
 
       </div>

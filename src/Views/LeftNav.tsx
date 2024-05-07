@@ -30,7 +30,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
               borderRight: (settings.style.leftNavColor == "#ffffff") ? '1px solid #cccccc' : "none",
               transition: 'width .2s'}}>
         <div className="flex flex-col space-y-3 h-full">
-          {settings.homePage && (
+          {settings.homePage && settings.homePage.enabled && (
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
               setSelectedPage({type: PageType.HOME})
@@ -43,7 +43,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
               </div>
               {wideMode && (
                   <div className="ml-3 text-lg" style={{color:settings.style.iconColor}}>
-                      Home
+                      {settings.homePage.name}
                   </div>                    
               )}
             </div>
@@ -73,7 +73,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
               </div>
             );
           })}
-          {settings.myReports && (
+          {settings.myReports && settings.myReports.enabled && (
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
               setSelectedPage({type: PageType.MYREPORTS})
@@ -85,12 +85,12 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
               </div>
               {wideMode && (
                   <div className="ml-3 text-lg" style={{color:settings.style.iconColor}}>
-                      My Reports
+                      {settings.myReports.name}
                   </div>                    
               )}
               </div>
           )}
-          {settings.favorites && (
+          {settings.favorites && settings.favorites.enabled && (
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
               setSelectedPage({type: PageType.FAVORITES})
@@ -103,7 +103,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
               </div>
               {wideMode && (
                   <div className="ml-3 text-lg" style={{color:settings.style.iconColor}}>
-                      Favorites
+                      {settings.favorites.name}
                   </div>                    
               )}
             </div>

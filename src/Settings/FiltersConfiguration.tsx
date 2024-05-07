@@ -13,11 +13,11 @@ export enum FilterType {
 
 const FiltersConfiguration: React.FC<FiltersConfigurationProps> = ({filters, setFilters}) => {
     return (
-        <div className='flex flex-col space-y-2 rounded-lg p-2 bg-slate-100'>
+        <div className='flex flex-col space-y-2 rounded-lg  p-4 bg-white border-2'>
             <div className='flex flex-row space-x-4 w-full'>
                 <div className='flex flex-col'>
-                    <label className="font-bold">Filters</label>
-                    <div className='flex flex-col space-y-2 mb-4'>
+                    <label className='font-bold text-xl mb-2'>Filters</label>
+                    <div className='flex flex-col space-y-2 mt-2'>
                     {filters.map((filter, index) => (
                         <div className='flex w-full flex-row'>
                         <input

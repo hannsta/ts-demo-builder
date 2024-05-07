@@ -10,16 +10,20 @@ interface SageConfigurationProps {
 
 const SageConfiguration: React.FC<SageConfigurationProps> = ({sage, setSage}) => {
     return (
-        <div className='flex flex-col space-y-2 rounded-lg p-2 bg-slate-100'>
+        <div className='flex flex-col space-y-2 rounded-lg border-2 p-4 bg-white'>
             <div className='flex flex-row space-x-4 w-full'>
                 <div className='flex flex-col'>
-                    <label className="font-bold">Ask Sage</label>
+                    <label className='font-bold text-xl mb-4'>Ask Sage</label>
+                    <div className="flex flex-row items-center">
                     <input
                         className="border-2 border-gray-200 h-6 w-6 rounded-lg bg-white m-2"
                         type="checkbox"
                         checked={sage.askSage}
                         onChange={(e) => setSage({...sage, askSage: e.target.checked})}
                     />
+                    <div className={"text-lg "+(sage.askSage ? "text-green-400" : "text-gray-400")}>{sage.askSage ? "Enabled" : "Disabled"}</div>
+                    </div>
+
                     {sage.askSage && (
                         <>
                             <label>Sample Questions</label>

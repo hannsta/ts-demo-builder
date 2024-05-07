@@ -121,7 +121,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                 </div>
                 <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => setSubMenus([...subMenus, {name: "", icon: "", objects: [], filters:[],worksheet: "", sage: {askSage: true, sampleQuestions: [""]}}])}
+                    onClick={() => setSubMenus([...subMenus, {name: "", icon: "", objects: [], filters:[],worksheet: "", kpiChart:{title:"",query:""} ,sage: {askSage: true, sampleQuestions: [""]}}])}
                 >
                     Add SubMenu
                 </button>
