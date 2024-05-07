@@ -197,8 +197,6 @@ function App() {
     return <div>Loading...</div>
   }
 
-  
-
   const pinViz = async () => {
     if (sageEmbedRef.current){
       var element: any = document.querySelector("#tsEmbed-pre-render-wrapper-liveboardEmbed")
@@ -263,7 +261,10 @@ function App() {
           {showSettings && (
               <>
                 <div className="absolute bg-white right-0 flex p-2 z-70 overflow-auto" style={{top:'4rem',height:'calc(100vh - 4rem)',borderLeft:'1px solid #cccccc'}}>
-                  <SettingsConfiguration settings={settings} setSettings={setSettings} setLoginPopupVisible={setLoginPopupVisible} />
+                  <SettingsConfiguration 
+                  key={JSON.stringify(settings)}
+                  setShowSettings={setShowSettings}
+                  settings={settings} setSettings={setSettings} setLoginPopupVisible={setLoginPopupVisible} />
                 </div>
               </>
             )}
@@ -274,7 +275,11 @@ function App() {
           <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings}/>
           <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)'}}>
             {selectedPage && selectedPage.type == PageType.HOME ?
-              <HomePageView/>
+              <HomePageView
+              setSagePrompt={setSagePrompt}
+              setShowSage={setShowSage}
+              setSelectedPage={setSelectedPage}
+              setThoughtSpotObject={setSelectedThoughtSpotObject}/>
               : 
               <>
                 {selectedPage && selectedPage.subMenu && (

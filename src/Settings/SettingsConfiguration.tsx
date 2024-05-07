@@ -6,6 +6,7 @@ import { TSLoginContext } from "../App";
 import HomePageConfig, { HomePage } from "./StandardMenus/HomePageConfig";
 import MyReportsConfig, { MyReports } from "./StandardMenus/MyReportsConfig";
 import FavoritesConfig, { Favorites } from "./StandardMenus/FavoritesConfig";
+import { HiXMark } from "react-icons/hi2";
 
 export interface Settings {
     name: string,
@@ -20,11 +21,12 @@ export interface Settings {
 interface SettingsProps {
     settings: Settings,
     setSettings: (settings: Settings) => void,
-    setLoginPopupVisible: (visible: boolean) => void
+    setLoginPopupVisible: (visible: boolean) => void,
+    setShowSettings: (show: boolean) => void
 }
 
 
-const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, setLoginPopupVisible}) => {
+const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, setLoginPopupVisible, setShowSettings}) => {
     const [name, setName] = useState<string>(settings.name)
     const [TSURL, setTSURL] = useState<string>(settings.TSURL)
     const [logo, setLogo] = useState<string>(settings.logo)
@@ -48,20 +50,76 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
         setLogo(base64);
     }
 
+    function loadDefaults(){
+        fetch('DefaultSettings.json').then(response => response.json()).then(data => {
+          setSettings(data)
+        })
+      }
+    const openSettings = (file: Blob | null) => {
+        if(!file) return;
+        const fileReader = new FileReader();
+        fileReader.readAsText(file)
+        fileReader.onload = () => {
+            if (typeof fileReader.result === 'string'){
+                var settings = JSON.parse(fileReader.result)
+                setSettings(settings);
+            }
+        }   
+    }
+    const saveSettings = () =>{
+        var a:any = document.getElementById("saveButton");
+        if(a){
+            console.log("saving")
+            var file = new Blob([JSON.stringify(settings)], {type: 'json'});
+            a.href = URL.createObjectURL(file);
+            a.download = settings.name;
+            a.click()
+        }
 
+    }
     return (
         <TSLoginContext.Consumer>
             {({isLoggedIn}) => (
                 <div className="flex flex-col p-8">
-                            <div className="font-bold text-lg mb-2">Settings</div>
 
-                <div className="flex flex-row justify-between">
-                    <button
+
+                <div className="flex flex-row space-x-4 items-center mb-8">
+                <div className="font-bold text-2xl mb-2">Settings</div>
+
+                    {/* <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded"
                         onClick={() => setSettings({name, TSURL, logo, subMenus, style, homePage, myReports, favorites})}
                     >
-                        Save
+                        Apply
+                    </button> */}
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => saveSettings()}
+                    >
+                        Download
                     </button>
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => document.getElementById('file')?.click()}
+                    >
+                        Upload
+                    </button>
+
+                    <a id="saveButton"></a>
+                    <input type="file" name="file" 
+                                        className="upload-file" 
+                                        id="file"
+                                        onChange={(e) => openSettings(e.target.files ? e.target.files[0] : null)}
+                                        style={{display:'none'}} 
+                                        required/>
+                    <div className="flex w-full justify-end">         
+                                                            <button
+                        className="text-blue-600 font-bold text-2xl py-4 px-4 rounded"
+                        onClick={() => setShowSettings(false)}
+                    >
+                         <HiXMark/>
+                    </button>
+                    </div>
                 </div>
                 <div className="flex flex-col my-2">
                     <label className="font-bold">Application Name</label>
