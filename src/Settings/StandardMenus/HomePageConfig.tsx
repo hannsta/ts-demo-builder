@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { Settings } from "../SettingsConfiguration";
-import IconSelection from "../IconSelection";
+
+import IconSelection from "../Inputs/IconSelection";
 export interface HomePage {
     enabled: boolean,
     name: string,
@@ -35,7 +34,7 @@ const HomePageConfig: React.FC<HomePageConfigProps> = ({homePage, setHomePage}) 
                     <div className='flex flex-col'>
                     <button
                         onClick={() => setHomePage({...homePage, enabled: !homePage.enabled})} 
-                        className={(homePage.enabled ? "bg-green-400 hover:bg-green-600" : "bg-gray-300 hover:bg-gray-400") +"w-24 h-12 text-black hover:text-white font-bold py-2 px-4 rounded"}>
+                        className={(homePage.enabled ? "bg-green-500 hover:bg-green-600" : "bg-gray-300 hover:bg-gray-400") + "w-24 h-10 text-white hover:text-white font-bold py-2 px-4 rounded"}>
                         {homePage.enabled ? "Enabled" : "Disabled"}
                     </button>
                     </div>

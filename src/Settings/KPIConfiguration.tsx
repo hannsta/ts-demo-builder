@@ -1,6 +1,9 @@
+import ColorPicker from "./Inputs/ColorPicker";
+
 export interface KPIChart{
     title: string,
     query: string,
+    color: string,
 }
 interface KPIConfigurationProps {
     kpi: KPIChart,
@@ -12,15 +15,20 @@ const KPIChartConfiguration:React.FC<KPIConfigurationProps> = ({kpi, setKPI}) =>
         <div className='flex flex-col space-y-2 border-2 rounded-lg p-4 bg-white'>
 
             <label className='font-bold text-xl mt-4 mb-2'>KPI Chart</label>
-
-            <div className='flex flex-col'>
-                <label className='font-bold'>Title</label>
-                <input
-                    className="border-2 border-gray-200 text-xl p-1 rounded-lg w-96"
-                    type="text"
-                    value={kpi.title}
-                    onChange={(e) => setKPI({...kpi, title: e.target.value})}
-                />
+            <div className="flex flex-row space-x-4">
+                <div className='flex flex-col'>
+                    <label className='font-bold'>Title</label>
+                    <input
+                        className="border-2 border-gray-200 text-xl p-1 rounded-lg w-96"
+                        type="text"
+                        value={kpi.title}
+                        onChange={(e) => setKPI({...kpi, title: e.target.value})}
+                    />
+                </div>
+                <div className='flex flex-col'>
+                    <label className='font-bold'>Chart Color</label>
+                    <ColorPicker color={kpi.color} setColor={(color) => setKPI({...kpi, color: color})}/>
+                </div>
             </div>
             <div className='flex flex-col'>
                 <label className='font-bold'>Query</label>
@@ -31,6 +39,7 @@ const KPIChartConfiguration:React.FC<KPIConfigurationProps> = ({kpi, setKPI}) =>
                     onChange={(e) => setKPI({...kpi, query: e.target.value})}
                 />
             </div>
+
         </div>
     );
 }

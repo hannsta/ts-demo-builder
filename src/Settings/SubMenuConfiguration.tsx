@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ThoughtSpotObjectConfiguration, { ThoughtSpotObject, ThoughtSpotObjectType } from './ThoughtSpotObjectConfiguration';
-import IconSelection from './IconSelection';
+import IconSelection from './Inputs/IconSelection';
 import SageConfiguration, { Sage } from './SageConfiguration';
-import { Settings } from './SettingsConfiguration';
 import FiltersConfiguration, { Filter } from './FiltersConfiguration';
-import { HiMagnifyingGlass } from 'react-icons/hi2';
+import { HiMagnifyingGlass, HiTrash } from 'react-icons/hi2';
 import ThoughtSpotObjectSearch from './ThoughtSpotObjectSearch';
 import { TSLoginContext } from '../App';
 import KPIChartConfiguration, { KPIChart } from './KPIConfiguration';
@@ -53,16 +52,16 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
             </div>
             <div className='flex flex-row w-full justify-end space-x-4 mt-2'>
                 <button
-                    className="w-24 h-12 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded"
+                    className="w-24 h-10 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded"
                     onClick={() => setShowDetails(!showDetails)}
                 >
                     {showDetails ? "Collapse" : "Expand"}
                 </button>
                 <button
-                    className="w-24 h-12 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    className=" h-10 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                     onClick={() => deleteSubMenu(subMenu)}
                 >
-                    Delete
+                    <HiTrash />
                 </button>
             </div>
         </div>

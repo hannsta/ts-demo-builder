@@ -7,6 +7,7 @@ import HomePageConfig, { HomePage } from "./StandardMenus/HomePageConfig";
 import MyReportsConfig, { MyReports } from "./StandardMenus/MyReportsConfig";
 import FavoritesConfig, { Favorites } from "./StandardMenus/FavoritesConfig";
 import { HiXMark } from "react-icons/hi2";
+import { defaultSettings } from "../Types";
 
 export interface Settings {
     name: string,
@@ -66,6 +67,9 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
             }
         }   
     }
+    const clearSettings = () => {
+        setSettings(defaultSettings)
+    }
     const saveSettings = () =>{
         var a:any = document.getElementById("saveButton");
         if(a){
@@ -75,7 +79,6 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
             a.download = settings.name;
             a.click()
         }
-
     }
     return (
         <TSLoginContext.Consumer>
@@ -104,7 +107,12 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                     >
                         Upload
                     </button>
-
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => clearSettings()}
+                    >
+                        Clear
+                    </button>
                     <a id="saveButton"></a>
                     <input type="file" name="file" 
                                         className="upload-file" 
@@ -179,7 +187,10 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                 </div>
                 <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => setSubMenus([...subMenus, {name: "", icon: "", objects: [], filters:[],worksheet: "", kpiChart:{title:"",query:""} ,sage: {askSage: true, sampleQuestions: [""]}}])}
+                    onClick={() => setSubMenus([...subMenus, {name: "", icon: "", objects: [], filters:[],worksheet: "", kpiChart:{
+                        title: "", query: "",
+                        color: settings.style.headerColor
+                    } ,sage: {askSage: true, sampleQuestions: [""]}}])}
                 >
                     Add SubMenu
                 </button>

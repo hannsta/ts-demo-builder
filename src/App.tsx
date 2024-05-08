@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import SettingsConfiguration, { Settings } from './Settings/SettingsConfiguration';
 import useLocalStorage from './LocalStorage';
@@ -8,19 +7,17 @@ import LeftNav from './Views/LeftNav';
 import SubMenuView from './Views/SubMenuView';
 import { ThoughtSpotObject } from './Settings/ThoughtSpotObjectConfiguration';
 import ThoughtSpotObjectView from './Views/ThoughtSpotObjectView';
-import { Action, AnswerService, AuthStatus, AuthType, EmbedEvent, HostEvent, LogLevel, RuntimeFilter, RuntimeFilterOp, init } from '@thoughtspot/visual-embed-sdk';
+import { Action, AuthStatus, AuthType, EmbedEvent, HostEvent, LogLevel, RuntimeFilter, init } from '@thoughtspot/visual-embed-sdk';
 import { LiveboardEmbed, PreRenderedLiveboardEmbed, PreRenderedSageEmbed, SageEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
-import AskSageButton from './Views/AskSageButton';
 import RestReportsList from './Views/RestReportsList';
 import SageQuestionPrompt from './Views/SageQuestionPrompt';
 import LoginPopup from './Views/LoginPopup';
-import { createConfiguration, ServerConfiguration, ThoughtSpotRestApi } from '@thoughtspot/rest-api-sdk';
 import { createClientWithoutAuth } from './Util';
-import { HomePage } from './Settings/StandardMenus/HomePageConfig';
-import { MyReports } from './Settings/StandardMenus/MyReportsConfig';
-import { Favorites } from './Settings/StandardMenus/FavoritesConfig';
-import { HiUser } from 'react-icons/hi2';
+import { HiUser, HiXMark } from 'react-icons/hi2';
 import HomePageView from './Views/HomePage';
+import { CSSOverrides, defaultSettings } from './Types';
+import SageView from './Views/SageView';
+import KPIChartView from './Views/KPIChart';
 export enum PageType {
   HOME,
   FAVORITES,
@@ -42,25 +39,6 @@ export const SettingsContext = React.createContext({
   setSettings: (settings: Settings) => {}
 });
 
-const defaultSettings: Settings = {
-  name: 'ThoughtSpot',
-  TSURL: 'https://se-thoughtspot-cloud.thoughtspot.cloud/',
-  logo: '',
-  subMenus: [] as SubMenu[],
-  style: {
-    headerColor: "#000000",
-    leftNavColor: "gray",
-    leftNavHoverColor: "#ffffff",
-    backgroundColor:  "#ffffff",
-    subMenuColor:  "#ffffff",
-    subMenuTextColor:  "#000000",
-    textColor:  "#000000",
-    iconColor:  "#000000",
-  },
-  homePage: {enabled: true, name: 'Home', icon: 'HiHome'} as HomePage,
-  favorites: {enabled: true, icon: 'HiStar'} as Favorites,
-  myReports: {enabled: true, name: 'My Reports', icon: 'HiDocumentReport', selfService: true} as MyReports
-}
 function App() {
   const [settings, setSettings] = useLocalStorage('settings', defaultSettings);
   const [showSettings, setShowSettings] = useState<boolean>(false);
@@ -72,30 +50,45 @@ function App() {
   const [loginPopupVisible, setLoginPopupVisible] = useState<boolean>(false);
   const liveboardEmbedRef = useEmbedRef<typeof LiveboardEmbed>();
   const sageEmbedRef = useEmbedRef<typeof SageEmbed>();
-  useEffect(() => {
+  
+
+  const updateSageVisibility = () => {
     let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
     if (!sageEmbed) return;
     if (showSage){
-        setTimeout(() => {
-            if (sageEmbed){
-                sageEmbed.style.zIndex = "20";
-            }
-        }, 500);
+      setTimeout(() => {
+          sageEmbed.style.zIndex = 20;
+      }, 500);
     }else{
-        sageEmbed.style.zIndex = "0";
+      sageEmbed.style.zIndex = 0;
     }
-    if (sageEmbed.__tsEmbed){
+  }  
 
+  useEffect(() => {
+    let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
+    if (!sageEmbed) return;
+
+    updateSageVisibility();
+    if (sageEmbed.__tsEmbed){
         sageEmbed.__tsEmbed.on(EmbedEvent.Pin, (data: any) => {
           let liveboardId = data.data.liveboardId
           let liveboardEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-liveboardEmbed");
-          console.log(data, "pinny",liveboardId)
           liveboardEmbed.__tsEmbed.navigateToLiveboard("")
           liveboardEmbed.__tsEmbed.navigateToLiveboard(liveboardId)
         })
     }
   }, [showSage])
   useEffect(() => {
+    setSelectedThoughtSpotObject(null);
+    updateSageVisibility();
+    let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
+    if (!sageEmbed) return;
+    setTimeout(() => {
+      sageEmbed.__tsEmbed.syncPreRenderStyle();
+    }, 500);
+  },[selectedPage])
+  useEffect(() => {
+    updateSageVisibility();
       if (sagePrompt != ''){
           setShowSage(true);
       }
@@ -122,59 +115,7 @@ function App() {
       logLevel: LogLevel.ERROR,
       customizations:{
         style: {
-            customCSS: {
-                variables: {
-                    "--ts-var-root-background": 'none',
-                    "--ts-var-viz-border-radius": "5px",
-                    "--ts-var-viz-box-shadow": "0 0 5px #efefef",
-                    //@ts-ignore
-                    "--ts-var-sage-bar-header-background-color": "#ffffff",
-                    "--ts-var-chip-border-radius":"5px",
-                    "--ts-var-button-border-radius": '5px'
-
-                },
-                rules_UNSTABLE: {
-                  '[data-testid="verifiedBannerId"]' : {
-                    display: "none"
-                  },
-                  ".eureka-search-box-module__eurekaSearchBar": {
-                    borderRadius: "5px",
-                    border: "1px solid #cccccc",
-                  },
-                  ".eureka-search-bar-module__withoutSage": {
-                    padding: '1rem'
-                  },
-                  ".eureka-ai-answer-module__aiAnswerContainer":{
-                    margin: '1rem',
-                    "box-shadow":"none !important"
-
-                  },
-                  ".eureka-ai-answer-title-description-module__aiAnswerSummary":{
-                    padding: '0rem'
-                  },
-                  ".eureka-ai-answer-module__aiExpandedAnswerWrapper":{
-                    margin: '0rem',
-                    "border-bottom": "none !important"
-                  },
-                  ".eureka-ai-answer-module__aiExpandedAnswerWrapper > .flex-layout-module__vertical":{
-                    height:"600px !important",
-
-                  },
-                  ".eureka-ai-answer-module__aiAnswerFooter":{
-                    display: "none !important"
-                  },
-                  ".answer-content-module__answerContentDivider":{
-                    display: "none !important"
-                  },
-                  ".ReactModal__Overlay":{
-                    'background':"none !important"
-                  }
-                  
-                  // ".pinboard-content-module__tile ":{
-                  //   border: "2px solid #cccccc"
-                  // }
-                }
-            }
+            customCSS: CSSOverrides
         }
     }
 
@@ -201,7 +142,6 @@ function App() {
     if (sageEmbedRef.current){
       var element: any = document.querySelector("#tsEmbed-pre-render-wrapper-liveboardEmbed")
       if (element && element.__tsEmbed){
-        console.log('pinning viz');
         element.__tsEmbed.trigger(HostEvent.Pin);
       }
     }
@@ -232,30 +172,10 @@ function App() {
             <button onClick={()=>setShowSage(true)} className="flex flex-row items-center p-2 rounded-lg hover:bg-gray-200"> Ask Sage </button>
 
             {showSage && (
-                <div className="absolute bg-white top-0 right-0 flex flex-col p-2 z-20 overflow-auto" style={{height:'calc(100vh - 4rem)',marginTop:'4rem',width:'600px',borderLeft:'1px solid #cccccc'}}>
-                    {/* close button */}
-                    <div className="flex flex-row ">
-                        <button onClick={()=>setShowSage(false)}>X</button>
-                    </div>
-                    <SageQuestionPrompt setSagePrompt={setSagePrompt} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null}/>
-                    <SageEmbed
-                              onData={(data) => {
-                                console.log('data', data);
-                              }}
-                              //all actions in the Actions enum
-                        preRenderId="sageEmbed"   
-                        dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : ''}
-                        frameParams={{width: '100%', height: '100%'}}
-                        searchOptions={{
-                            searchQuery: sagePrompt,
-                            executeSearch: true
-                          }}
-                        />
-                    <button onClick={()=>pinViz()} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pin Viz</button>
-                </div>                
+              <SageView setShowSage={setShowSage} setSagePrompt={setSagePrompt} selectedPage={selectedPage} sagePrompt={sagePrompt} />
             )}
             <div className='w-12 h-12 p-2 flex bg-white border-2 text-3xl items-center justify-center' style={{borderRadius:'25px'}}>
-                          <HiUser style={{color:settings.style.iconColor}}/>
+              <HiUser style={{color:settings.style.iconColor}}/>
             </div>
           </div>
           {showSettings && (
@@ -274,7 +194,7 @@ function App() {
           
           <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings}/>
           <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)'}}>
-            {selectedPage && selectedPage.type == PageType.HOME ?
+            {selectedPage && selectedPage.type == PageType.HOME && isLoggedIn ?
               <HomePageView
               setSagePrompt={setSagePrompt}
               setShowSage={setShowSage}
@@ -294,6 +214,17 @@ function App() {
                 <div className='absolute flex flex-col' style={{overflow:'auto',left:'15rem', width:'calc(100vw - 19rem)', height:'calc(100vh - 4rem)'}}>
                   {selectedThoughtSpotObject && isLoggedIn && (
                     <ThoughtSpotObjectView setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
+                  )}
+                  {!selectedThoughtSpotObject && isLoggedIn && selectedPage?.subMenu && (
+                    <div className='p-8'>
+                      <KPIChartView
+                      subMenu={selectedPage?.subMenu} 
+                      setSagePrompt={setSagePrompt}
+                      setShowSage={setShowSage}
+                      setSelectedPage={setSelectedPage}
+                      setThoughtSpotObject={setSelectedThoughtSpotObject}
+                      />
+                      </div>
                   )}
                   {!isLoggedIn && (
                     <div className="flex flex-col items-center space-y-4 justify-center w-full h-full">
@@ -334,6 +265,7 @@ function App() {
           visibleActions={[Action.Save, Action.Pin]}
           hideSageAnswerHeader={true}
           hideWorksheetSelector={true}
+          dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : ''}
           ref={sageEmbedRef}
           preRenderId="sageEmbed"
           frameParams={{width: '100%', height: '100%'}}

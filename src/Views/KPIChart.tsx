@@ -3,7 +3,7 @@ import { createClientWithoutAuth, numberWithCommas } from "../Util";
 import { Page, PageType, SettingsContext } from "../App";
 import { SearchDataResponse } from "@thoughtspot/rest-api-sdk";
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, CategoryScale, LinearScale, LineController, LineElement, PointElement, Title,Filler } from "chart.js";
+import { Chart as ChartJS, Tooltip, CategoryScale, LinearScale, LineController, LineElement, PointElement, Title,Filler } from "chart.js";
 import { SubMenu } from "../Settings/SubMenuConfiguration";
 import { ThoughtSpotObject } from "../Settings/ThoughtSpotObjectConfiguration";
 
@@ -20,7 +20,7 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
 
     useEffect(() => {
         if (!subMenu.kpiChart.query || !subMenu.worksheet) return;
-        if (subMenu.kpiChart.query == "" || subMenu.worksheet == "") return;
+        if (subMenu.kpiChart.query === "" || subMenu.worksheet === "") return;
         let client =  createClientWithoutAuth(settingsContext.settings.TSURL);
         client.searchData({
             query_string: subMenu.kpiChart.query,
@@ -31,6 +31,8 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
         ChartJS.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Title, Filler);
     },[])
     return (
+        <SettingsContext.Consumer>
+            {({settings}) => (
         <div 
         style={{minWidth: '600px'}}
         className="shadow-md hover:shadow-lg p-6 rounded-md flex flex-col space-x-2 ">
@@ -55,7 +57,7 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
                                         label: 'KPI',
                                         data: data.map((row:any) => row[1]),
                                         fill: "start",
-                                        backgroundColor: 'rgb(255, 99, 132)',
+                                        backgroundColor: settings.style.headerColor,
                                         borderColor: 'rgba(255, 99, 132, 0.2)',
                                     },
                                 ],
@@ -136,6 +138,8 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
             </div>
         
         </div>
+        )}
+        </SettingsContext.Consumer>
     );
 }
 export default KPIChartView;

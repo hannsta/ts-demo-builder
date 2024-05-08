@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import * as HeroIcons from 'react-icons/hi2';
-import { Settings } from './SettingsConfiguration';
 import ThoughtSpotObjectSearch from './ThoughtSpotObjectSearch';
 import { TSLoginContext } from '../App';
 
