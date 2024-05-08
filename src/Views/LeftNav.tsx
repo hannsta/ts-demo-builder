@@ -3,14 +3,16 @@ import { Settings } from "../Settings/SettingsConfiguration";
 import * as HeroIcons from 'react-icons/hi2';
 import { SubMenu } from "../Settings/SubMenuConfiguration";
 import { Page, PageType } from "../App";
+import { ThoughtSpotObject } from "../Settings/ThoughtSpotObjectConfiguration";
 
 interface LeftNavProps {
     settings: Settings,
     showSettings: boolean,
     setSelectedPage: (page: Page) => void,
-    setShowSettings: (show: boolean) => void
+    setShowSettings: (show: boolean) => void,
+    setThoughtSpotObject: (thoughtSpotObject: ThoughtSpotObject | null) => void,
 }
-const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPage, setShowSettings}) => {
+const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPage, setShowSettings, setThoughtSpotObject}) => {
     const [wideMode, setWideMode] = useState<boolean>(false);
     const [localTimeout, setLocalTimeout] = useState<any>(null);
     return (
@@ -34,6 +36,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
               setSelectedPage({type: PageType.HOME})
+              setThoughtSpotObject(null);
             }
             } >
               <div className="flex flex-col">
@@ -58,6 +61,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
                   subMenu: subMenu,
                 })
                 setWideMode(false);
+                setThoughtSpotObject(null);
               }}>
                 <div className="flex flex-col">
                   <div className="flex flex-row items-center align-center justify-center text-3xl rounded-lg hover:cursor-pointer">
@@ -77,6 +81,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
               setSelectedPage({type: PageType.MYREPORTS})
+              setThoughtSpotObject(null);
             }} >
               <div className="flex flex-col">
                 <div className="flex flex-row items-center align-center justify-center text-3xl rounded-lg hover:cursor-pointer">
@@ -94,6 +99,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
               setSelectedPage({type: PageType.FAVORITES})
+              setThoughtSpotObject(null);
             }
             } >
               <div className="flex flex-col">

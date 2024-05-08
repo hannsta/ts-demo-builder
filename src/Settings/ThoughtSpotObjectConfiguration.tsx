@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as HeroIcons from 'react-icons/hi2';
-import ThoughtSpotObjectSearch from './ThoughtSpotObjectSearch';
+import ThoughtSpotObjectSearch from './Inputs/ThoughtSpotObjectSearch';
 import { TSLoginContext } from '../App';
 
 export interface ThoughtSpotObject {

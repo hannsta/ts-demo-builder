@@ -11,13 +11,14 @@ import { Action, AuthStatus, AuthType, EmbedEvent, HostEvent, LogLevel, RuntimeF
 import { LiveboardEmbed, PreRenderedLiveboardEmbed, PreRenderedSageEmbed, SageEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import RestReportsList from './Views/RestReportsList';
 import SageQuestionPrompt from './Views/SageQuestionPrompt';
-import LoginPopup from './Views/LoginPopup';
+import LoginPopup from './Views/Popups/LoginPopup';
 import { createClientWithoutAuth } from './Util';
 import { HiUser, HiXMark } from 'react-icons/hi2';
 import HomePageView from './Views/HomePage';
 import { CSSOverrides, defaultSettings } from './Types';
 import SageView from './Views/SageView';
 import KPIChartView from './Views/KPIChart';
+import SubMenuDetailsView from './Views/SubMenuDetailsView';
 export enum PageType {
   HOME,
   FAVORITES,
@@ -79,7 +80,6 @@ function App() {
     }
   }, [showSage])
   useEffect(() => {
-    setSelectedThoughtSpotObject(null);
     updateSageVisibility();
     let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
     if (!sageEmbed) return;
@@ -192,7 +192,7 @@ function App() {
       </header>
       <div className="absolute flex flex-row" style={{height:'calc(100vh - 4rem)', width:'100vw', top:'4rem'}}>
           
-          <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings}/>
+          <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
           <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)'}}>
             {selectedPage && selectedPage.type == PageType.HOME && isLoggedIn ?
               <HomePageView
@@ -224,6 +224,7 @@ function App() {
                       setSelectedPage={setSelectedPage}
                       setThoughtSpotObject={setSelectedThoughtSpotObject}
                       />
+                      <SubMenuDetailsView subMenu={selectedPage.subMenu}/>
                       </div>
                   )}
                   {!isLoggedIn && (

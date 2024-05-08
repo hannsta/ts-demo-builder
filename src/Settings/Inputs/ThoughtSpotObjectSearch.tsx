@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ThoughtSpotObject, ThoughtSpotObjectType } from "./ThoughtSpotObjectConfiguration"
+import { ThoughtSpotObject, ThoughtSpotObjectType } from "../ThoughtSpotObjectConfiguration"
 
 interface ObjectSearchProps {
     TSURL: string,

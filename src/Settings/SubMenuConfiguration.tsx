@@ -4,7 +4,7 @@ import IconSelection from './Inputs/IconSelection';
 import SageConfiguration, { Sage } from './SageConfiguration';
 import FiltersConfiguration, { Filter } from './FiltersConfiguration';
 import { HiMagnifyingGlass, HiTrash } from 'react-icons/hi2';
-import ThoughtSpotObjectSearch from './ThoughtSpotObjectSearch';
+import ThoughtSpotObjectSearch from './Inputs/ThoughtSpotObjectSearch';
 import { TSLoginContext } from '../App';
 import KPIChartConfiguration, { KPIChart } from './KPIConfiguration';
 
