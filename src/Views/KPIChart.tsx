@@ -37,7 +37,10 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
         style={{minWidth: '600px'}}
         className="shadow-md hover:shadow-lg p-6 rounded-md flex flex-col space-x-2 ">
             <div className="flex flex-row">
-            <div className="text-2xl font-bold">
+            <div onClick={()=>setSelectedPage({
+                            type: PageType.SUBMENU,
+                            subMenu: subMenu,
+                        })} className="text-2xl font-bold hover:cursor-pointer hover:text-gray-400">
                 {subMenu.name}
             </div>
             <div className="flex flex-col ml-auto">
