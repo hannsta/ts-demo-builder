@@ -260,6 +260,9 @@ function App() {
         <div className='z-0'>
         <PreRenderedLiveboardEmbed
           ref={liveboardEmbedRef}
+          onCustomAction={(data)=>{
+            console.log("Custom Action", data)
+          }}
           preRenderId="liveboardEmbed"
           liveboardId="" />
         <PreRenderedSageEmbed

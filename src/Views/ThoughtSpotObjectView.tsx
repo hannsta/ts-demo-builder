@@ -5,6 +5,7 @@ import { SubMenu } from "../Settings/SubMenuConfiguration";
 import AttributeFilter from "./AttributeFilter";
 import { useState } from "react";
 import { PageType } from "../App";
+import CustomActionPopup from "./Popups/CustomActionPopup";
 
 
 
@@ -18,6 +19,8 @@ interface ThoughtSpotObjectViewProps {
 
 }
 const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({thoughtSpotObject, type, subMenu, settings, updateFilters, setShowSage }) => {
+    const [customActionPopupVisible, setCustomActionPopupVisible] = useState<boolean>(false);
+    const [customActionData, setCustomActionData] = useState<any>(null);
     return (
         <div className='flex flex-col p-8 w-full h-full space-y-2' style={{background:settings.style.backgroundColor,overflow:'auto'}}>
             <div className="mb-4">
@@ -47,10 +50,18 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({thoughtSpo
             </div>
             {thoughtSpotObject.type == ThoughtSpotObjectType.LIVEBOARD && (
                 <LiveboardEmbed
+                    onCustomAction={(data)=>{
+                        console.log(data.data)
+                        setCustomActionData(data.data);
+                        setCustomActionPopupVisible(true);
+                    }}
                     preRenderId="liveboardEmbed"
                     liveboardId={thoughtSpotObject.uuid}
                     frameParams={{width: '100%', height: '100%'}}
                 />
+            )}
+            {customActionPopupVisible && (
+                <CustomActionPopup data={customActionData} closePopup={() => setCustomActionPopupVisible(false)}/>
             )}
         </div>
     );

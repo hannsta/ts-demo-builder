@@ -25,12 +25,12 @@ const SubMenuDetailsView: React.FC<SubMenuDetailsViewProps> = ({subMenu}) => {
             console.log(tml)
             setWorksheetTML(tml);
         })
-    }, [])
+    }, [subMenu])
     return(
-        <div className="shadow-md hover:shadow-lg p-6 rounded-md flex flex-col space-x-2 ">
+        <div className="shadow-md hover:shadow-lg p-6 rounded-md flex flex-col space-x-2 mt-8">
             {worksheetTML && (
                 <>
-                    <div className='text-2xl font-bold'>{worksheetTML.worksheet.name}</div>  
+                    <div className='text-lg font-bold'>{worksheetTML.worksheet.name}</div>  
                 </>
             )}
 
