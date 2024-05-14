@@ -60,7 +60,7 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
                                         label: 'KPI',
                                         data: data.map((row:any) => row[1]),
                                         fill: "start",
-                                        backgroundColor: settings.style.headerColor,
+                                        backgroundColor: settings.style.headerColor.toLowerCase() === "#ffffff" ? settings.style.iconColor : settings.style.headerColor,
                                         borderColor: 'rgba(255, 99, 132, 0.2)',
                                     },
                                 ],
