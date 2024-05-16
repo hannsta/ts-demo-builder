@@ -38,13 +38,6 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     const [style, setStyle] = useState<Style>(settings.style)
     const imageInput = useRef<HTMLInputElement>(null)
 
-    useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
-          setSettings({name, TSURL, logo, subMenus, style, homePage, myReports, favorites})
-        }, 2000)
-    
-        return () => clearTimeout(delayDebounceFn)
-      }, [name, TSURL, logo, subMenus, style, homePage, myReports, favorites])
     const handleFileRead = async (event:any) => {
         const file = event.target.files[0]
         const base64:any = await convertBase64(file)
@@ -95,6 +88,12 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                     >
                         Apply
                     </button> */}
+                    <button 
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() =>  setSettings({name, TSURL, logo, subMenus, style, homePage, myReports, favorites})}
+                    >
+                        Apply
+                    </button>
                     <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                         onClick={() => saveSettings()}

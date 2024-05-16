@@ -12,12 +12,13 @@ interface CustomActionPopupProps {
 const CustomActionPopup: React.FC<CustomActionPopupProps> = ({data, closePopup}) => {
 
     let embeddedAnswerColumnData: any = [];
-    if (data.embedAnswerData.data.constructor === Array){
-        embeddedAnswerColumnData = data.embedAnswerData.data[0].columnDataLite;
-    } else{
-        let answerData = (data.embedAnswerData.data as any);
-        embeddedAnswerColumnData = answerData.columnDataLite;
-    }
+    embeddedAnswerColumnData = data.embedAnswerData.data[0].columnDataLite;
+
+    // if (data.embedAnswerData.data.constructor === Array){
+    // } else{
+    //     let answerData = (data.embedAnswerData.data as any);
+    //     embeddedAnswerColumnData = answerData.columnDataLite;
+    // }
     return (
         <SettingsContext.Consumer>
             {settings => (
