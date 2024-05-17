@@ -12,13 +12,21 @@ interface CustomActionPopupProps {
 const CustomActionPopup: React.FC<CustomActionPopupProps> = ({data, closePopup}) => {
 
     let embeddedAnswerColumnData: any = [];
-    embeddedAnswerColumnData = data.embedAnswerData.data[0].columnDataLite;
+    let dataObject = {} as any;
+    if (data.embedAnswerData.data){
+        if (data.embedAnswerData.data.constructor === Array){
+            embeddedAnswerColumnData = data.embedAnswerData.data[0].columnDataLite;
+        } else{
+            let answerData = (data.embedAnswerData.data as any);
+            embeddedAnswerColumnData = answerData.columnDataLite;
+        }
+        dataObject = data.embedAnswerData;
+    }else{
+        embeddedAnswerColumnData = data.embedAnswerData.visualizations[0].data[0].columnDataLite
+        dataObject = data.embedAnswerData.visualizations[0];
+    }
 
-    // if (data.embedAnswerData.data.constructor === Array){
-    // } else{
-    //     let answerData = (data.embedAnswerData.data as any);
-    //     embeddedAnswerColumnData = answerData.columnDataLite;
-    // }
+
     return (
         <SettingsContext.Consumer>
             {settings => (
@@ -60,7 +68,7 @@ const CustomActionPopup: React.FC<CustomActionPopupProps> = ({data, closePopup})
                         </div>
                         <div className='flex flex-col space-y-2'>
                             {embeddedAnswerColumnData.map((column: any, index: any) => {
-                                let columnDefinition = data.embedAnswerData.columns.find((col: any) => col.column.id === column.columnId)?.column;
+                                let columnDefinition = dataObject.columns.find((col: any) => col.column.id === column.columnId)?.column;
                                 let columnName = columnDefinition.name
                                 return (
                                     <div className="flex flex-row justify-between">

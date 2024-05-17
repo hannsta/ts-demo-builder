@@ -1,3 +1,17 @@
+/*
+
+This component is a form that allows the user to configure the settings of the application. It contains the following fields:
+- Application Name: A text input field where the user can enter the name of the application.
+- ThoughtSpot URL: A text input field where the user can enter the URL of the ThoughtSpot instance.
+- Logo: An image upload field where the user can upload a logo for the application.
+- Styles: A section where the user can configure the styles of the application, such as the background color, header color, and icon color.
+- HomePage: A  menu that allows the user to enable or disable and configure the home page.
+- MyReports: A menu that allows the user to enable or disable and configure the My Reports page.
+- Favorites: A menu that allows the user to enable or disable and configure the Favorites page.
+
+*/
+
+
 import { useState, useRef, useEffect } from "react";
 import SubMenuConfiguration, { SubMenu } from "./SubMenuConfiguration";
 import  StyleConfiguration, { Style } from "./StyleConfiguration";
@@ -82,12 +96,6 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                 <div className="flex flex-row space-x-4 items-center mb-8">
                 <div className="font-bold text-2xl mb-2">Settings</div>
 
-                    {/* <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded"
-                        onClick={() => setSettings({name, TSURL, logo, subMenus, style, homePage, myReports, favorites})}
-                    >
-                        Apply
-                    </button> */}
                     <button 
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                         onClick={() =>  setSettings({name, TSURL, logo, subMenus, style, homePage, myReports, favorites})}

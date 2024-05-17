@@ -69,7 +69,11 @@ export const CSSOverrides = {
         display: "none !important"
       },
       ".ReactModal__Overlay":{
-        'background':"none !important"
+        'background':"none !important",
+        'background-color': 'none !important'
+      },
+      '.ReactModalPortal .ReactModal__Overlay':{
+        "background-color": "rgba(0, 0, 0, 0) !important"
       }
       
     }
