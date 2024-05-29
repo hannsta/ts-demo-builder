@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Settings } from "../Settings/SettingsConfiguration";
 import * as HeroIcons from 'react-icons/hi2';
 import { SubMenu } from "../Settings/SubMenuConfiguration";
-import { Page, PageType } from "../App";
+import { Page, PageType, UserContext } from "../App";
 import { ThoughtSpotObject } from "../Settings/ThoughtSpotObjectConfiguration";
+import { User } from "../Settings/UserConfiguration";
 
 interface LeftNavProps {
     settings: Settings,
@@ -16,6 +17,8 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
     const [wideMode, setWideMode] = useState<boolean>(false);
     const [localTimeout, setLocalTimeout] = useState<any>(null);
     return (
+      <UserContext.Consumer>
+        {({user}) => (
         <div 
         onMouseEnter={()=>{
           let timeout = setTimeout(()=>setWideMode(true), 200)
@@ -52,6 +55,9 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
             </div>
           )}
           {settings.subMenus.map((subMenu, index) => {
+            if (subMenu.userPermissions && subMenu.userPermissions.length > 0 && subMenu.userPermissions.find((permission) => permission.user.name === user.name && permission.denied)) {
+              return null;
+            }
             // @ts-ignore
             const SelectedIcon: any = HeroIcons[subMenu.icon];
             return (
@@ -77,7 +83,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
               </div>
             );
           })}
-          {settings.myReports && settings.myReports.enabled && (
+          {settings.myReports && settings.myReports.enabled && user.selfService && (
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
               setSelectedPage({type: PageType.MYREPORTS})
@@ -132,6 +138,8 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
           </div>
         </div>
       </div>
+        )}
+      </UserContext.Consumer>
     );
 }
 export default LeftNav;

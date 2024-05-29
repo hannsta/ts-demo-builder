@@ -2,10 +2,11 @@ import { useState, useEffect, useContext } from "react";
 import { createClientWithoutAuth, numberWithCommas } from "../Util";
 import { Page, PageType, SettingsContext } from "../App";
 import { SearchDataResponse } from "@thoughtspot/rest-api-sdk";
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, Tooltip, CategoryScale, LinearScale, LineController, LineElement, PointElement, Title,Filler } from "chart.js";
+import { Bar, Line, Pie } from "react-chartjs-2";
+import { Chart as ChartJS, Tooltip, CategoryScale, LinearScale, LineController, LineElement, PointElement, Title,Filler, BarElement, ArcElement } from "chart.js";
 import { SubMenu } from "../Settings/SubMenuConfiguration";
 import { ThoughtSpotObject } from "../Settings/ThoughtSpotObjectConfiguration";
+import { KPIType } from "../Settings/KPIConfiguration";
 
 export interface KPIChartProps {
     subMenu: SubMenu,
@@ -28,7 +29,7 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
         }).then((response: SearchDataResponse) => {
             setData(response.contents[0].data_rows);
         })
-        ChartJS.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Title, Filler);
+        ChartJS.register(LineController, LineElement, PointElement, BarElement, ArcElement, LinearScale, CategoryScale, Tooltip, Title, Filler);
     },[])
     return (
         <SettingsContext.Consumer>
@@ -48,9 +49,9 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
                 <div className="text-4xl font-bold mr-4 mt-2">{data && numberWithCommas(Math.round(data[data.length-1][1]))}</div>
             </div> 
             </div>
-            {subMenu.kpiChart && (
+            {subMenu.kpiChart &&  (
                 <div className="flex h-32 mt-8 pr-4">
-                    {data && (
+                    {(data && (subMenu.kpiChart.type == KPIType.LINE || !subMenu.kpiChart.type)) && (
                         <Line 
                             data={
                             {
@@ -60,49 +61,49 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
                                         label: 'KPI',
                                         data: data.map((row:any) => row[1]),
                                         fill: "start",
-                                        backgroundColor: settings.style.headerColor.toLowerCase() === "#ffffff" ? settings.style.iconColor : settings.style.headerColor,
+                                        backgroundColor: (subMenu.kpiChart.color && subMenu.kpiChart.color.toLowerCase() !=  "#ffffff") ? subMenu.kpiChart.color : settings.style.headerColor.toLowerCase() === "#ffffff" ? settings.style.iconColor : settings.style.headerColor,
                                         borderColor: 'rgba(255, 99, 132, 0.2)',
                                     },
                                 ],
                             }
                         }
-                        options={{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                tooltip: {
-                                    enabled: true
-                                },
-                                filler: {
-                                    propagate: true
-                                },
-                                legend: {
-                                    display: false
-                                },
-                                title: {
-                                    display: false
-                                },
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: false,
-                                    display: true,
-                                    ticks: {
-                                        //number of ticks on the y axis
-                                        maxTicksLimit: 3
+                        options={chartOptions}
+                        />
+                    )}
+                    {(data && subMenu.kpiChart.type == KPIType.BAR) && (
+                        <Bar 
+                            data={
+                            {
+                                labels: data.map((row:any) => row[0]),
+                                datasets: [
+                                    {
+                                        label: 'KPI',
+                                        data: data.map((row:any) => row[1]),
+                                        backgroundColor: (subMenu.kpiChart.color && subMenu.kpiChart.color.toLowerCase() !=  "#ffffff") ? subMenu.kpiChart.color : settings.style.headerColor.toLowerCase() === "#ffffff" ? settings.style.iconColor : settings.style.headerColor,
+                                        borderColor: 'rgba(255, 99, 132, 0.2)',
                                     },
-                                    grid: {
-                                        display: false
-                                    }
-                                },
-                                x: {
-                                    display: false,
-                                    grid: {
-                                        display: false
-                                    }
-                                }
+                                ],
                             }
-                        }}/>
+                        }
+                        options={chartOptions}
+                        />
+                    )}
+                    {(data && subMenu.kpiChart.type == KPIType.PIE) && (
+                        <Pie 
+                            data={
+                            {
+                                labels: data.map((row:any) => row[0]),
+                                datasets: [
+                                    {
+                                        label: 'KPI',
+                                        data: data.map((row:any) => row[1]),
+                                        backgroundColor: ["#F8E71C", "#F5A623", "#D0021B", "#4A90E2", "#9013FE","#7ED321"],
+                                    },
+                                ],
+                            }
+                        }
+                        options={chartOptions}
+                        />
                     )}
                 </div>
             )}
@@ -146,3 +147,41 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
     );
 }
 export default KPIChartView;
+
+const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        tooltip: {
+            enabled: true
+        },
+        filler: {
+            propagate: true
+        },
+        legend: {
+            display: false
+        },
+        title: {
+            display: false
+        },
+    },
+    scales: {
+        y: {
+            beginAtZero: false,
+            display: true,
+            ticks: {
+                //number of ticks on the y axis
+                maxTicksLimit: 3
+            },
+            grid: {
+                display: false
+            }
+        },
+        x: {
+            display: false,
+            grid: {
+                display: false
+            }
+        }
+    }
+}

@@ -1,9 +1,17 @@
 import ColorPicker from "./Inputs/ColorPicker";
+import { SelectInput, TextInput } from "./Inputs/InputMenus";
+
+export enum KPIType {
+    LINE = "Line",
+    BAR = "Bar",
+    PIE = "Pie"
+}
 
 export interface KPIChart{
     title: string,
     query: string,
     color: string,
+    type: KPIType
 }
 interface KPIConfigurationProps {
     kpi: KPIChart,
@@ -12,33 +20,20 @@ interface KPIConfigurationProps {
 
 const KPIChartConfiguration:React.FC<KPIConfigurationProps> = ({kpi, setKPI}) => {
     return (
-        <div className='flex flex-col space-y-2 border-2 rounded-lg p-4 bg-white'>
+        <div className='flex flex-col space-y-2 rounded-lg bg-white'>
 
-            <label className='font-bold text-xl mt-4 mb-2'>KPI Chart</label>
+            <label className='font-bold text-xl mb-2'>KPI Chart</label>
             <div className="flex flex-row space-x-4">
-                <div className='flex flex-col'>
-                    <label className='font-bold'>Title</label>
-                    <input
-                        className="border-2 border-gray-200 text-xl p-1 rounded-lg w-96"
-                        type="text"
-                        value={kpi.title}
-                        onChange={(e) => setKPI({...kpi, title: e.target.value})}
-                    />
-                </div>
-                <div className='flex flex-col'>
-                    <label className='font-bold'>Chart Color</label>
-                    <ColorPicker color={kpi.color} setColor={(color) => setKPI({...kpi, color: color})}/>
-                </div>
+                <TextInput label="Title" value={kpi.title} setValue={(title) => setKPI({...kpi, title})}/>
+                <SelectInput label="Chart Type" value={kpi.type} setValue={(type: any) => setKPI({...kpi, type})} options={[
+                    KPIType.LINE,
+                    KPIType.BAR,
+                    KPIType.PIE
+                ]}/>
+                <ColorPicker label="Chart Color" color={kpi.color} setColor={(color) => setKPI({...kpi, color: color})}/>
             </div>
-            <div className='flex flex-col'>
-                <label className='font-bold'>Query</label>
-                <input
-                    className="border-2 border-gray-200 text-xl p-1 rounded-lg"
-                    type="text"
-                    value={kpi.query}
-                    onChange={(e) => setKPI({...kpi, query: e.target.value})}
-                />
-            </div>
+            <TextInput label="Query" value={kpi.query} setValue={(query) => setKPI({...kpi, query})}/>
+
 
         </div>
     );

@@ -19,6 +19,8 @@ import { CSSOverrides, defaultSettings } from './Types';
 import SageView from './Views/SageView';
 import KPIChartView from './Views/KPIChart';
 import SubMenuDetailsView from './Views/SubMenuDetailsView';
+import { User } from './Settings/UserConfiguration';
+import UserProfile from './Views/UserProfile';
 export enum PageType {
   HOME,
   FAVORITES,
@@ -30,21 +32,30 @@ export interface Page {
   type: PageType,
   subMenu?: SubMenu
 }
-
+// Create a context for the TS login status
 export const TSLoginContext = React.createContext({
   isLoggedIn: false,
   setIsLoggedIn: (isLoggedIn: boolean) => {}
 });
+// Create a context for the application settings
 export const SettingsContext = React.createContext({
   settings: {} as Settings,
   setSettings: (settings: Settings) => {}
 });
-
+// Create a context for the application user (not related to TS user)
+export const UserContext = React.createContext({
+  user: {} as User,
+  setUser: (user: User) => {}
+});
 function App() {
+  //Keep settings, page, user, and thoughtspot object in local storage so they dont disappear on refresh
   const [settings, setSettings] = useLocalStorage('settings', defaultSettings);
+  const [selectedPage, setSelectedPage] = useLocalStorage('page', null as Page | null);
+  const [user, setUser] = useLocalStorage('user', defaultSettings.users[0]);
+  const [selectedThoughtSpotObject, setSelectedThoughtSpotObject] = useLocalStorage('thoughtspotObject', null as ThoughtSpotObject | null);
+
+
   const [showSettings, setShowSettings] = useState<boolean>(false);
-  const [selectedPage, setSelectedPage] = useState<Page | null>(null);
-  const [selectedThoughtSpotObject, setSelectedThoughtSpotObject] = useState<ThoughtSpotObject | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [showSage, setShowSage] = useState<boolean>(false);
   const [sagePrompt, setSagePrompt] = useState<string>('');
@@ -52,7 +63,7 @@ function App() {
   const liveboardEmbedRef = useEmbedRef<typeof LiveboardEmbed>();
   const sageEmbedRef = useEmbedRef<typeof SageEmbed>();
   
-
+  // Move the sage embed to the front of the page
   const updateSageVisibility = () => {
     let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
     if (!sageEmbed) return;
@@ -64,13 +75,24 @@ function App() {
       sageEmbed.style.zIndex = 0;
     }
   }  
+  // Reload the page when the user changes
+  useEffect(() => {
+    if (liveboardEmbedRef.current && user){
+      setSelectedPage({
+        type: PageType.HOME
+      })
+      window.location.reload();
+    }
+  },[user])
 
+  // Update visiblity and listen for pin event when sage is selected
   useEffect(() => {
     let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
     if (!sageEmbed) return;
-
     updateSageVisibility();
     if (sageEmbed.__tsEmbed){
+
+      // Listen for the pin event and refresh the liveboard embed
         sageEmbed.__tsEmbed.on(EmbedEvent.Pin, (data: any) => {
           let liveboardId = data.data.liveboardId
           let liveboardEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-liveboardEmbed");
@@ -79,6 +101,8 @@ function App() {
         })
     }
   }, [showSage])
+
+
   useEffect(() => {
     updateSageVisibility();
     let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
@@ -87,6 +111,8 @@ function App() {
       sageEmbed.__tsEmbed.syncPreRenderStyle();
     }, 500);
   },[selectedPage])
+
+
   useEffect(() => {
     updateSageVisibility();
       if (sagePrompt != ''){
@@ -100,6 +126,8 @@ function App() {
       }
 
   }, [sagePrompt])
+
+  
   useEffect(() => {
     if (!settings || !settings.style || !settings.style.headerColor){
       setSettings(defaultSettings);
@@ -109,6 +137,9 @@ function App() {
     if (!settings || !settings.TSURL){
       return;
     }
+
+    // Initialize the ThoughtSpot SDK
+    // Current using AuthType.None for no authentication
     init({ 
       thoughtSpotHost: settings.TSURL, 
       authType: AuthType.None,
@@ -158,6 +189,7 @@ function App() {
   return (
     <TSLoginContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <SettingsContext.Provider value={{settings, setSettings}}>
+        <UserContext.Provider value={{user, setUser}}>
     <div className="App">
       <header className="fixed z-20 flex w-full h-16" style={{backgroundColor:settings.style.headerColor, borderBottom: (settings.style.headerColor == "#ffffff") ? '1px solid #cccccc' : "none"}}>
         <div className="flex flex-row justify-between w-full px-4 py-2 h-16">
@@ -174,9 +206,8 @@ function App() {
             {showSage && (
               <SageView setShowSage={setShowSage} setSagePrompt={setSagePrompt} selectedPage={selectedPage} sagePrompt={sagePrompt} />
             )}
-            <div className='w-12 h-12 p-2 flex bg-white border-2 text-3xl items-center justify-center' style={{borderRadius:'25px'}}>
-              <HiUser style={{color:settings.style.iconColor}}/>
-            </div>
+            <UserProfile setUser={setUser} user={user}/>
+
           </div>
           {showSettings && (
               <>
@@ -191,9 +222,13 @@ function App() {
         </div>
       </header>
       <div className="absolute flex flex-row" style={{height:'calc(100vh - 4rem)', width:'100vw', top:'4rem'}}>
-          
+          {/* Left Navigation */}
           <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+         
+          {/* Main Content */}
           <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)'}}>
+            
+            {/* Home Page */}
             {selectedPage && selectedPage.type == PageType.HOME && isLoggedIn ?
               <HomePageView
               setSagePrompt={setSagePrompt}
@@ -205,7 +240,7 @@ function App() {
                 {selectedPage && selectedPage.subMenu && (
                   <SubMenuView settings={settings}  subMenu={selectedPage.subMenu} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
                 )}
-                {selectedPage && selectedPage.type == PageType.MYREPORTS && (
+                {selectedPage && selectedPage.type == PageType.MYREPORTS &&(
                   <RestReportsList settings={settings} isMyReports={true} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
                 )}
                 {selectedPage && selectedPage.type == PageType.FAVORITES && (
@@ -213,7 +248,7 @@ function App() {
                 )}
                 <div className='absolute flex flex-col' style={{overflow:'auto',left:'15rem', width:'calc(100vw - 19rem)', height:'calc(100vh - 4rem)'}}>
                   {selectedThoughtSpotObject && isLoggedIn && (
-                    <ThoughtSpotObjectView setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
+                    <ThoughtSpotObjectView user={user} setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
                   )}
                   {!selectedThoughtSpotObject && isLoggedIn && selectedPage?.subMenu && (
                     <div className='p-8'>
@@ -256,13 +291,17 @@ function App() {
 
       </div>
       </div>
+
+      {/*
+        Generate the pre-rendered embeds for the liveboard and sage embeds
+        These are hidden and only used to pre-render the embeds before they are shown 
+      */}
       {isLoggedIn && (
         <div className='z-0'>
         <PreRenderedLiveboardEmbed
+          key={user.name}
           ref={liveboardEmbedRef}
-          onCustomAction={(data)=>{
-            console.log("Custom Action", data)
-          }}
+          hiddenActions={user.userRole.actions}
           preRenderId="liveboardEmbed"
           liveboardId="" />
         <PreRenderedSageEmbed
@@ -280,6 +319,7 @@ function App() {
           />
         </div>
       )}
+      </UserContext.Provider>
     </SettingsContext.Provider>      
     </TSLoginContext.Provider>
   );

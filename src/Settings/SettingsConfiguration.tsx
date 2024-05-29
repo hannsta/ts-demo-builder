@@ -22,6 +22,9 @@ import MyReportsConfig, { MyReports } from "./StandardMenus/MyReportsConfig";
 import FavoritesConfig, { Favorites } from "./StandardMenus/FavoritesConfig";
 import { HiXMark } from "react-icons/hi2";
 import { defaultSettings } from "../Types";
+import { KPIType } from "./KPIConfiguration";
+import UserConfiguration, { User } from "./UserConfiguration";
+import { AddButton, TextInput } from "./Inputs/InputMenus";
 
 export interface Settings {
     name: string,
@@ -32,6 +35,7 @@ export interface Settings {
     homePage: HomePage,
     myReports: MyReports,
     favorites: Favorites,
+    users: User[]
 }
 interface SettingsProps {
     settings: Settings,
@@ -50,8 +54,13 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     const [myReports, setMyReports] = useState<MyReports>(settings.myReports);
     const [favorites, setFavorites] = useState<Favorites>(settings.favorites);
     const [style, setStyle] = useState<Style>(settings.style)
+    const [users, setUsers] = useState<User[]>(settings.users)
     const imageInput = useRef<HTMLInputElement>(null)
-
+    useEffect(() => {
+        if (!users){
+            setUsers([])
+        }
+    },[])
     const handleFileRead = async (event:any) => {
         const file = event.target.files[0]
         const base64:any = await convertBase64(file)
@@ -98,7 +107,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
 
                     <button 
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={() =>  setSettings({name, TSURL, logo, subMenus, style, homePage, myReports, favorites})}
+                        onClick={() =>  setSettings({name, TSURL, logo, subMenus, style, homePage, myReports, favorites, users})}
                     >
                         Apply
                     </button>
@@ -136,26 +145,14 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                     </button>
                     </div>
                 </div>
-                <div className="flex flex-col my-2">
-                    <label className="font-bold">Application Name</label>
-                    <input
-                        className="border-2 border-gray-200 text-xl p-1 rounded-lg"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
+                <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
+                    <div className="font-bold text-lg mt-1 mb-1">Configuration</div> 
+                <div className="flex flex-col my-2 bg-white p-4 rounded-md">
+                    <TextInput label="Application Name" value={name} setValue={(name) => setName(name)}/>
                     <div className="flex flex-row space-x-4">
-                        <div className="flex flex-col">
-                        <label className="font-bold mt-2">ThoughtSpot URL</label>
-                        <input
-                            className="border-2 border-gray-200 text-xl p-1 rounded-lg w-96"
-                            type="text"
-                            value={TSURL}
-                            onChange={(e) => setTSURL(e.target.value)}
-                        />
-                        </div>
+                        <TextInput label="ThoughtSpot URL" value={TSURL} setValue={(TSURL) => setTSURL(TSURL)}/>
                         <div className="flex flex-col justify-end">
-                        <button className={(isLoggedIn ? "bg-green-500 " : "bg-blue-500 hover:bg-blue-700") + " h-10 text-white font-bold py-2 px-4 rounded"} 
+                        <button className={(isLoggedIn ? "bg-green-500 " : "bg-blue-500 hover:bg-blue-700") + " h-8 text-white font-bold py-1 px-4 rounded"} 
                             onClick={() => {setLoginPopupVisible(true)}}
                             disabled={isLoggedIn}
                         >
@@ -174,45 +171,67 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                                         required/>
 
                 </div>
-                <div className="font-bold text-lg mb-2 mt-4">Styles</div>
-                <StyleConfiguration style={style} setStyle={setStyle}/>
-                <div className="font-bold text-lg mt-4 mb-2">Custom Menus</div>
-                <div className="flex flex-col space-y-2 pb-4">
-                {subMenus && subMenus.map((subMenu, index) => (
-                    <SubMenuConfiguration
-                        key={index}
-                        subMenu={subMenu}
-                        TSURL={TSURL}
-                        setSubMenu={(newSubMenu) => {
-                            const newSubMenus = [...subMenus]
-                            newSubMenus[index] = newSubMenu
-                            setSubMenus(newSubMenus)
-                        }}
-                        deleteSubMenu={() => setSubMenus(subMenus.filter((_, i) => i !== index))}
-                    />
-                ))}
                 </div>
-                <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => setSubMenus([...subMenus, {name: "", icon: "", objects: [], filters:[],worksheet: "", kpiChart:{
+                <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
+                    <div className="font-bold text-lg mt-1 mb-1">Styles</div>
+                    <StyleConfiguration style={style} setStyle={setStyle}/>
+                </div>
+                {/* Custom Menu Configuration */}
+                <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
+                    <div className="font-bold text-lg mt-1 mb-1">Custom Menus</div>
+                    <div className="flex flex-col space-y-2 pb-4">
+                    {subMenus && subMenus.map((subMenu, index) => (
+                        <SubMenuConfiguration
+                            key={index}
+                            subMenu={subMenu}
+                            TSURL={TSURL}
+                            setSubMenu={(newSubMenu) => {
+                                const newSubMenus = [...subMenus]
+                                newSubMenus[index] = newSubMenu
+                                setSubMenus(newSubMenus)
+                            }}
+                            deleteSubMenu={() => setSubMenus(subMenus.filter((_, i) => i !== index))}
+                        />
+                    ))}
+                    </div>
+                    <AddButton isPrimary={true} label="Add SubMenu" onClick={() => setSubMenus([...subMenus, {name: "", icon: "", objects: [], filters:[],worksheet: "", userPermissions:[], kpiChart:{
                         title: "", query: "",
-                        color: settings.style.headerColor
-                    } ,sage: {askSage: true, sampleQuestions: [""]}}])}
-                >
-                    Add SubMenu
-                </button>
-                <div className="font-bold text-lg mt-4 mb-2">Standard Menus</div>
-                <div className="mb-2">
-                <FavoritesConfig favorites={favorites} setFavorites={setFavorites}/>
+                        color: settings.style.headerColor,
+                        type: KPIType.LINE
+                    } ,sage: {askSage: true, sampleQuestions: [""]}}])}/>
                 </div>
-                <div className="mb-2">
-                <HomePageConfig homePage={homePage} setHomePage={setHomePage}/>
+
+                {/* Standard Menu Configuration */}
+                <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
+                    <div className="font-bold text-lg mt-1 mb-1">Standard Menus</div>
+                    <FavoritesConfig favorites={favorites} setFavorites={setFavorites}/>
+                    <HomePageConfig homePage={homePage} setHomePage={setHomePage}/>
+                    <MyReportsConfig myReports={myReports} setMyReports={setMyReports}/>
+
                 </div>
-                <div className="mb-2">
-                <MyReportsConfig myReports={myReports} setMyReports={setMyReports}/>
+
+                {/* User Configuration */}
+                <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
+                    <div className="font-bold text-lg mt-1 mb-1">Users</div>
+
+                    {users && users.map((user, index) => (
+                        <UserConfiguration
+                            key={index}
+                            user={user}
+                            setUser={(newUser) => {
+                                const newUsers = [...users]
+                                newUsers[index] = newUser
+                                setUsers(newUsers)
+                            }}
+                            deleteUser={() => setUsers(users.filter((_, i) => i !== index))}
+                        />
+                    ))}
+                    {users && (
+                        <AddButton isPrimary={true} label="Add User" onClick={() => setUsers([...users, {name: "", userRole: {name: "", actions: []}, selfService: true}])}/>
+                    )}
                 </div>
                 </div>
-            )}
+                )}
         </TSLoginContext.Consumer>
     );
 };

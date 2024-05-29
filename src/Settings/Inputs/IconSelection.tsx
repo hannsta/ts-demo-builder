@@ -14,14 +14,16 @@ const IconSelection: React.FC<IconSelectionProps> = ({selectedIcon, setSelectedI
     const SelectedIcon: any = HeroIcons[selectedIcon];
 
     return (
-        <div className='flex flex-col bg-white h-10 w-10'> 
+        <div className='flex flex-col'>
+        <label className='font-bold'>Icon</label>
+        <div className='flex flex-col bg-white h-8 w-8'> 
             <div
                 className='flex flex-row space-x-4'
                 onClick={() => setShowIcons(!showIcons)}
             >
                 <div className='flex flex-col'>
                     <div
-                        className='w-10 h-10 flex flex-row space-x-2 items-center align-center justify-center p-2 text-xl border-2 border-gray-200 rounded-lg hover:cursor-pointer'
+                        className='w-8 h-8 flex flex-row space-x-2 items-center align-center justify-center p-1 text-xl border-2 border-gray-200 rounded-lg hover:cursor-pointer'
                     >
                         {SelectedIcon && <SelectedIcon/>}
                     </div>
@@ -51,6 +53,7 @@ const IconSelection: React.FC<IconSelectionProps> = ({selectedIcon, setSelectedI
                 </div>
             </div>            
             )}
+    </div>
     </div>
     );
 }

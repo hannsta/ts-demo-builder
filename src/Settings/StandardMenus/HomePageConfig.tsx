@@ -1,5 +1,6 @@
 
 import IconSelection from "../Inputs/IconSelection";
+import { TextInput } from "../Inputs/InputMenus";
 export interface HomePage {
     enabled: boolean,
     name: string,
@@ -12,21 +13,10 @@ export interface HomePageConfigProps {
 const HomePageConfig: React.FC<HomePageConfigProps> = ({homePage, setHomePage}) => {
 
     return (
-        <div className={(homePage.enabled ? 'bg-slate-100' : 'bg-gray-200') + ' flex flex-col space-y-2 border-2 rounded-lg p-2'}>
+        <div className={(homePage.enabled ? 'bg-white' : 'bg-gray-200') + ' flex flex-col space-y-2 rounded-lg p-2'}>
             <div className='flex flex-row space-x-4'>
-                <div className='flex flex-col'>
-                    <label className='font-bold'>Icon</label>
-                    <IconSelection selectedIcon={homePage.icon} setSelectedIcon={(icon) => setHomePage({...homePage, icon})}/>
-                </div>
-                <div className='flex flex-col'>
-                    <label className='font-bold'>Name</label>
-                    <input
-                        className="border-2 border-gray-200 text-xl p-1 rounded-lg"
-                        type="text"
-                        value={homePage.name}
-                        onChange={(e) => setHomePage({...homePage, name: e.target.value})}
-                    />
-                </div>
+                <IconSelection selectedIcon={homePage.icon} setSelectedIcon={(icon) => setHomePage({...homePage, icon})}/>
+                <TextInput label="Name" value={homePage.name} setValue={(name) => setHomePage({...homePage, name})}/>
                 <div className='flex flex-row w-full justify-end items-center'>
                     <div className='flex flex-col mr-8 text-slate-400 font-bold'>
                         Home Page

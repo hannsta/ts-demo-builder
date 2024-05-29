@@ -3,6 +3,7 @@ import { Favorites } from "./Settings/StandardMenus/FavoritesConfig";
 import { MyReports } from "./Settings/StandardMenus/MyReportsConfig";
 import { SubMenu } from "./Settings/SubMenuConfiguration";
 import { HomePage } from "./Settings/StandardMenus/HomePageConfig";
+import { DefaultUserRoles } from "./Settings/UserConfiguration";
 
 export const defaultSettings: Settings = {
     name: 'ThoughtSpot Demo Builder',
@@ -21,7 +22,24 @@ export const defaultSettings: Settings = {
     },
     homePage: {enabled: true, name: 'Home', icon: 'HiHome'} as HomePage,
     favorites: {enabled: true, name: 'Favorites', icon: 'HiStar'} as Favorites,
-    myReports: {enabled: true, name: 'My Reports', icon: 'HiDocumentText', selfService: true} as MyReports
+    myReports: {enabled: true, name: 'My Reports', icon: 'HiDocumentText', selfService: true} as MyReports,
+    users: [
+      {
+        name: 'Admin',
+        userRole: DefaultUserRoles.find(role => role.name === 'Read Only') || DefaultUserRoles[0],
+        selfService: false
+      },
+      {
+        name: 'Analyst',
+        userRole: DefaultUserRoles.find(role => role.name === 'Analyst') || DefaultUserRoles[0],
+        selfService: true
+      },
+      {
+        name: 'Power User',
+        userRole: DefaultUserRoles.find(role => role.name === 'Power User') || DefaultUserRoles[0],
+        selfService: true
+      }
+    ],
   }
 
 export const CSSOverrides = {
@@ -74,7 +92,11 @@ export const CSSOverrides = {
       },
       '.ReactModalPortal .ReactModal__Overlay':{
         "background-color": "rgba(0, 0, 0, 0) !important"
+      },
+      '.ReactModal__Content':{
+        "box-shadow": "0 0 55px #ddd !important",
       }
+
       
     }
 }

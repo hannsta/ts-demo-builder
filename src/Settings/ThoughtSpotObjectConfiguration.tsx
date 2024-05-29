@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as HeroIcons from 'react-icons/hi2';
 import ThoughtSpotObjectSearch from './Inputs/ThoughtSpotObjectSearch';
 import { TSLoginContext } from '../App';
+import { SelectInput, TextInput } from './Inputs/InputMenus';
 
 export interface ThoughtSpotObject {
     name: string,
@@ -27,35 +28,10 @@ const ThoughtSpotObjectConfiguration: React.FC<ThoughtSpotObjectConfigurationPro
         <TSLoginContext.Consumer>
             {({isLoggedIn}) => (
         <div className='flex flex-row space-x-2'>
-            <div className='flex flex-col'>            
-            <label>Name</label>
-            <input
-                className="border-2 border-gray-200 w-46 h-8 rounded-md bg-white"
-                type="text"
-                value={object.name}
-                onChange={(e) => setObject({...object, name: e.target.value})}
-            />
-            </div>                
-            <div className='flex flex-col'>
-            <label>UUID</label>
-            <input
-                className="border-2 border-gray-200 w-46 h-8 rounded-md bg-white" 
-                type="text"
-                value={object.uuid}
-                onChange={(e) => setObject({...object, uuid: e.target.value})}
-            />
-            </div>
-            <div className='flex flex-col'>
-            <label>Type</label>
-            <select
-                className="border-2 border-gray-200 w-32 h-8 rounded-md bg-white"
-                value={object.type}
-                onChange={(e) => setObject({...object, type: e.target.value as ThoughtSpotObjectType})}
-            >
-                <option value={ThoughtSpotObjectType.LIVEBOARD}>Liveboard</option>
-                <option value={ThoughtSpotObjectType.ANSWER}>Answer</option>
-            </select>
-            </div>
+            <TextInput label="Name" value={object.name} setValue={(name) => setObject({...object, name})}/>
+            <TextInput label="UUID" value={object.uuid} setValue={(uuid) => setObject({...object, uuid})}/>
+            <SelectInput label="Type" value={object.type} setValue={(type: any) => setObject({...object, type})} options={[ThoughtSpotObjectType.LIVEBOARD, ThoughtSpotObjectType.ANSWER]}/>
+
             <div className='flex flex-col'>
             <label>Search</label>
             <button

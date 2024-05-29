@@ -1,4 +1,5 @@
 import IconSelection from "../Inputs/IconSelection";
+import { TextInput } from "../Inputs/InputMenus";
 
 export interface Favorites {
     enabled: boolean,
@@ -13,22 +14,11 @@ export interface FavoritesConfigProps {
 
 const FavoritesConfig: React.FC<FavoritesConfigProps> = ({favorites, setFavorites}) => {
     return (
-        <div className={(favorites.enabled ? 'bg-slate-100' : 'bg-gray-200') + ' flex flex-col space-y-2 border-2 rounded-lg p-2'}>
+        <div className={(favorites.enabled ? 'bg-white' : 'bg-gray-200') + ' flex flex-col space-y-2 rounded-lg p-2'}>
             <div className='flex flex-row space-x-4'>
 
-                <div className='flex flex-col'>
-                    <label className='font-bold'>Icon</label>
-                    <IconSelection selectedIcon={favorites.icon} setSelectedIcon={(icon) => setFavorites({...favorites, icon})}/>
-                </div>
-                <div className='flex flex-col'>
-                    <label className='font-bold'>Name</label>
-                    <input
-                        className="border-2 border-gray-200 text-xl p-1 rounded-lg"
-                        type="text"
-                        value={favorites.name}
-                        onChange={(e) => setFavorites({...favorites, name: e.target.value})}
-                    />
-                </div>
+                <IconSelection selectedIcon={favorites.icon} setSelectedIcon={(icon) => setFavorites({...favorites, icon})}/>
+                <TextInput label="Name" value={favorites.name} setValue={(name) => setFavorites({...favorites, name})}/>
                 <div className='flex flex-row w-full justify-end items-center'>
                     <div className='flex flex-col mr-8 text-slate-400 font-bold'>
                         Favorites

@@ -6,10 +6,12 @@ import AttributeFilter from "./AttributeFilter";
 import { useState } from "react";
 import { PageType } from "../App";
 import CustomActionPopup from "./Popups/CustomActionPopup";
+import { User } from "../Settings/UserConfiguration";
 
 
 
 interface ThoughtSpotObjectViewProps {
+    user: User,
     thoughtSpotObject: ThoughtSpotObject,
     type: PageType | null,
     subMenu: SubMenu | null,
@@ -18,7 +20,7 @@ interface ThoughtSpotObjectViewProps {
     setShowSage: (showSage: boolean) => void
 
 }
-const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({thoughtSpotObject, type, subMenu, settings, updateFilters, setShowSage }) => {
+const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thoughtSpotObject, type, subMenu, settings, updateFilters, setShowSage }) => {
     const [customActionPopupVisible, setCustomActionPopupVisible] = useState<boolean>(false);
     const [customActionData, setCustomActionData] = useState<any>(null);
     return (
@@ -50,6 +52,8 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({thoughtSpo
             </div>
             {thoughtSpotObject.type == ThoughtSpotObjectType.LIVEBOARD && (
                 <LiveboardEmbed
+                    hiddenActions={user.userRole.actions}
+
                     onCustomAction={(data)=>{
                         console.log(data.data)
                         setCustomActionData(data.data);
