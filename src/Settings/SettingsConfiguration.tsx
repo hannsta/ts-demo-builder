@@ -15,16 +15,17 @@ This component is a form that allows the user to configure the settings of the a
 import { useState, useRef, useEffect } from "react";
 import SubMenuConfiguration, { SubMenu } from "./SubMenuConfiguration";
 import  StyleConfiguration, { Style } from "./StyleConfiguration";
-import { convertBase64 } from "../Util";
+import { convertBase64 } from "../Util/Util";
 import { TSLoginContext } from "../App";
 import HomePageConfig, { HomePage } from "./StandardMenus/HomePageConfig";
 import MyReportsConfig, { MyReports } from "./StandardMenus/MyReportsConfig";
 import FavoritesConfig, { Favorites } from "./StandardMenus/FavoritesConfig";
 import { HiXMark } from "react-icons/hi2";
-import { defaultSettings } from "../Types";
+import { defaultSettings } from "../Util/Types";
 import { KPIType } from "./KPIConfiguration";
 import UserConfiguration, { User } from "./UserConfiguration";
 import { AddButton, TextInput } from "./Inputs/InputMenus";
+import GitSettings from "./Git/GitSettings";
 
 export interface Settings {
     name: string,
@@ -56,22 +57,22 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     const [style, setStyle] = useState<Style>(settings.style)
     const [users, setUsers] = useState<User[]>(settings.users)
     const imageInput = useRef<HTMLInputElement>(null)
+    
+    
+    /* Set default values if settings are not provided, or are out of date */
     useEffect(() => {
         if (!users){
             setUsers([])
         }
     },[])
+    
     const handleFileRead = async (event:any) => {
         const file = event.target.files[0]
         const base64:any = await convertBase64(file)
         setLogo(base64);
     }
 
-    function loadDefaults(){
-        fetch('DefaultSettings.json').then(response => response.json()).then(data => {
-          setSettings(data)
-        })
-      }
+    /* Function to open settings file from user prompt */
     const openSettings = (file: Blob | null) => {
         if(!file) return;
         const fileReader = new FileReader();
@@ -83,9 +84,13 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
             }
         }   
     }
+
+    /* Function to restore settings to empty default */
     const clearSettings = () => {
         setSettings(defaultSettings)
     }
+
+    /* Function to save settings to file */
     const saveSettings = () =>{
         var a:any = document.getElementById("saveButton");
         if(a){
@@ -102,6 +107,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                 <div className="flex flex-col p-8">
 
 
+                {/* Primary Buttons */}
                 <div className="flex flex-row space-x-4 items-center mb-8">
                 <div className="font-bold text-2xl mb-2">Settings</div>
 
@@ -145,6 +151,14 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                     </button>
                     </div>
                 </div>
+                
+                {/* Pre Built Demos */}
+                <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
+                    <div className="font-bold text-lg mt-1 mb-1">Pre Built Demos</div> 
+                        <GitSettings setSettings={setSettings}/>
+                </div>
+
+                {/* High Level Configuration */}
                 <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
                     <div className="font-bold text-lg mt-1 mb-1">Configuration</div> 
                 <div className="flex flex-col my-2 bg-white p-4 rounded-md">
@@ -172,10 +186,13 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
 
                 </div>
                 </div>
+
+                {/* Style Configuration */}
                 <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
                     <div className="font-bold text-lg mt-1 mb-1">Styles</div>
                     <StyleConfiguration style={style} setStyle={setStyle}/>
                 </div>
+
                 {/* Custom Menu Configuration */}
                 <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
                     <div className="font-bold text-lg mt-1 mb-1">Custom Menus</div>

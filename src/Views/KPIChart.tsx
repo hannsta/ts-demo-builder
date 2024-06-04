@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { createClientWithoutAuth, numberWithCommas } from "../Util";
+import { createClientWithoutAuth, numberWithCommas } from "../Util/Util";
 import { Page, PageType, SettingsContext } from "../App";
 import { SearchDataResponse } from "@thoughtspot/rest-api-sdk";
 import { Bar, Line, Pie } from "react-chartjs-2";
@@ -28,14 +28,16 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
             logical_table_identifier: subMenu.worksheet
         }).then((response: SearchDataResponse) => {
             setData(response.contents[0].data_rows);
-        })
+        }).catch((error) => {
+            console.log("Error fetching data", error);
+        });
         ChartJS.register(LineController, LineElement, PointElement, BarElement, ArcElement, LinearScale, CategoryScale, Tooltip, Title, Filler);
     },[])
     return (
         <SettingsContext.Consumer>
             {({settings}) => (
         <div 
-        style={{minWidth: '600px'}}
+        style={{minWidth: '600px', color: settings.style.textColor, backgroundColor: settings.style.tileColor}}
         className="shadow-md hover:shadow-lg p-6 rounded-md flex flex-col space-x-2 ">
             <div className="flex flex-row">
             <div onClick={()=>setSelectedPage({

@@ -1,10 +1,11 @@
 
 
-  import { useEffect, useState } from "react";
+  import { useContext, useEffect, useState } from "react";
 import { Settings } from "../Settings/SettingsConfiguration";
   import { ThoughtSpotObject, ThoughtSpotObjectType } from "../Settings/ThoughtSpotObjectConfiguration"
 import { executeTML, executeTMLInput } from "@thoughtspot/visual-embed-sdk";
 import { HiPlus } from "react-icons/hi2";
+import { SettingsContext, TSLoginContext } from "../App";
 
   interface MyReportsProps {
       settings: Settings,
@@ -14,6 +15,7 @@ import { HiPlus } from "react-icons/hi2";
   const RestReportsList: React.FC<MyReportsProps> = ({settings, isMyReports, setThoughtSpotObject}) => {
     const [liveboards, setLiveboards] = useState<ThoughtSpotObject[]>([])
     const [showNewLiveboard, setShowNewLiveboard] = useState<boolean>(false);
+    const loginContext = useContext(TSLoginContext);
 
     const createNewLiveboard = (name: string, description: string) => {
         let liveboard: executeTMLInput = {
@@ -33,6 +35,8 @@ import { HiPlus } from "react-icons/hi2";
         });
     }
     useEffect(() => {
+        //get login context
+        if (!loginContext.isLoggedIn) return;
         var baseURL = settings.TSURL.replace("#/","").replace("#","")
         fetch(baseURL+"callosum/v1/tspublic/v1/metadata/list?type=PINBOARD_ANSWER_BOOK&category="+(isMyReports ? "MY" : "FAVORITE") +"&batchsize=10",{
             credentials: 'include',
@@ -54,7 +58,7 @@ import { HiPlus } from "react-icons/hi2";
     },[])
         
       return (
-          <div className='flex flex-col p-8 absolute w-60 space-y-4' style={{height:'calc(100% - 4rem)', background:settings.style.subMenuColor, borderRight: (settings.style.subMenuColor == '#ffffff' || settings.style.subMenuColor == settings.style.backgroundColor) ? '1px solid #cccccc' :'none' }}>
+          <div className='flex flex-col p-8 absolute w-60 space-y-4' style={{color:settings.style.subMenuTextColor, height:'calc(100% - 4rem)', background:settings.style.subMenuColor, borderRight: (settings.style.subMenuColor == '#ffffff' || settings.style.subMenuColor == settings.style.backgroundColor) ? '1px solid #cccccc' :'none' }}>
               <div className="font-bold text-xl mb-2">{isMyReports ? "My Reports" : "My Favorites"}</div>
               {liveboards.map((liveboard, index) => {
                   return (

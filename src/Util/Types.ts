@@ -1,9 +1,11 @@
-import { Settings } from "./Settings/SettingsConfiguration";
-import { Favorites } from "./Settings/StandardMenus/FavoritesConfig";
-import { MyReports } from "./Settings/StandardMenus/MyReportsConfig";
-import { SubMenu } from "./Settings/SubMenuConfiguration";
-import { HomePage } from "./Settings/StandardMenus/HomePageConfig";
-import { DefaultUserRoles } from "./Settings/UserConfiguration";
+import { Settings } from "../Settings/SettingsConfiguration";
+import { Favorites } from "../Settings/StandardMenus/FavoritesConfig";
+import { MyReports } from "../Settings/StandardMenus/MyReportsConfig";
+import { SubMenu } from "../Settings/SubMenuConfiguration";
+import { HomePage } from "../Settings/StandardMenus/HomePageConfig";
+import { DefaultUserRoles } from "../Settings/UserConfiguration";
+import { StyleOptionList, StyleOptions } from "./PreBuiltStyles";
+import { customCssInterface } from "@thoughtspot/visual-embed-sdk/lib/src/types";
 
 export const defaultSettings: Settings = {
     name: 'ThoughtSpot Demo Builder',
@@ -11,14 +13,19 @@ export const defaultSettings: Settings = {
     logo: '',
     subMenus: [] as SubMenu[],
     style: {
+      fontFamily: "Lato",
       headerColor: "#4A90E2",
+      showHeaderName: true,
       leftNavColor: "#ffffff",
-      leftNavHoverColor: "#ffffff",
       backgroundColor:  "#ffffff",
       subMenuColor:  "#f3f3f3",
       subMenuTextColor:  "#000000",
-      textColor:  "#000000",
+      headerTextColor:  "#000000",
       iconColor:  "#4A90E2",
+      userIconColor: "#4A90E2",
+      textColor: "#000000",
+      tileColor: "#ffffff",
+      preBuiltStyle: StyleOptionList.None
     },
     homePage: {enabled: true, name: 'Home', icon: 'HiHome'} as HomePage,
     favorites: {enabled: true, name: 'Favorites', icon: 'HiStar'} as Favorites,
@@ -41,9 +48,28 @@ export const defaultSettings: Settings = {
       }
     ],
   }
+  export const FontFamilies = [
+    "Fjalla One",
+    "Roboto",
+    "Lato",
+    "Open Sans",
+    "Space Grotesk",
+    "Seymour One",
+]
+export const CSSOverrides = (settings: Settings) => {
+  
+  if (settings.style.preBuiltStyle !== StyleOptionList.None){
+    let styles = StyleOptions.find(style => style.name === settings.style.preBuiltStyle)?.customCSS
+    if (styles && styles.variables){
+      console.log("found custom styles,", styles)
+      styles.variables["--ts-var-root-font-family"] = '"'+settings.style.fontFamily+'", sans-serif' || "Arial, sans-serif"
+      return styles
+    }
 
-export const CSSOverrides = {
+  }
+  return {
     variables: {
+        "--ts-var-root-font-family": '"'+settings.style.fontFamily+'", sans-serif' || "Arial, sans-serif",
         "--ts-var-root-background": 'none',
         "--ts-var-viz-border-radius": "5px",
         "--ts-var-viz-box-shadow": "0 0 5px #efefef",
@@ -99,4 +125,5 @@ export const CSSOverrides = {
 
       
     }
+} as customCssInterface 
 }

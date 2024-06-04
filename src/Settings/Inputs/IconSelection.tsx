@@ -3,6 +3,19 @@ import * as HeroIcons from 'react-icons/hi2';
 
 
 
+/**
+ * IconSelection component
+ * @param selectedIcon - the currently selected icon
+ * @param setSelectedIcon - function to set the selected icon
+ * @returns
+ * IconSelection component
+ * 
+ * Example usage:
+ * ```tsx
+ * <IconSelection selectedIcon={myReports.icon} setSelectedIcon={(icon) => setMyReports({...myReports, icon})}/>
+ * ```
+ *  
+*/
 
 interface IconSelectionProps {
     selectedIcon: string,

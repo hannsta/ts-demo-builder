@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react"
 import { ThoughtSpotObject, ThoughtSpotObjectType } from "../ThoughtSpotObjectConfiguration"
 
+// This component is used to search for ThoughtSpot objects
+// It does this by making the metadata/list API call to ThoughtSpot
+// The user can search for either Liveboards, Answers, or Worksheets
+
+
 interface ObjectSearchProps {
     TSURL: string,
     isWorksheet: boolean,

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { SubMenu } from "../Settings/SubMenuConfiguration";
 import { SettingsContext } from "../App";
-import { createClientWithoutAuth } from "../Util";
+import { createClientWithoutAuth } from "../Util/Util";
 
 interface SubMenuDetailsViewProps {
     subMenu: SubMenu,
@@ -30,7 +30,7 @@ const SubMenuDetailsView: React.FC<SubMenuDetailsViewProps> = ({subMenu}) => {
         <div className="shadow-md hover:shadow-lg p-6 rounded-md flex flex-col space-x-2 mt-8">
             {worksheetTML && (
                 <>
-                    <div className='text-lg font-bold'>{worksheetTML.worksheet.name}</div>  
+                    <div className='text-lg font-bold'>{worksheetTML.worksheet ? worksheetTML.worksheet.name : "Invalid Worksheet"}</div>  
                 </>
             )}
 

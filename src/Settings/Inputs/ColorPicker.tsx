@@ -1,15 +1,32 @@
 import React from "react";
 import { SketchPicker } from "react-color";
 
+
+/**
+ * ColorPicker component
+ * @param label - label for the color picker
+ * @param color - color value
+ * @param setColor - function to set the color value
+ * @returns
+ * ColorPicker component
+ *  
+ * Example usage:
+ * ```tsx
+ * <ColorPicker label="Header Color" color={style.headerColor} setColor={(color) => setStyle({...style, headerColor: color})}/>
+ * ```
+ * 
+*/
+
 interface ColorPickerProps {
     label: string;
     color: string;
+    style?: string;
     setColor: (color: string) => void;
 }
-const ColorPicker: React.FC<ColorPickerProps> = ({label, color, setColor}) => {
+const ColorPicker: React.FC<ColorPickerProps> = ({label, color, style, setColor}) => {
     const [showPicker, setShowPicker] = React.useState<boolean>(false);
     return (
-        <div className='flex flex-col'>
+        <div className={(style ? style : '') + ' flex flex-col'}>
             <label className='font-bold'>{label}</label>
             <div
                 className='flex flex-row space-x-4'

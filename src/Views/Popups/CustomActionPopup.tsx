@@ -2,7 +2,7 @@ import { CustomActionPayload } from "@thoughtspot/visual-embed-sdk";
 import { ColumnValue } from "@thoughtspot/visual-embed-sdk/lib/src/types";
 import exp from "constants"
 import { HiXMark } from "react-icons/hi2";
-import { numberWithCommas } from "../../Util";
+import { numberWithCommas } from "../../Util/Util";
 import { SettingsContext } from "../../App";
 
 interface CustomActionPopupProps {

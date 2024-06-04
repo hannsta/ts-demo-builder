@@ -1,5 +1,10 @@
 import { HiTrash } from "react-icons/hi2"
 
+// Generic Input Components
+// These components are used to create input menus for various settings and configurations
+
+
+// Text Input Component
 interface TextInputProps {
     label: string,
     value: string,
@@ -13,7 +18,7 @@ const TextInput: React.FC<TextInputProps> = ({label, value, setValue}) => {
         </div>
     )
 }
-
+// Checkbox Input Component
 interface CheckBoxInputProps {
     label: string,
     value: boolean,
@@ -32,7 +37,7 @@ const CheckBoxInput: React.FC<CheckBoxInputProps> = ({label, value, setValue}) =
         </div>
     )
 }
-
+// Select Input Component
 interface SelectInputProps {
     label: string,
     value: string,
@@ -50,7 +55,7 @@ const SelectInput: React.FC<SelectInputProps> = ({label, value, setValue, option
     )
 }
 
-
+//  Red Button Components
 interface DeleteButtonProps {
     onClick: () => void
 }
@@ -65,7 +70,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({onClick}) =>
         </button>
     )
 }
-
+//  Smaller Red Button Component
 interface RemoveButtonProps {
     onClick: () => void
 }
@@ -80,7 +85,7 @@ const RemoveButton: React.FC<RemoveButtonProps> = ({onClick}) =>
         </div>
     )
 }
-
+// Add Button Component
 interface AddButtonProps {
     label: string,
     isPrimary?: boolean,

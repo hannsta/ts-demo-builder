@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import SettingsConfiguration, { Settings } from './Settings/SettingsConfiguration';
-import useLocalStorage from './LocalStorage';
+import useLocalStorage from './Util/LocalStorage';
 import { SubMenu } from './Settings/SubMenuConfiguration';
 import LeftNav from './Views/LeftNav';
 import SubMenuView from './Views/SubMenuView';
 import { ThoughtSpotObject } from './Settings/ThoughtSpotObjectConfiguration';
 import ThoughtSpotObjectView from './Views/ThoughtSpotObjectView';
-import { Action, AuthStatus, AuthType, EmbedEvent, HostEvent, LogLevel, RuntimeFilter, init } from '@thoughtspot/visual-embed-sdk';
+import { Action, AuthStatus, AuthType, EmbedEvent, HostEvent, LogLevel, RuntimeFilter, customCssInterface, init } from '@thoughtspot/visual-embed-sdk';
 import { LiveboardEmbed, PreRenderedLiveboardEmbed, PreRenderedSageEmbed, SageEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import RestReportsList from './Views/RestReportsList';
 import SageQuestionPrompt from './Views/SageQuestionPrompt';
 import LoginPopup from './Views/Popups/LoginPopup';
-import { createClientWithoutAuth } from './Util';
+import { createClientWithoutAuth } from './Util/Util';
 import { HiUser, HiXMark } from 'react-icons/hi2';
 import HomePageView from './Views/HomePage';
-import { CSSOverrides, defaultSettings } from './Types';
+import { CSSOverrides, defaultSettings } from './Util/Types';
 import SageView from './Views/SageView';
 import KPIChartView from './Views/KPIChart';
 import SubMenuDetailsView from './Views/SubMenuDetailsView';
 import { User } from './Settings/UserConfiguration';
 import UserProfile from './Views/UserProfile';
+import { CleanPath, GetAvailableDemos, GetDemo } from './Settings/Git/GitSettings';
 export enum PageType {
   HOME,
   FAVORITES,
@@ -50,6 +51,7 @@ export const UserContext = React.createContext({
 function App() {
   //Keep settings, page, user, and thoughtspot object in local storage so they dont disappear on refresh
   const [settings, setSettings] = useLocalStorage('settings', defaultSettings);
+  const [path, setPath] = useLocalStorage('path', '' as string);
   const [selectedPage, setSelectedPage] = useLocalStorage('page', null as Page | null);
   const [user, setUser] = useLocalStorage('user', defaultSettings.users[0]);
   const [selectedThoughtSpotObject, setSelectedThoughtSpotObject] = useLocalStorage('thoughtspotObject', null as ThoughtSpotObject | null);
@@ -63,7 +65,7 @@ function App() {
   const liveboardEmbedRef = useEmbedRef<typeof LiveboardEmbed>();
   const sageEmbedRef = useEmbedRef<typeof SageEmbed>();
   
-  // Move the sage embed to the front of the page
+  // Function to move the sage embed to the front of the page
   const updateSageVisibility = () => {
     let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
     if (!sageEmbed) return;
@@ -75,7 +77,7 @@ function App() {
       sageEmbed.style.zIndex = 0;
     }
   }  
-  // Reload the page when the user changes
+  // Function to reload the page when the user changes
   useEffect(() => {
     if (liveboardEmbedRef.current && user){
       setSelectedPage({
@@ -127,8 +129,22 @@ function App() {
 
   }, [sagePrompt])
 
-  
+  // Get the settings from the URL path if it exists
   useEffect(() => {
+    //get route from url
+    let path = window.location.pathname;
+    path = CleanPath(path);
+    if (path != ''){
+      GetAvailableDemos().then((demos) => {
+        for (let i = 0; i < demos.length; i++){
+          if (CleanPath(demos[i].path) == path){
+            GetDemo(demos[i].path).then((demo) => {
+              setSettings(demo);
+            })
+          }
+        }
+      })
+    }
     if (!settings || !settings.style || !settings.style.headerColor){
       setSettings(defaultSettings);
     }
@@ -146,7 +162,8 @@ function App() {
       logLevel: LogLevel.ERROR,
       customizations:{
         style: {
-            customCSS: CSSOverrides
+            customCSSUrl: 'https://cdn.jsdelivr.net/gh/hannsta/general@latest/fonts.css',
+            customCSS: CSSOverrides(settings) as customCssInterface 
         }
     }
 
@@ -165,6 +182,10 @@ function App() {
       console.log("Not logged in yet");
     })
   }, [settings])
+  
+  
+  
+  
   if (!settings || !settings.style || !settings.style.headerColor){
     return <div>Loading...</div>
   }
@@ -190,18 +211,18 @@ function App() {
     <TSLoginContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <SettingsContext.Provider value={{settings, setSettings}}>
         <UserContext.Provider value={{user, setUser}}>
-    <div className="App">
+    <div className="App" style={{fontFamily:'"'+settings.style.fontFamily+'", sans-serif'}}>
       <header className="fixed z-20 flex w-full h-16" style={{backgroundColor:settings.style.headerColor, borderBottom: (settings.style.headerColor == "#ffffff") ? '1px solid #cccccc' : "none"}}>
         <div className="flex flex-row justify-between w-full px-4 py-2 h-16">
           <div className="flex flex-row space-x-4">
             <img src={settings.logo} alt="logo" />
-            <div className="text-2xl font-bold flex items-center">
-              {settings.name}
+            <div className="text-2xl font-bold flex items-center" style={{color:settings.style.headerTextColor}}>
+              {settings.style.showHeaderName ? settings.name : ''}
             </div>
           </div>
           <div className='flex flex-row space-x-4'>
 
-            <button onClick={()=>setShowSage(true)} className="flex flex-row items-center p-2 rounded-lg hover:bg-gray-200"> Ask Sage </button>
+            <button onClick={()=>setShowSage(true)} style={{color:settings.style.headerTextColor}} className="flex flex-row items-center p-2 rounded-lg hover:bg-gray-200"> Ask Sage </button>
 
             {showSage && (
               <SageView setShowSage={setShowSage} setSagePrompt={setSagePrompt} selectedPage={selectedPage} sagePrompt={sagePrompt} />
@@ -230,38 +251,49 @@ function App() {
             
             {/* Home Page */}
             {selectedPage && selectedPage.type == PageType.HOME && isLoggedIn ?
-              <HomePageView
-              setSagePrompt={setSagePrompt}
-              setShowSage={setShowSage}
-              setSelectedPage={setSelectedPage}
-              setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+                <HomePageView
+                setSagePrompt={setSagePrompt}
+                setShowSage={setShowSage}
+                setSelectedPage={setSelectedPage}
+                setThoughtSpotObject={setSelectedThoughtSpotObject}/>
               : 
               <>
                 {selectedPage && selectedPage.subMenu && (
                   <SubMenuView settings={settings}  subMenu={selectedPage.subMenu} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
                 )}
+
+                {/* My Reports and Favorites Pages */}
                 {selectedPage && selectedPage.type == PageType.MYREPORTS &&(
                   <RestReportsList settings={settings} isMyReports={true} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
                 )}
                 {selectedPage && selectedPage.type == PageType.FAVORITES && (
                   <RestReportsList settings={settings} isMyReports={false} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
                 )}
+
+
+
                 <div className='absolute flex flex-col' style={{overflow:'auto',left:'15rem', width:'calc(100vw - 19rem)', height:'calc(100vh - 4rem)'}}>
+                  
+                  {/* ThoughtSpot Object View */}
                   {selectedThoughtSpotObject && isLoggedIn && (
                     <ThoughtSpotObjectView user={user} setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
                   )}
+
+                  {/* Sub Menu Landing Page */}
                   {!selectedThoughtSpotObject && isLoggedIn && selectedPage?.subMenu && (
-                    <div className='p-8'>
+                    <div style={{backgroundColor:settings.style.backgroundColor}} className='p-8 h-full'>
                       <KPIChartView
-                      subMenu={selectedPage?.subMenu} 
-                      setSagePrompt={setSagePrompt}
-                      setShowSage={setShowSage}
-                      setSelectedPage={setSelectedPage}
-                      setThoughtSpotObject={setSelectedThoughtSpotObject}
+                        subMenu={selectedPage?.subMenu} 
+                        setSagePrompt={setSagePrompt}
+                        setShowSage={setShowSage}
+                        setSelectedPage={setSelectedPage}
+                        setThoughtSpotObject={setSelectedThoughtSpotObject}
                       />
                       <SubMenuDetailsView subMenu={selectedPage.subMenu}/>
                       </div>
                   )}
+
+                  {/* Not Logged In Page */}
                   {!isLoggedIn && (
                     <div className="flex flex-col items-center space-y-4 justify-center w-full h-full">
                       <div className="text-2xl font-bold">Please login to your ThoughtSpot environment to view content.</div>

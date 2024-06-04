@@ -51,7 +51,7 @@ const AttributeFilter: React.FC<AttributeFilterProps> = ({filter, worksheet, set
     }, [])
     return (
         <div className='flex min-w-72 flex-col space-y-2'>
-            <label className='font-bold'>{filter.name}</label>
+            <label style={{color:settings.style.textColor}} className='font-bold'>{filter.name}</label>
             <MultiSelect
                 options={options}
                 value={value}

@@ -64,6 +64,12 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
             </div>
         
         </div>
+        {worksheetSearchVisible && (
+                <ThoughtSpotObjectSearch
+                    TSURL={TSURL}
+                    isWorksheet={true}
+                    setObject={(object) => setSubMenu({...subMenu, worksheet: object.uuid})} />
+                )}
         {showDetails && (
             <>
             <div className='flex flex-col mt-8 border-t-2 p-4'>
@@ -104,12 +110,7 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
             <div className='flex flex-col mt-8 border-t-2 p-4'>
                 <UserPermissionConfiguration permissions={subMenu.userPermissions} setPermissions={(userPermissions) => setSubMenu({...subMenu, userPermissions})}/>
             </div>
-            {worksheetSearchVisible && (
-                <ThoughtSpotObjectSearch
-                    TSURL={TSURL}
-                    isWorksheet={true}
-                    setObject={(object) => setSubMenu({...subMenu, worksheet: object.uuid})} />
-                )}
+
         </>
         
         )}
