@@ -26,21 +26,25 @@ const GitSettings: React.FC<GitSettingsProps> = ({setSettings}) => {
     return (
         <div className='flex flex-col space-y-2 rounded-lg p-2 bg-white'>
             <div className='flex flex-row space-x-4'>
-                <div className='w-40'></div>
-                <div className='w-60 font-bold'>Demo Name</div>
-                <div className='w-48 font-bold'>URL Path</div>
+                <div className='w-2/5 font-bold'>Demo Name</div>
+                <div className='w-2/5 font-bold'>URL Path</div>
+                <div className='w-1/5'></div>
             </div>
             {availableDemos && availableDemos.map((demo, index) => (
                 <div key={index} className='flex flex-row space-x-4 items-center'>
-                    <div className='w-40'>
+                    <div className='w-2/5 hover:text-blue-500 hover:cursor-pointer' onClick={() => {
+                            GetDemo(demo.path).then(data => {
+                                setSettings(data);
+                            });
+                        }}>{demo.path.replace(".txt","")}</div>
+                    <div className='w-2/5 hover:text-blue-500  hover:cursor-pointer'><a href={"/"+CleanPath(demo.path)}>/{CleanPath(demo.path)}</a></div>
+                    <div className='w-1/5 justify-end flex'>
                         <AddButton label="Load" onClick={() => {
                             GetDemo(demo.path).then(data => {
                                 setSettings(data);
                             });
                         }}></AddButton>
                     </div>
-                    <div className='w-60'>{demo.path}</div>
-                    <div className='w-48 hover:text-blue-500'><a href={"/"+CleanPath(demo.path)}>/{CleanPath(demo.path)}</a></div>
                 </div>
             ))}
         </div>
