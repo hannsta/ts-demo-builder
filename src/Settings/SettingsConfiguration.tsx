@@ -104,12 +104,11 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     return (
         <TSLoginContext.Consumer>
             {({isLoggedIn}) => (
-                <div className="flex flex-col p-8">
+                <div className="flex flex-col">
 
 
                 {/* Primary Buttons */}
-                <div className="flex flex-row space-x-4 items-center mb-8">
-                <div className="font-bold text-2xl mb-2">Settings</div>
+                <div className="flex flex-row space-x-4 items-center p-8">
 
                     <button 
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -118,19 +117,19 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                         Apply
                     </button>
                     <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        className="bg-gray-300 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded"
                         onClick={() => saveSettings()}
                     >
                         Download
                     </button>
                     <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        className="bg-gray-300 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded"
                         onClick={() => document.getElementById('file')?.click()}
                     >
                         Upload
                     </button>
                     <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        className="bg-red-300 hover:bg-red-500 text-white font-bold py-2 px-4 rounded"
                         onClick={() => clearSettings()}
                     >
                         Clear
@@ -151,9 +150,10 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                     </button>
                     </div>
                 </div>
-                
+
+                <div className="h-full overflow-y-auto  p-8">
                 {/* Pre Built Demos */}
-                <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
+                <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md  p-4" >
                     <div className="font-bold text-lg mt-1 mb-1">Pre Built Demos</div> 
                         <GitSettings setSettings={setSettings}/>
                 </div>
@@ -246,6 +246,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                     {users && (
                         <AddButton isPrimary={true} label="Add User" onClick={() => setUsers([...users, {name: "", userRole: {name: "", actions: []}, selfService: true}])}/>
                     )}
+                </div>
                 </div>
                 </div>
                 )}

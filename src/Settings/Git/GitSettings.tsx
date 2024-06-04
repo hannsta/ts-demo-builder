@@ -40,7 +40,7 @@ const GitSettings: React.FC<GitSettingsProps> = ({setSettings}) => {
                         }}></AddButton>
                     </div>
                     <div className='w-60'>{demo.path}</div>
-                    <div className='w-48'>/{CleanPath(demo.path)}</div>
+                    <div className='w-48 hover:text-blue-500'><a href={"/"+CleanPath(demo.path)}>/{CleanPath(demo.path)}</a></div>
                 </div>
             ))}
         </div>
