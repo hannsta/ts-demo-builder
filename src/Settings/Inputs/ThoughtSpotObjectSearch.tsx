@@ -49,7 +49,7 @@ const ThoughtSpotObjectSearch: React.FC<ObjectSearchProps> = ({TSURL, isWorkshee
         searchObjects()
     }, [])
     return (
-        <div className='absolute bg-white flex flex-col w-96 border-2 p-2' style={{height:'500px'}}>
+        <div className='absolute top-1/2 bg-white flex flex-col w-96 border-2 p-2' style={{height:'500px'}}>
             <label className="font-bold mt-2">Type</label>
             <select
                 className="border-2 border-gray-200 w-32 p-2 rounded-md bg-white"

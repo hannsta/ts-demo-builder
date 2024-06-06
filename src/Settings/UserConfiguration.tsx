@@ -34,8 +34,11 @@ interface UserConfigurationProps {
 const UserConfiguration: React.FC<UserConfigurationProps> = ({user, setUser, deleteUser}) => {
     return (
         <div className="flex flex-row space-x-4 bg-white rounded-lg p-2">
+            
             <TextInput label="Name" value={user.name} setValue={(name) => setUser({...user, name})}/>
-            <CheckBoxInput label="Self Service" value={user.selfService} setValue={(selfService) => setUser({...user, selfService})}/>
+            <div className="w-44">
+                <CheckBoxInput label="Self Service" value={user.selfService} setValue={(selfService) => setUser({...user, selfService})}/>
+            </div>
             <SelectInput label="User Role" value={user.userRole.name} setValue={(role) => setUser({...user, userRole: DefaultUserRoles.find(role => role.name === role.name) || DefaultUserRoles[0]})} options={DefaultUserRoles.map(role => role.name)}/>
             <div className='flex flex-row w-full justify-end items-center'>
                 <DeleteButton onClick={() => deleteUser(user)}/>

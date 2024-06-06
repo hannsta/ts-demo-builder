@@ -45,14 +45,18 @@ const GitSettings: React.FC<GitSettingsProps> = ({setSettings}) => {
 }
 export default GitSettings;
 
+
+// Remove special characters from a demo file name
 export const CleanPath = (path: string) => {
     return path.replaceAll(/[^\w\s]/gi, "").replaceAll(" ", "").replace("txt","").toLowerCase();
 }
 
+// Load a demo from the github repository
 export const GetDemo =  async (demo: string) => {
     return await fetch(`https://raw.githubusercontent.com/${user}/${repo}/${branch}/${demo}`).then(response => response.text()).then(data => JSON.parse(data));
 }
 
+// Get the available demos from the github repository
 export const GetAvailableDemos = async () => {
     return await fetch(`https://api.github.com/repos/${user}/${repo}/git/trees/${branch}?recursive=1`, {
     }).then(response => response.json()).then(data => data.tree);

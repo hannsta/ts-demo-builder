@@ -22,6 +22,35 @@ import SubMenuDetailsView from './Views/SubMenuDetailsView';
 import { User } from './Settings/UserConfiguration';
 import UserProfile from './Views/UserProfile';
 import { CleanPath, GetAvailableDemos, GetDemo } from './Settings/Git/GitSettings';
+
+
+/*  Main Application Component
+
+  This component is the main application component that controls the entire application.
+  It uses the ThoughtSpot SDK to embed ThoughtSpot objects and visualizations into the application.
+  The application is configured using the settings object which is stored in local storage.
+  The application is styled using Tailwind CSS and custom CSS overrides.
+
+  The application is broken down into several components:
+    - LeftNav: The left navigation bar that contains the main navigation links
+    - SubMenuView: The view that displays the sub menu
+    - ThoughtSpotObjectView: The view that displays the ThoughtSpot object
+    - RestReportsList: The view that displays the list of reports from the REST API
+    - SageView: The view that displays the Sage search bar
+    - HomePageView: The view that displays the home page
+    - KPIChartView: The view that displays the KPI chart
+    - SubMenuDetailsView: The view that displays the sub menu details
+    - UserProfile: The user profile component
+    - LoginPopup: The login popup component
+    - SageQuestionPrompt: The Sage question prompt component
+
+  The application uses several contexts to manage state:
+    - TSLoginContext: A context to manage the ThoughtSpot login status
+    - SettingsContext: A context to manage the application settings
+    - UserContext: A context to manage the application user
+
+*/
+
 export enum PageType {
   HOME,
   FAVORITES,
@@ -51,7 +80,6 @@ export const UserContext = React.createContext({
 function App() {
   //Keep settings, page, user, and thoughtspot object in local storage so they dont disappear on refresh
   const [settings, setSettings] = useLocalStorage('settings', defaultSettings);
-  const [path, setPath] = useLocalStorage('path', '' as string);
   const [selectedPage, setSelectedPage] = useLocalStorage('page', null as Page | null);
   const [user, setUser] = useLocalStorage('user', defaultSettings.users[0]);
   const [selectedThoughtSpotObject, setSelectedThoughtSpotObject] = useLocalStorage('thoughtspotObject', null as ThoughtSpotObject | null);
@@ -65,7 +93,7 @@ function App() {
   const liveboardEmbedRef = useEmbedRef<typeof LiveboardEmbed>();
   const sageEmbedRef = useEmbedRef<typeof SageEmbed>();
   
-  // Function to move the sage embed to the front of the page
+  // Function to move the sage embed to the front or back of the page
   const updateSageVisibility = () => {
     let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
     if (!sageEmbed) return;
@@ -104,7 +132,7 @@ function App() {
     }
   }, [showSage])
 
-
+  // On page change, ensure sage visibility is correct and update the pre-rendered embed
   useEffect(() => {
     updateSageVisibility();
     let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
@@ -115,6 +143,7 @@ function App() {
   },[selectedPage])
 
 
+  // On prompt change, update the sage embed
   useEffect(() => {
     updateSageVisibility();
       if (sagePrompt != ''){
@@ -126,7 +155,6 @@ function App() {
               executeSearch: true,
           })
       }
-
   }, [sagePrompt])
 
   // Get the settings from the URL path if it exists
@@ -149,6 +177,9 @@ function App() {
       setSettings(defaultSettings);
     }
   },[])
+
+
+  // Initialize the ThoughtSpot SDK when the settings are loaded
   useEffect(() => {
     if (!settings || !settings.TSURL){
       return;
@@ -197,10 +228,13 @@ function App() {
         element.__tsEmbed.trigger(HostEvent.Pin);
       }
     }
-    
   }
+
+  // Trigger the update runtime filters event on the liveboard embed
   const updateFilters = (runtimeFilters: RuntimeFilter[]) =>{
     if (sageEmbedRef.current){
+
+      // have to do it on the __tsembed object because the ref is broken for now.
        var element: any = document.querySelector("#tsEmbed-pre-render-wrapper-liveboardEmbed")
        if (element && element.__tsEmbed){
         element.__tsEmbed.trigger(HostEvent.UpdateRuntimeFilters, runtimeFilters);
@@ -211,146 +245,146 @@ function App() {
     <TSLoginContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <SettingsContext.Provider value={{settings, setSettings}}>
         <UserContext.Provider value={{user, setUser}}>
-    <div className="App" style={{fontFamily:'"'+settings.style.fontFamily+'", sans-serif'}}>
-      <header className="fixed z-20 flex w-full h-16" style={{backgroundColor:settings.style.headerColor, borderBottom: (settings.style.headerColor == "#ffffff") ? '1px solid #cccccc' : "none"}}>
-        <div className="flex flex-row justify-between w-full px-4 py-2 h-16">
-          <div className="flex flex-row space-x-4">
-            <img src={settings.logo} alt="logo" />
-            <div className="text-2xl font-bold flex items-center" style={{color:settings.style.headerTextColor}}>
-              {settings.style.showHeaderName ? settings.name : ''}
-            </div>
-          </div>
-          <div className='flex flex-row space-x-4'>
-
-            <button onClick={()=>setShowSage(true)} style={{color:settings.style.headerTextColor}} className="flex flex-row items-center p-2 rounded-lg hover:bg-gray-200"> Ask Sage </button>
-
-            {showSage && (
-              <SageView setShowSage={setShowSage} setSagePrompt={setSagePrompt} selectedPage={selectedPage} sagePrompt={sagePrompt} />
-            )}
-            <UserProfile setUser={setUser} user={user}/>
-
-          </div>
-          {showSettings && (
-              <>
-                <div className="absolute bg-white right-0 flex p-2 z-70 overflow-auto" style={{top:'4rem',height:'calc(100vh - 4rem)',borderLeft:'1px solid #cccccc'}}>
-                  <SettingsConfiguration 
-                  key={JSON.stringify(settings)}
-                  setShowSettings={setShowSettings}
-                  settings={settings} setSettings={setSettings} setLoginPopupVisible={setLoginPopupVisible} />
+        <div className="App" style={{fontFamily:'"'+settings.style.fontFamily+'", sans-serif'}}>
+          <header className="fixed z-20 flex w-full h-16" style={{backgroundColor:settings.style.headerColor, borderBottom: (settings.style.headerColor == "#ffffff") ? '1px solid #cccccc' : "none"}}>
+            <div className="flex flex-row justify-between w-full px-4 py-2 h-16">
+              <div className="flex flex-row space-x-4">
+                <img src={settings.logo} alt="logo" />
+                <div className="text-2xl font-bold flex items-center" style={{color:settings.style.headerTextColor}}>
+                  {settings.style.showHeaderName ? settings.name : ''}
                 </div>
-              </>
-            )}
-        </div>
-      </header>
-      <div className="absolute flex flex-row" style={{height:'calc(100vh - 4rem)', width:'100vw', top:'4rem'}}>
-          {/* Left Navigation */}
-          <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
-         
-          {/* Main Content */}
-          <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)'}}>
-            
-            {/* Home Page */}
-            {selectedPage && selectedPage.type == PageType.HOME && isLoggedIn ?
-                <HomePageView
-                setSagePrompt={setSagePrompt}
-                setShowSage={setShowSage}
-                setSelectedPage={setSelectedPage}
-                setThoughtSpotObject={setSelectedThoughtSpotObject}/>
-              : 
-              <>
-                {selectedPage && selectedPage.subMenu && (
-                  <SubMenuView settings={settings}  subMenu={selectedPage.subMenu} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+              </div>
+              <div className='flex flex-row space-x-4'>
+
+                <button onClick={()=>setShowSage(true)} style={{color:settings.style.headerTextColor}} className="flex flex-row items-center p-2 rounded-lg hover:bg-gray-200"> Ask Sage </button>
+
+                {showSage && (
+                  <SageView setShowSage={setShowSage} setSagePrompt={setSagePrompt} selectedPage={selectedPage} sagePrompt={sagePrompt} />
                 )}
+                <UserProfile setUser={setUser} user={user}/>
 
-                {/* My Reports and Favorites Pages */}
-                {selectedPage && selectedPage.type == PageType.MYREPORTS &&(
-                  <RestReportsList settings={settings} isMyReports={true} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
-                )}
-                {selectedPage && selectedPage.type == PageType.FAVORITES && (
-                  <RestReportsList settings={settings} isMyReports={false} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
-                )}
-
-
-
-                <div className='absolute flex flex-col' style={{overflow:'auto',left:'15rem', width:'calc(100vw - 19rem)', height:'calc(100vh - 4rem)'}}>
-                  
-                  {/* ThoughtSpot Object View */}
-                  {selectedThoughtSpotObject && isLoggedIn && (
-                    <ThoughtSpotObjectView user={user} setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
-                  )}
-
-                  {/* Sub Menu Landing Page */}
-                  {!selectedThoughtSpotObject && isLoggedIn && selectedPage?.subMenu && (
-                    <div style={{backgroundColor:settings.style.backgroundColor}} className='p-8 h-full'>
-                      <KPIChartView
-                        subMenu={selectedPage?.subMenu} 
-                        setSagePrompt={setSagePrompt}
-                        setShowSage={setShowSage}
-                        setSelectedPage={setSelectedPage}
-                        setThoughtSpotObject={setSelectedThoughtSpotObject}
-                      />
-                      <SubMenuDetailsView subMenu={selectedPage.subMenu}/>
-                      </div>
-                  )}
-
-                  {/* Not Logged In Page */}
-                  {!isLoggedIn && (
-                    <div className="flex flex-col items-center space-y-4 justify-center w-full h-full">
-                      <div className="text-2xl font-bold">Please login to your ThoughtSpot environment to view content.</div>
-                      {settings.TSURL ? (
-                        <>
-                        <div className="text-lg">{settings.TSURL}</div>
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setLoginPopupVisible(true)}>Login</button>
-                        </>
-                      )
-                      : (
-                        <>
-                        <div className="text-lg">No URL Configured. Open "Settings" to configure the application.</div>
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setShowSettings(true)}>Settings</button>
-                        </>
-                      )}
-                      {loginPopupVisible && (
-                        <LoginPopup setLoginPopupVisible={setLoginPopupVisible}/>
-                      )}
+              </div>
+              {showSettings && (
+                  <>
+                    <div className="absolute bg-white right-0 flex p-2 z-70 overflow-auto" style={{top:'4rem',height:'calc(100vh - 4rem)',borderLeft:'1px solid #cccccc'}}>
+                      <SettingsConfiguration 
+                      key={JSON.stringify(settings)}
+                      setShowSettings={setShowSettings}
+                      settings={settings} setSettings={setSettings} setLoginPopupVisible={setLoginPopupVisible} />
                     </div>
-                  )           
-                  
-                  }
-                </div>
-              </>
-            }
+                  </>
+                )}
+            </div>
+          </header>
+          <div className="absolute flex flex-row" style={{height:'calc(100vh - 4rem)', width:'100vw', top:'4rem'}}>
+              {/* Left Navigation */}
+              <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+            
+              {/* Main Content */}
+              <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)'}}>
+                
+                {/* Home Page */}
+                {selectedPage && selectedPage.type == PageType.HOME && isLoggedIn ?
+                    <HomePageView
+                    setSagePrompt={setSagePrompt}
+                    setShowSage={setShowSage}
+                    setSelectedPage={setSelectedPage}
+                    setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+                  : 
+                  <>
+                    {selectedPage && selectedPage.subMenu && (
+                      <SubMenuView settings={settings}  subMenu={selectedPage.subMenu} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+                    )}
+
+                    {/* My Reports and Favorites Pages */}
+                    {selectedPage && selectedPage.type == PageType.MYREPORTS &&(
+                      <RestReportsList settings={settings} isMyReports={true} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+                    )}
+                    {selectedPage && selectedPage.type == PageType.FAVORITES && (
+                      <RestReportsList settings={settings} isMyReports={false} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
+                    )}
+
+
+
+                    <div className='absolute flex flex-col' style={{overflow:'auto',left:'15rem', width:'calc(100vw - 19rem)', height:'calc(100vh - 4rem)'}}>
+                      
+                      {/* ThoughtSpot Object View */}
+                      {selectedThoughtSpotObject && isLoggedIn && (
+                        <ThoughtSpotObjectView user={user} setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
+                      )}
+
+                      {/* Sub Menu Landing Page */}
+                      {!selectedThoughtSpotObject && isLoggedIn && selectedPage?.subMenu && (
+                        <div style={{backgroundColor:settings.style.backgroundColor}} className='p-8 h-full'>
+                          <KPIChartView
+                            subMenu={selectedPage?.subMenu} 
+                            setSagePrompt={setSagePrompt}
+                            setShowSage={setShowSage}
+                            setSelectedPage={setSelectedPage}
+                            setThoughtSpotObject={setSelectedThoughtSpotObject}
+                          />
+                          <SubMenuDetailsView subMenu={selectedPage.subMenu}/>
+                          </div>
+                      )}
+
+                      {/* Not Logged In Page */}
+                      {!isLoggedIn && (
+                        <div className="flex flex-col items-center space-y-4 justify-center w-full h-full">
+                          <div className="text-2xl font-bold">Please login to your ThoughtSpot environment to view content.</div>
+                          {settings.TSURL ? (
+                            <>
+                            <div className="text-lg">{settings.TSURL}</div>
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setLoginPopupVisible(true)}>Login</button>
+                            </>
+                          )
+                          : (
+                            <>
+                            <div className="text-lg">No URL Configured. Open "Settings" to configure the application.</div>
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setShowSettings(true)}>Settings</button>
+                            </>
+                          )}
+                          {loginPopupVisible && (
+                            <LoginPopup setLoginPopupVisible={setLoginPopupVisible}/>
+                          )}
+                        </div>
+                      )           
+                      
+                      }
+                    </div>
+                  </>
+                }
+              </div>
+
+          </div>
           </div>
 
-      </div>
-      </div>
-
-      {/*
-        Generate the pre-rendered embeds for the liveboard and sage embeds
-        These are hidden and only used to pre-render the embeds before they are shown 
-      */}
-      {isLoggedIn && (
-        <div className='z-0'>
-        <PreRenderedLiveboardEmbed
-          key={user.name}
-          ref={liveboardEmbedRef}
-          hiddenActions={user.userRole.actions}
-          preRenderId="liveboardEmbed"
-          liveboardId="" />
-        <PreRenderedSageEmbed
-          visibleActions={[Action.Save, Action.Pin]}
-          hideSageAnswerHeader={true}
-          hideWorksheetSelector={true}
-          dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : ''}
-          ref={sageEmbedRef}
-          preRenderId="sageEmbed"
-          frameParams={{width: '100%', height: '100%'}}
-          searchOptions={{
-              searchQuery: "what are the top products?",
-              executeSearch: true
-            }}
-          />
-        </div>
-      )}
+          {/*
+            Generate the pre-rendered embeds for the liveboard and sage embeds
+            These are hidden and only used to pre-render the embeds before they are shown 
+          */}
+          {isLoggedIn && (
+            <div className='z-0'>
+            <PreRenderedLiveboardEmbed
+              key={user.name}
+              ref={liveboardEmbedRef}
+              hiddenActions={user.userRole.actions}
+              preRenderId="liveboardEmbed"
+              liveboardId="" />
+            <PreRenderedSageEmbed
+              visibleActions={[Action.Save, Action.Pin]}
+              hideSageAnswerHeader={true}
+              hideWorksheetSelector={true}
+              dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : ''}
+              ref={sageEmbedRef}
+              preRenderId="sageEmbed"
+              frameParams={{width: '100%', height: '100%'}}
+              searchOptions={{
+                  searchQuery: "what are the top products?",
+                  executeSearch: true
+                }}
+              />
+            </div>
+          )}
       </UserContext.Provider>
     </SettingsContext.Provider>      
     </TSLoginContext.Provider>
