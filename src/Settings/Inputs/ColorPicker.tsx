@@ -41,7 +41,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({label, color, style, setColor}
                 </div>
             </div>
             {showPicker && (
-                <div className='absolute'>
+                <div className='relative'>
                     <div
                         className='fixed inset-0'
                         onClick={() => setShowPicker(false)}
