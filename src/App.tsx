@@ -5,10 +5,10 @@ import useLocalStorage from './Util/LocalStorage';
 import { SubMenu } from './Settings/SubMenuConfiguration';
 import LeftNav from './Views/LeftNav';
 import SubMenuView from './Views/SubMenuView';
-import { ThoughtSpotObject } from './Settings/ThoughtSpotObjectConfiguration';
+import { ThoughtSpotObject, ThoughtSpotObjectType } from './Settings/ThoughtSpotObjectConfiguration';
 import ThoughtSpotObjectView from './Views/ThoughtSpotObjectView';
 import { Action, AuthStatus, AuthType, EmbedEvent, HostEvent, LogLevel, RuntimeFilter, customCssInterface, init } from '@thoughtspot/visual-embed-sdk';
-import { LiveboardEmbed, PreRenderedLiveboardEmbed, PreRenderedSageEmbed, SageEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
+import { LiveboardEmbed, PreRenderedLiveboardEmbed, PreRenderedSageEmbed, PreRenderedSearchEmbed, SageEmbed, SearchEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import RestReportsList from './Views/RestReportsList';
 import SageQuestionPrompt from './Views/SageQuestionPrompt';
 import LoginPopup from './Views/Popups/LoginPopup';
@@ -84,12 +84,19 @@ function App() {
   const [user, setUser] = useLocalStorage('user', defaultSettings.users[0]);
   const [selectedThoughtSpotObject, setSelectedThoughtSpotObject] = useLocalStorage('thoughtspotObject', null as ThoughtSpotObject | null);
 
-
-  const [showSettings, setShowSettings] = useState<boolean>(false);
+  // Login status for ThoughtSpot
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  // Visibility states for the settings and sage embed
+  const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showSage, setShowSage] = useState<boolean>(false);
-  const [sagePrompt, setSagePrompt] = useState<string>('');
   const [loginPopupVisible, setLoginPopupVisible] = useState<boolean>(false);
+
+  // State for the sage prompt
+  const [sagePrompt, setSagePrompt] = useState<string>('');
+
+  // Embed refs for the ThoughtSpot pre-rendered embeds
+  const searchEmbedRef = useEmbedRef<typeof SearchEmbed>();
   const liveboardEmbedRef = useEmbedRef<typeof LiveboardEmbed>();
   const sageEmbedRef = useEmbedRef<typeof SageEmbed>();
   
@@ -105,6 +112,18 @@ function App() {
       sageEmbed.style.zIndex = 0;
     }
   }  
+
+  useEffect(() => {
+    if (selectedThoughtSpotObject && selectedThoughtSpotObject.type == ThoughtSpotObjectType.ANSWER){
+      let searchEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-searchEmbed");
+      if (!searchEmbed) return;
+
+      //let navigateURL = "/embed/saved-answer/d8aac0c1-a33b-43da-b68f-afecfc91d8ce";
+      let navigateURL = "embed/saved-answer/"+selectedThoughtSpotObject.uuid;
+      console.log(navigateURL, "switching")
+      searchEmbed.__tsEmbed.trigger(HostEvent.Navigate,navigateURL);
+    }
+  },[selectedThoughtSpotObject])
   // Function to reload the page when the user changes
   useEffect(() => {
     if (liveboardEmbedRef.current && user){
@@ -113,7 +132,7 @@ function App() {
       })
       window.location.reload();
     }
-  },[user])
+  },[user, settings.TSURL, settings.style.fontFamily,settings.style.preBuiltStyle])
 
   // Update visiblity and listen for pin event when sage is selected
   useEffect(() => {
@@ -197,7 +216,7 @@ function App() {
             customCSS: CSSOverrides(settings) as customCssInterface 
         }
     }
-
+    // On successful login - note this will only be executed when the liveboard is displayed so we first have to test with API call below.
     }).on(AuthStatus.SUCCESS, () => {
       setLoginPopupVisible(false);
       setIsLoggedIn(true);
@@ -215,8 +234,7 @@ function App() {
   }, [settings])
   
   
-  
-  
+  // If settings are not loaded, display a loading message
   if (!settings || !settings.style || !settings.style.headerColor){
     return <div>Loading...</div>
   }
@@ -369,7 +387,16 @@ function App() {
               ref={liveboardEmbedRef}
               hiddenActions={user.userRole.actions}
               preRenderId="liveboardEmbed"
-              liveboardId="" />
+              liveboardId={''}//selectedThoughtSpotObject?.type == ThoughtSpotObjectType.LIVEBOARD && selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''
+              />
+            {/* <PreRenderedSearchEmbed
+                answerId={''}//selectedThoughtSpotObject?.type == ThoughtSpotObjectType.ANSWER &&  selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''
+                ref={searchEmbedRef}
+                dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : ''} 
+                preRenderId={'searchEmbed'}
+                frameParams={{width:'100%',height:'100%'}}
+            /> */}
+              
             <PreRenderedSageEmbed
               visibleActions={[Action.Save, Action.Pin]}
               hideSageAnswerHeader={true}
@@ -378,10 +405,6 @@ function App() {
               ref={sageEmbedRef}
               preRenderId="sageEmbed"
               frameParams={{width: '100%', height: '100%'}}
-              searchOptions={{
-                  searchQuery: "what are the top products?",
-                  executeSearch: true
-                }}
               />
             </div>
           )}

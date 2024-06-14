@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { ThoughtSpotObject, ThoughtSpotObjectType } from "../ThoughtSpotObjectConfiguration"
+import { HiXMark } from "react-icons/hi2"
 
 // This component is used to search for ThoughtSpot objects
 // It does this by making the metadata/list API call to ThoughtSpot
@@ -8,21 +9,22 @@ import { ThoughtSpotObject, ThoughtSpotObjectType } from "../ThoughtSpotObjectCo
 
 interface ObjectSearchProps {
     TSURL: string,
-    isWorksheet: boolean,
-    setObject: (object: ThoughtSpotObject) => void
+    type: ThoughtSpotObjectType,
+    setObject: (object: ThoughtSpotObject) => void,
+    closePopup: () => void
 }
 
-const ThoughtSpotObjectSearch: React.FC<ObjectSearchProps> = ({TSURL, isWorksheet, setObject}) => {
+const ThoughtSpotObjectSearch: React.FC<ObjectSearchProps> = ({TSURL, type, setObject, closePopup}) => {
     const [search, setSearch] = useState<string>('')
     const [isLiveboard, setIsLiveboard] = useState<boolean>(true)
     const [results, setResults] = useState<ThoughtSpotObject[]>([])
     const searchObjects = async () => {
         var baseURL = TSURL.replace("#/","").replace("#","")
         baseURL += "callosum/v1/tspublic/v1/metadata/list?type="
-        if (isWorksheet){
+        if (type == ThoughtSpotObjectType.WORKSHEET){
             baseURL +=  "LOGICAL_TABLE"
         }else{
-            if (isLiveboard){
+            if (type == ThoughtSpotObjectType.LIVEBOARD){
                 baseURL += "PINBOARD_ANSWER_BOOK"
             }else{
                 baseURL +=  "QUESTION_ANSWER_BOOK"
@@ -37,7 +39,7 @@ const ThoughtSpotObjectSearch: React.FC<ObjectSearchProps> = ({TSURL, isWorkshee
                 let object: ThoughtSpotObject = {
                     name: objectList[i].name,
                     uuid: objectList[i].id,
-                    type: ThoughtSpotObjectType.LIVEBOARD
+                    type: type
                 }
                 newObjects.push(object);
             }
@@ -49,17 +51,19 @@ const ThoughtSpotObjectSearch: React.FC<ObjectSearchProps> = ({TSURL, isWorkshee
         searchObjects()
     }, [])
     return (
-        <div className='absolute top-1/2 bg-white flex flex-col w-96 border-2 p-2' style={{height:'500px'}}>
-            <label className="font-bold mt-2">Type</label>
-            <select
-                className="border-2 border-gray-200 w-32 p-2 rounded-md bg-white"
-                value={isLiveboard.toString()}
-                onChange={(e) => setIsLiveboard(e.target.value === 'true')}
+        <div className='relative'>
+        <div className='absolute shadow-2xl bg-white flex flex-col w-96 border-2 p-2' style={{height:'500px',right:'75px'}}>
+            <div className='flex flex-row justify-between'>
+            <div className='font-bold mt-2 text-lg mb-2'>Search for {type}</div>
+            <button
+                className="bg-white text-blue-500 hover:text-blue-700 font-bold h-10 px-4 rounded text-2xl"
+                onClick={closePopup}
             >
-                <option value={"true"}>Liveboard</option>
-                <option value={"false"}>Answer</option>
-            </select>
-            <label className="font-bold mt-2" >Search</label>
+                <HiXMark />
+            </button>
+            </div>
+
+
             <div className='flex flex-row'>
             <input
                 className="border-2 border-gray-200 w-64 h-8 rounded-md bg-white"
@@ -89,6 +93,7 @@ const ThoughtSpotObjectSearch: React.FC<ObjectSearchProps> = ({TSURL, isWorkshee
                 </div>
             ))}
             </div>
+        </div>
         </div>
     )
 }

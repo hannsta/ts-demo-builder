@@ -43,7 +43,7 @@ const ThoughtSpotObjectConfiguration: React.FC<ThoughtSpotObjectConfigurationPro
             </button>
             </div>
             {searchVisible && (
-                <ThoughtSpotObjectSearch isWorksheet={false} TSURL={TSURL} setObject={setObject}/>
+                <ThoughtSpotObjectSearch type={object.type} TSURL={TSURL} setObject={setObject} closePopup={()=>setSearchVisible(false)}/>
             )}
         </div>
         )}

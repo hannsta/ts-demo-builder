@@ -13,7 +13,7 @@ interface SageViewProps {
 }
 const SageView = ({setShowSage, setSagePrompt, selectedPage, sagePrompt}: SageViewProps) => {
     return (
-        <div className="absolute bg-white top-0 right-0 flex flex-col p-2 z-20 overflow-auto" style={{height:'calc(100vh - 4rem)',marginTop:'4rem',width:'600px',borderLeft:'1px solid #cccccc'}}>
+        <div className="absolute bg-white top-0 right-0 flex flex-col p-2 z-20 overflow-auto" style={{height:'calc(100vh - 4rem)',marginTop:'4rem',width:'700px',borderLeft:'1px solid #cccccc'}}>
             <div className='flex flex-col p-4'>
             <div className="flex flex-row text-2xl hover:font-bold">
                 <button onClick={()=>setShowSage(false)}><HiXMark/></button>
@@ -22,6 +22,7 @@ const SageView = ({setShowSage, setSagePrompt, selectedPage, sagePrompt}: SageVi
             </div>
             <SageEmbed
                 preRenderId="sageEmbed"   
+                onALL={(data) => console.log(data)}
                 dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : ''}
                 frameParams={{width: '100%', height: '100%'}}
                 searchOptions={{
@@ -29,6 +30,7 @@ const SageView = ({setShowSage, setSagePrompt, selectedPage, sagePrompt}: SageVi
                     executeSearch: true
                 }}
                 />
+            
             {/* <button onClick={()=>pinViz()} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pin Viz</button> */}
         </div> 
     )

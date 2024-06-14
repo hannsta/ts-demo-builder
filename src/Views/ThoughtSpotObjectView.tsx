@@ -1,4 +1,4 @@
-import { LiveboardEmbed, PreRenderedLiveboardEmbed, RuntimeFilter } from "@thoughtspot/visual-embed-sdk/react";
+import { LiveboardEmbed, PreRenderedLiveboardEmbed, RuntimeFilter, SearchEmbed } from "@thoughtspot/visual-embed-sdk/react";
 import { Settings } from "../Settings/SettingsConfiguration";
 import { ThoughtSpotObject, ThoughtSpotObjectType } from "../Settings/ThoughtSpotObjectConfiguration";
 import { SubMenu } from "../Settings/SubMenuConfiguration";
@@ -61,6 +61,20 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
                     }}
                     preRenderId="liveboardEmbed"
                     liveboardId={thoughtSpotObject.uuid}
+                    frameParams={{width: '100%', height: '100%'}}
+                />
+            )}
+            {thoughtSpotObject.type == ThoughtSpotObjectType.ANSWER && (
+                <SearchEmbed
+                    hiddenActions={user.userRole.actions}
+
+                    onCustomAction={(data)=>{
+                        console.log(data.data)
+                        setCustomActionData(data.data);
+                        setCustomActionPopupVisible(true);
+                    }}
+                    //preRenderId="searchEmbed"
+                    answerId={thoughtSpotObject.uuid}
                     frameParams={{width: '100%', height: '100%'}}
                 />
             )}
