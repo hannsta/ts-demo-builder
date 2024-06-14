@@ -22,7 +22,7 @@ import SubMenuDetailsView from './Views/SubMenuDetailsView';
 import { User } from './Settings/UserConfiguration';
 import UserProfile from './Views/UserProfile';
 import { CleanPath, GetAvailableDemos, GetDemo } from './Settings/Git/GitSettings';
-
+import { inject } from '@vercel/analytics';
 
 /*  Main Application Component
 
@@ -50,7 +50,7 @@ import { CleanPath, GetAvailableDemos, GetDemo } from './Settings/Git/GitSetting
     - UserContext: A context to manage the application user
 
 */
-
+inject();
 export enum PageType {
   HOME,
   FAVORITES,
