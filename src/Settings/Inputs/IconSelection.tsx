@@ -44,6 +44,7 @@ const IconSelection: React.FC<IconSelectionProps> = ({selectedIcon, setSelectedI
             </div>
 
             {showIcons && (
+                <div className="relative">
                 <div className="absolute">
                     <div className="fixed inset-0" onClick={() => setShowIcons(false)}/>
                     <div className="absolute z-10 bg-white w-96 flex flex-row flex-wrap space-x-4 p-4 bg-white border-2 rounded-lg">
@@ -64,7 +65,8 @@ const IconSelection: React.FC<IconSelectionProps> = ({selectedIcon, setSelectedI
                     );
                 })}
                 </div>
-            </div>            
+            </div>           
+        </div> 
             )}
     </div>
     </div>
