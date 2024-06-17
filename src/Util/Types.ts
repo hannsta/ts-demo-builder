@@ -9,7 +9,7 @@ import { customCssInterface } from "@thoughtspot/visual-embed-sdk/lib/src/types"
 
 export const defaultSettings: Settings = {
     name: 'ThoughtSpot Demo Builder',
-    TSURL: 'https://se-thoughtspot-cloud.thoughtspot.cloud/',
+    TSURL: '',
     logo: '',
     subMenus: [] as SubMenu[],
     style: {
@@ -80,6 +80,9 @@ export const CSSOverrides = (settings: Settings) => {
 
     },
     rules_UNSTABLE: {
+      '.bk-embed-powered-by-ts-ribbon':{
+        display: "none !important"
+      },
       '[data-testid="verifiedBannerId"]' : {
         display: "none"
       },

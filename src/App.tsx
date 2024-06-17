@@ -10,7 +10,6 @@ import ThoughtSpotObjectView from './Views/ThoughtSpotObjectView';
 import { Action, AuthStatus, AuthType, EmbedEvent, HostEvent, LogLevel, RuntimeFilter, customCssInterface, init } from '@thoughtspot/visual-embed-sdk';
 import { LiveboardEmbed, PreRenderedLiveboardEmbed, PreRenderedSageEmbed, PreRenderedSearchEmbed, SageEmbed, SearchEmbed, useEmbedRef } from '@thoughtspot/visual-embed-sdk/react';
 import RestReportsList from './Views/RestReportsList';
-import SageQuestionPrompt from './Views/SageQuestionPrompt';
 import LoginPopup from './Views/Popups/LoginPopup';
 import { createClientWithoutAuth } from './Util/Util';
 import { HiUser, HiXMark } from 'react-icons/hi2';
@@ -23,6 +22,7 @@ import { User } from './Settings/UserConfiguration';
 import UserProfile from './Views/UserProfile';
 import { CleanPath, GetAvailableDemos, GetDemo } from './Settings/Git/GitSettings';
 import { inject } from '@vercel/analytics';
+import FirstLoginWelcome from './Views/FirstLoginWelcome';
 
 /*  Main Application Component
 
@@ -93,6 +93,7 @@ function App() {
   const [loginPopupVisible, setLoginPopupVisible] = useState<boolean>(false);
 
   // State for the sage prompt
+  const [sageLoaded, setSageLoaded] = useState<boolean>(false);
   const [sagePrompt, setSagePrompt] = useState<string>('');
 
   // Embed refs for the ThoughtSpot pre-rendered embeds
@@ -112,6 +113,9 @@ function App() {
       sageEmbed.style.zIndex = 0;
     }
   }  
+  useEffect(() => {
+    setSageLoaded(false);
+  },[selectedPage?.subMenu])
 
   useEffect(() => {
     if (selectedThoughtSpotObject && selectedThoughtSpotObject.type == ThoughtSpotObjectType.ANSWER){
@@ -277,7 +281,7 @@ function App() {
                 <button onClick={()=>setShowSage(true)} style={{color:settings.style.headerTextColor}} className="flex flex-row items-center p-2 rounded-lg hover:bg-gray-200"> Ask Sage </button>
 
                 {showSage && (
-                  <SageView setShowSage={setShowSage} setSagePrompt={setSagePrompt} selectedPage={selectedPage} sagePrompt={sagePrompt} />
+                  <SageView setShowSage={setShowSage} setSagePrompt={setSagePrompt} selectedPage={selectedPage} sagePrompt={sagePrompt} sageLoaded={sageLoaded} setSageLoaded={setSageLoaded} />
                 )}
                 <UserProfile setUser={setUser} user={user}/>
 
@@ -348,18 +352,15 @@ function App() {
                       {/* Not Logged In Page */}
                       {!isLoggedIn && (
                         <div className="flex flex-col items-center space-y-4 justify-center w-full h-full">
-                          <div className="text-2xl font-bold">Please login to your ThoughtSpot environment to view content.</div>
-                          {settings.TSURL ? (
+                          {settings.TSURL && settings.TSURL != '' ? (
                             <>
+                            <div className="text-2xl font-bold">Please login to your ThoughtSpot environment to view content.</div>
                             <div className="text-lg">{settings.TSURL}</div>
                             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setLoginPopupVisible(true)}>Login</button>
                             </>
                           )
                           : (
-                            <>
-                            <div className="text-lg">No URL Configured. Open "Settings" to configure the application.</div>
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setShowSettings(true)}>Settings</button>
-                            </>
+                            <FirstLoginWelcome setSettings={setSettings} setShowSettings={setShowSettings}/>
                           )}
                           {loginPopupVisible && (
                             <LoginPopup setLoginPopupVisible={setLoginPopupVisible}/>

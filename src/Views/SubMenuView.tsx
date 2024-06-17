@@ -25,4 +25,4 @@ const SubMenuView: React.FC<SubMenuProps> = ({settings, subMenu, setThoughtSpotO
         </div>
     );
 }
-export default SubMenuView;
+export default SubMenuView; 

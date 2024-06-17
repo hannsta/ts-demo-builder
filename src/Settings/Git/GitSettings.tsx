@@ -10,8 +10,9 @@ const branch = "main"
 
 interface GitSettingsProps {
     setSettings: (settings: Settings) => void;
+    showAsList?: boolean;
 }
-const GitSettings: React.FC<GitSettingsProps> = ({setSettings}) => {
+const GitSettings: React.FC<GitSettingsProps> = ({setSettings,showAsList}) => {
     const [availableDemos, setAvailableDemos] = React.useState<any[]>([]);
     //{process.env.REACT_APP_NOT_SECRET_CODE} 
 
@@ -25,7 +26,9 @@ const GitSettings: React.FC<GitSettingsProps> = ({setSettings}) => {
     ,[])
     return (
         <div className='flex flex-col space-y-2 rounded-lg p-2 bg-white'>
-            <div className='flex flex-row space-x-4'>
+            {!showAsList ? 
+                <>
+                <div className='flex flex-row space-x-4'>
                 <div className='w-2/5 font-bold pl-4'>Demo Name</div>
                 <div className='w-2/5 font-bold pl-4'>URL Path</div>
                 <div className='w-1/5'></div>
@@ -40,6 +43,21 @@ const GitSettings: React.FC<GitSettingsProps> = ({setSettings}) => {
                     <div className='w-2/5 hover:text-blue-500 hover:cursor-pointer'><a href={"/"+CleanPath(demo.path)}>/{CleanPath(demo.path)}</a></div>
                 </div>
             ))}
+            </>
+            :
+            <>
+            {availableDemos && availableDemos.map((demo, index) => (
+                <div key={index} className='flex flex-row mb-4 mt-4 items-center justify-center'>
+                    <div className='border-2 rounded-md p-2 hover:bg-slate-100 hover:text-blue-700 text-blue-500 text-lg font-bold hover:cursor-pointer  pl-4' onClick={() => {
+                            GetDemo(demo.path).then(data => {
+                                setSettings(data);
+                            });
+                        }}>{demo.path.replace(".txt","")}</div>
+                </div>
+            ))}
+            </>
+            }
+
         </div>
     );
 }
