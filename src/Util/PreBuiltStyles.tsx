@@ -184,13 +184,15 @@ const DarkModeColors = {
         customCSS: {
             variables: {
                 "--ts-var-button--secondary-color": "#454545",
-                "--ts-var-root-background": "#F7FAFE",
+                "--ts-var-root-background": "transparent",
                 "--ts-var-root-font-family":'Trebuchet MS !important',
                 "--ts-var-button--secondary-background":"#F8F9FA",
                 "--ts-var-viz-title-color":"#3D66A4",
                 "--ts-var-viz-description-color":"#BCBCBC",
                 "--ts-var-chip-background":"#F8F9FA",
-                "--ts-var-chip-color":"#454545"
+                "--ts-var-chip-color":"#454545",
+                //@ts-ignore
+                "--ts-var-sage-bar-header-background-color": "transparent",
             },
             rules_UNSTABLE: {
                 ".pinboard-header-module__pinboardHeaderContainer":{

@@ -80,6 +80,9 @@ export const CSSOverrides = (settings: Settings) => {
 
     },
     rules_UNSTABLE: {
+      '.answer-module__searchCurtain': {
+        "background-color": 'transparent !important'
+      },
       '.bk-embed-powered-by-ts-ribbon':{
         display: "none !important"
       },
