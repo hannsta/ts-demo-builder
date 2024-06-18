@@ -136,7 +136,7 @@ function App() {
       })
       window.location.reload();
     }
-  },[user, settings.TSURL, settings.style.fontFamily,settings.style.preBuiltStyle])
+  },[user])
 
   // Update visiblity and listen for pin event when sage is selected
   useEffect(() => {
