@@ -267,7 +267,7 @@ function App() {
     <TSLoginContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <SettingsContext.Provider value={{settings, setSettings}}>
         <UserContext.Provider value={{user, setUser}}>
-        <div className="App" style={{fontFamily:'"'+settings.style.fontFamily+'", sans-serif'}}>
+        <div className="App" style={{fontFamily:settings.style ? '"'+settings.style.fontFamily+'", sans-serif' : ""}}>
           <header className="fixed z-20 flex w-full h-16" style={{backgroundColor:settings.style.headerColor, borderBottom: (settings.style.headerColor == "#ffffff") ? '1px solid #cccccc' : "none"}}>
             <div className="flex flex-row justify-between w-full px-4 py-2 h-16">
               <div className="flex flex-row space-x-4">
