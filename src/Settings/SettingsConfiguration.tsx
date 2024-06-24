@@ -14,11 +14,10 @@ import { TSLoginContext } from "../App";
 import HomePageConfig, { HomePage } from "./StandardMenus/HomePageConfig";
 import MyReportsConfig, { MyReports } from "./StandardMenus/MyReportsConfig";
 import FavoritesConfig, { Favorites } from "./StandardMenus/FavoritesConfig";
-import { HiXMark } from "react-icons/hi2";
 import { defaultSettings } from "../Util/Types";
 import { KPIType } from "./KPIConfiguration";
 import UserConfiguration, { User } from "./UserConfiguration";
-import { AddButton, TextInput } from "./Inputs/InputMenus";
+import { AddButton, CloseButton, TextInput } from "./Inputs/InputMenus";
 import GitSettings from "./Git/GitSettings";
 
 export interface Settings {
@@ -138,13 +137,8 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                                         onChange={(e) => openSettings(e.target.files ? e.target.files[0] : null)}
                                         style={{display:'none'}} 
                                         required/>
-                    <div className="flex w-full justify-end">         
-                                                            <button
-                        className="text-blue-600 font-bold text-2xl py-4 px-4 rounded"
-                        onClick={() => setShowSettings(false)}
-                    >
-                         <HiXMark/>
-                    </button>
+                    <div className="flex w-full justify-end">
+                        <CloseButton onClick={() => setShowSettings(false)}/>         
                     </div>
                 </div>
 

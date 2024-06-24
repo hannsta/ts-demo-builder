@@ -12,7 +12,6 @@ import { LiveboardEmbed, PreRenderedLiveboardEmbed, PreRenderedSageEmbed, PreRen
 import RestReportsList from './Views/RestReportsList';
 import LoginPopup from './Views/Popups/LoginPopup';
 import { createClientWithoutAuth } from './Util/Util';
-import { HiUser, HiXMark } from 'react-icons/hi2';
 import HomePageView from './Views/HomePage';
 import { CSSOverrides, defaultSettings } from './Util/Types';
 import SageView from './Views/SageView';

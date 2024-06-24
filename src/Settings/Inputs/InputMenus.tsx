@@ -1,4 +1,4 @@
-import { HiTrash } from "react-icons/hi2"
+import { HiTrash, HiXMark } from "react-icons/hi2"
 
 // Generic Input Components
 // These components are used to create input menus for various settings and configurations
@@ -102,5 +102,17 @@ const AddButton: React.FC<AddButtonProps> = ({label, isPrimary, onClick}) =>
     </button>
     )
 }
-
-export {TextInput, CheckBoxInput, SelectInput, DeleteButton, RemoveButton, AddButton};
+interface CloseButtonProps {
+    onClick: () => void
+}
+const CloseButton: React.FC<CloseButtonProps> = ({onClick}) => {
+    return (
+        <button
+        className="text-blue-600 hover:text-blue-800 font-bold text-2xl py-4 px-4 rounded"
+        onClick={onClick}
+        >
+            <HiXMark/>
+        </button>
+    )
+}
+export {TextInput, CheckBoxInput, SelectInput, DeleteButton, RemoveButton, AddButton, CloseButton};

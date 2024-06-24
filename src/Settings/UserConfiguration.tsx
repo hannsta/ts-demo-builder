@@ -1,5 +1,7 @@
 import { Action } from "@thoughtspot/visual-embed-sdk";
-import { CheckBoxInput, DeleteButton, SelectInput, TextInput } from "./Inputs/InputMenus";
+import { CheckBoxInput, CloseButton, DeleteButton, RemoveButton, SelectInput, TextInput } from "./Inputs/InputMenus";
+import { useEffect, useState } from "react";
+import ActionSelection from "./Inputs/ActionSelection";
 export const DefaultUserRoles: UserRole[] = [
     {
         name: "Read Only",
@@ -11,6 +13,10 @@ export const DefaultUserRoles: UserRole[] = [
     },
     {
         name: "Power User",
+        actions: []
+    },
+    {
+        name: "Custom",
         actions: []
     }
 ]
@@ -32,6 +38,7 @@ interface UserConfigurationProps {
 }
 
 const UserConfiguration: React.FC<UserConfigurationProps> = ({user, setUser, deleteUser}) => {
+    const [showActions, setShowActions] = useState<boolean>(false);
     return (
         <div className="flex flex-row space-x-4 bg-white rounded-lg p-2">
             
@@ -39,7 +46,19 @@ const UserConfiguration: React.FC<UserConfigurationProps> = ({user, setUser, del
             <div className="w-44">
                 <CheckBoxInput label="Self Service" value={user.selfService} setValue={(selfService) => setUser({...user, selfService})}/>
             </div>
-            <SelectInput label="User Role" value={user.userRole.name} setValue={(role) => setUser({...user, userRole: DefaultUserRoles.find(role => role.name === role.name) || DefaultUserRoles[0]})} options={DefaultUserRoles.map(role => role.name)}/>
+
+            <SelectInput label="User Role" value={user.userRole.name} setValue={(role) => {
+                const updatedRole = DefaultUserRoles.find((defaultRole) => defaultRole.name === role);
+                if(updatedRole){
+                    setUser({...user, userRole: updatedRole});
+                }else{
+                    setUser({...user, userRole: {name: "Custom", actions: []}});
+                }
+            }} options={DefaultUserRoles.map(role => role.name)}/>
+            
+            {user.userRole.name === "Custom" && (
+                <ActionSelection user={user} setUser={setUser}/>
+            )}
             <div className='flex flex-row w-full justify-end items-center'>
                 <DeleteButton onClick={() => deleteUser(user)}/>
             </div>

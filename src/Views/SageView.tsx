@@ -4,6 +4,7 @@ import { HiXMark } from "react-icons/hi2"
 import { Page } from "../App"
 import { SageEmbed } from "@thoughtspot/visual-embed-sdk/react"
 import { createRef, useEffect, useState } from "react"
+import { CloseButton } from "../Settings/Inputs/InputMenus"
 
 interface SageViewProps {
     setShowSage: (show: boolean) => void,
@@ -27,7 +28,7 @@ const SageView = ({setShowSage, setSagePrompt, selectedPage, sagePrompt, sageLoa
             <div className="flex flex-row text-2xl hover:font-bold">
                 <div className="font-bold text-lg mt-5 mb-2">Ask Sage <span className="text-gray-400">{selectedPage?.subMenu?.name}</span></div>
                 <div className="ml-auto">
-                <button className="text-blue-400" onClick={()=>setShowSage(false)}><HiXMark/></button>
+                    <CloseButton onClick={()=>setShowSage(false)}/>
                 </div>
             </div>
 

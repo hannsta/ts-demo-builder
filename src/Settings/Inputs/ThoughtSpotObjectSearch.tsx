@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { ThoughtSpotObject, ThoughtSpotObjectType } from "../ThoughtSpotObjectConfiguration"
-import { HiXMark } from "react-icons/hi2"
+import { CloseButton } from "./InputMenus"
 
 // This component is used to search for ThoughtSpot objects
 // It does this by making the metadata/list API call to ThoughtSpot
@@ -55,12 +55,7 @@ const ThoughtSpotObjectSearch: React.FC<ObjectSearchProps> = ({TSURL, type, setO
         <div className='absolute shadow-2xl bg-white flex flex-col w-96 border-2 p-2' style={{height:'500px',right:'75px'}}>
             <div className='flex flex-row justify-between'>
             <div className='font-bold mt-2 text-lg mb-2'>Search for {type}</div>
-            <button
-                className="bg-white text-blue-500 hover:text-blue-700 font-bold h-10 px-4 rounded text-2xl"
-                onClick={closePopup}
-            >
-                <HiXMark />
-            </button>
+            <CloseButton onClick={closePopup}/>
             </div>
 
 

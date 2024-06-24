@@ -52,8 +52,8 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
             </div>
             {thoughtSpotObject.type == ThoughtSpotObjectType.LIVEBOARD && (
                 <LiveboardEmbed
-                    hiddenActions={user.userRole.actions}
-
+                    hiddenActions={user.userRole.name != "Custom" ? user.userRole.actions : undefined}
+                    visibleActions={user.userRole.name == "Custom" ? user.userRole.actions : undefined}
                     onCustomAction={(data)=>{
                         console.log(data.data)
                         setCustomActionData(data.data);

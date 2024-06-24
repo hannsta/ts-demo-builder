@@ -1,9 +1,9 @@
 import { CustomActionPayload } from "@thoughtspot/visual-embed-sdk";
 import { ColumnValue } from "@thoughtspot/visual-embed-sdk/lib/src/types";
 import exp from "constants"
-import { HiXMark } from "react-icons/hi2";
 import { numberWithCommas } from "../../Util/Util";
 import { SettingsContext } from "../../App";
+import { CloseButton } from "../../Settings/Inputs/InputMenus";
 
 interface CustomActionPopupProps {
     data: CustomActionPayload,
@@ -34,7 +34,7 @@ const CustomActionPopup: React.FC<CustomActionPopupProps> = ({data, closePopup})
             <div className='absolute flex flex-col bg-white rounded-lg p-8 w-96 shadow-2xl'>
                 <div className='flex flex-row justify-between items-center mb-4'>
                     <div className="text-xl font-bold">{(data as any).id}</div>
-                    <button onClick={closePopup} className="hover:text-blue-400 text-2xl"><HiXMark /></button>
+                    <CloseButton onClick={closePopup}/>
                 </div>
                 {data.contextMenuPoints && (
                     <div>
