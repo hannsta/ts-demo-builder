@@ -38,7 +38,7 @@ const CustomActionPopup: React.FC<CustomActionPopupProps> = ({data, closePopup})
                 </div>
                 {data.contextMenuPoints && (
                     <div>
-                        <div  className="font-bold mb-2">1 Row Selected</div>
+                        <div  className="font-bold mb-2 color-black">1 Row Selected</div>
                         <div className="flex flex-row justify-between mb-1 font-bold">
                             <div>Column Name</div>
                             <div>Value</div>
@@ -61,7 +61,7 @@ const CustomActionPopup: React.FC<CustomActionPopupProps> = ({data, closePopup})
                 )} 
                 {!data.contextMenuPoints && (
                     <div>
-                        <div style={{color:settings.settings.style.headerColor}} className="font-bold mb-2">{embeddedAnswerColumnData[0].dataValue.length} Rows Selected</div>
+                        <div  className="font-bold mb-2 color-black">{embeddedAnswerColumnData[0].dataValue.length} Rows Selected</div>
                         <div className="flex flex-row justify-between mb-2 font-bold">
                             <div>Column Name</div>
                             <div>Value</div>

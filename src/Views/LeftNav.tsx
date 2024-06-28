@@ -38,7 +38,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
           {settings.homePage && settings.homePage.enabled && (
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
-              setSelectedPage({type: PageType.HOME})
+              setSelectedPage({type: PageType.ANALYTICSHOME})
               setThoughtSpotObject(null);
             }
             } >

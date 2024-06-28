@@ -1,4 +1,6 @@
+import { useRef } from "react"
 import { HiTrash, HiXMark } from "react-icons/hi2"
+import { convertBase64 } from "../../Util/Util"
 
 // Generic Input Components
 // These components are used to create input menus for various settings and configurations
@@ -115,4 +117,30 @@ const CloseButton: React.FC<CloseButtonProps> = ({onClick}) => {
         </button>
     )
 }
-export {TextInput, CheckBoxInput, SelectInput, DeleteButton, RemoveButton, AddButton, CloseButton};
+interface ImageInputProps {
+    label: string,
+    value: string,
+    setValue: (value: string) => void
+}
+const ImageInput: React.FC<ImageInputProps> = ({label, value, setValue}) => {
+    const imageInput = useRef<HTMLInputElement>(null);
+    const handleFileRead = async (event:any) => {
+        const file = event.target.files[0]
+        const base64:any = await convertBase64(file)
+        setValue(base64);
+    }
+    return (
+        <>
+        <label className="font-bold mt-2">{label}</label>
+        <img src={value} alt="logo" onClick={()=>imageInput.current?.click()} className="w-24 h-24 hover:cursor-pointer"/>
+        <input ref={imageInput} type="file" name="file" 
+                            className="upload-file" 
+                            id="file"
+                            onChange={handleFileRead}
+                            style={{display:'none'}}
+                            formEncType="multipart/form-data" 
+                            required/>
+        </>
+    )
+}
+export {TextInput, CheckBoxInput, SelectInput, DeleteButton, RemoveButton, AddButton, CloseButton, ImageInput};

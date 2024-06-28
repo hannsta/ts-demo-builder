@@ -11,6 +11,7 @@ export const defaultSettings: Settings = {
     name: 'ThoughtSpot Demo Builder',
     TSURL: '',
     logo: '',
+    homeImage: '',
     subMenus: [] as SubMenu[],
     style: {
       fontFamily: "Lato",

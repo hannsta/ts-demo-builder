@@ -17,13 +17,14 @@ import FavoritesConfig, { Favorites } from "./StandardMenus/FavoritesConfig";
 import { defaultSettings } from "../Util/Types";
 import { KPIType } from "./KPIConfiguration";
 import UserConfiguration, { User } from "./UserConfiguration";
-import { AddButton, CloseButton, TextInput } from "./Inputs/InputMenus";
+import { AddButton, CloseButton, ImageInput, TextInput } from "./Inputs/InputMenus";
 import GitSettings from "./Git/GitSettings";
 
 export interface Settings {
     name: string,
     TSURL: string,
     logo: string,
+    homeImage: string,
     subMenus: SubMenu[],
     style: Style
     homePage: HomePage,
@@ -43,6 +44,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     const [name, setName] = useState<string>(settings.name)
     const [TSURL, setTSURL] = useState<string>(settings.TSURL)
     const [logo, setLogo] = useState<string>(settings.logo)
+    const [homeImage, setHomeImage] = useState<string>(settings.homeImage)
     const [subMenus, setSubMenus] = useState<SubMenu[]>(settings.subMenus ? settings.subMenus : []);
     const [homePage, setHomePage] = useState<HomePage>(settings.homePage);
     const [myReports, setMyReports] = useState<MyReports>(settings.myReports);
@@ -59,11 +61,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
         }
     },[])
     
-    const handleFileRead = async (event:any) => {
-        const file = event.target.files[0]
-        const base64:any = await convertBase64(file)
-        setLogo(base64);
-    }
+
 
     /* Function to open settings file from user prompt */
     const openSettings = (file: Blob | null) => {
@@ -84,7 +82,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     }
     const applySettings = () => {
         window.history.pushState('', 'Application', '/');
-        setSettings({name, TSURL, logo, subMenus, style, homePage, myReports, favorites, users})
+        setSettings({name, TSURL, logo, homeImage, subMenus, style, homePage, myReports, favorites, users})
     }
     /* Function to save settings to file */
     const saveSettings = () =>{
@@ -165,15 +163,9 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                         </button>
                         </div>
                     </div>
-                    <label className="font-bold mt-2">Logo</label>
-                    <img src={logo} alt="logo" onClick={()=>imageInput.current?.click()} className="w-24 h-24"/>
-                    <input ref={imageInput} type="file" name="file" 
-                                        className="upload-file" 
-                                        id="file"
-                                        onChange={handleFileRead}
-                                        style={{display:'none'}}
-                                        formEncType="multipart/form-data" 
-                                        required/>
+                    <ImageInput label="Home Image" value={homeImage} setValue={(homeImage) => setHomeImage(homeImage)}/>
+                    <ImageInput label="Logo" value={logo} setValue={(logo) => setLogo(logo)}/>
+
 
                 </div>
                 </div>

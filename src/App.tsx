@@ -22,6 +22,7 @@ import UserProfile from './Views/UserProfile';
 import { CleanPath, GetAvailableDemos, GetDemo } from './Settings/Git/GitSettings';
 import { inject } from '@vercel/analytics';
 import FirstLoginWelcome from './Views/FirstLoginWelcome';
+import TopNav from './Views/TopNav';
 
 /*  Main Application Component
 
@@ -51,7 +52,8 @@ import FirstLoginWelcome from './Views/FirstLoginWelcome';
 */
 inject();
 export enum PageType {
-  HOME,
+  HOMEIMAGE,
+  ANALYTICSHOME,
   FAVORITES,
   MYREPORTS,
   SUBMENU
@@ -131,7 +133,7 @@ function App() {
   useEffect(() => {
     if (liveboardEmbedRef.current && user){
       setSelectedPage({
-        type: PageType.HOME
+        type: PageType.ANALYTICSHOME
       })
       window.location.reload();
     }
@@ -267,52 +269,46 @@ function App() {
       <SettingsContext.Provider value={{settings, setSettings}}>
         <UserContext.Provider value={{user, setUser}}>
         <div className="App" style={{fontFamily:settings.style ? '"'+settings.style.fontFamily+'", sans-serif' : ""}}>
-          <header className="fixed z-20 flex w-full h-16" style={{backgroundColor:settings.style.headerColor, borderBottom: (settings.style.headerColor == "#ffffff") ? '1px solid #cccccc' : "none"}}>
-            <div className="flex flex-row justify-between w-full px-4 py-2 h-16">
-              <div className="flex flex-row space-x-4">
-                <img src={settings.logo} alt="logo" />
-                <div className="text-2xl font-bold flex items-center" style={{color:settings.style.headerTextColor}}>
-                  {settings.style.showHeaderName ? settings.name : ''}
-                </div>
-              </div>
-              <div className='flex flex-row space-x-4'>
-
-                <button onClick={()=>setShowSage(true)} style={{color:settings.style.headerTextColor}} className="flex flex-row items-center p-2 rounded-lg hover:bg-gray-200"> Ask Sage </button>
-
-                {showSage && (
-                  <SageView setShowSage={setShowSage} setSagePrompt={setSagePrompt} selectedPage={selectedPage} sagePrompt={sagePrompt} sageLoaded={sageLoaded} setSageLoaded={setSageLoaded} />
-                )}
-                <UserProfile setUser={setUser} user={user}/>
-
-              </div>
-              {showSettings && (
-                  <>
-                    <div className="absolute bg-white right-0 flex p-2 z-70 overflow-auto" style={{top:'4rem',height:'calc(100vh - 4rem)',borderLeft:'1px solid #cccccc'}}>
-                      <SettingsConfiguration 
-                      key={JSON.stringify(settings)}
-                      setShowSettings={setShowSettings}
-                      settings={settings} setSettings={setSettings} setLoginPopupVisible={setLoginPopupVisible} />
-                    </div>
-                  </>
-                )}
-            </div>
-          </header>
+          {/* Top Navigation */}
+          <TopNav 
+            user={user} 
+            setUser={setUser} 
+            showSettings={showSettings} 
+            setShowSettings={setShowSettings} 
+            setSelectedPage={setSelectedPage} 
+            setSettings={setSettings} 
+            setLoginPopupVisible={setLoginPopupVisible}
+            setShowSage={setShowSage}
+          />
+          
+          {showSage && (
+            <SageView setShowSage={setShowSage} setSagePrompt={setSagePrompt} selectedPage={selectedPage} sagePrompt={sagePrompt} sageLoaded={sageLoaded} setSageLoaded={setSageLoaded} />
+          )}
           <div className="absolute flex flex-row" style={{height:'calc(100vh - 4rem)', width:'100vw', top:'4rem'}}>
               {/* Left Navigation */}
               <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
             
               {/* Main Content */}
               <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)'}}>
-                
-                {/* Home Page */}
-                {selectedPage && selectedPage.type == PageType.HOME && isLoggedIn ?
+                {/* Home Image Page */}
+                {selectedPage && selectedPage.type == PageType.HOMEIMAGE && isLoggedIn && (
+                  <div className='flex flex-col items-center justify-center w-full h-full'>
+                    here
+                    <img src={settings.homeImage} alt="home" className='w-full'/>
+                  </div>
+                )}
+    
+                {/* Analytics Home Page */}
+                {selectedPage && selectedPage.type == PageType.ANALYTICSHOME && isLoggedIn && 
                     <HomePageView
                     setSagePrompt={setSagePrompt}
                     setShowSage={setShowSage}
                     setSelectedPage={setSelectedPage}
                     setThoughtSpotObject={setSelectedThoughtSpotObject}/>
-                  : 
+                }
+                {selectedPage && isLoggedIn && selectedPage.type != PageType.ANALYTICSHOME && selectedPage.type != PageType.HOMEIMAGE && (
                   <>
+                    {/* Sub Menu Page */}
                     {selectedPage && selectedPage.subMenu && (
                       <SubMenuView settings={settings}  subMenu={selectedPage.subMenu} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
                     )}
@@ -346,8 +342,10 @@ function App() {
                           />
                           <SubMenuDetailsView subMenu={selectedPage.subMenu}/>
                           </div>
-                      )}
-
+                      )}  
+                      </div>  
+                  </>
+                )}
                       {/* Not Logged In Page */}
                       {!isLoggedIn && (
                         <div className="flex flex-col items-center space-y-4 justify-center w-full h-full">
@@ -368,9 +366,6 @@ function App() {
                       )           
                       
                       }
-                    </div>
-                  </>
-                }
               </div>
 
           </div>
@@ -398,7 +393,7 @@ function App() {
             /> */}
               
             <PreRenderedSageEmbed
-              visibleActions={[Action.Save, Action.Pin]}
+              visibleActions={[Action.Save, Action.Pin, Action.DrillDown,Action.Explore,Action.SpotIQAnalyze,Action.Share,Action.Download,Action.AddFilter]}
               hideSageAnswerHeader={true}
               hideWorksheetSelector={true}
               dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : ''}
