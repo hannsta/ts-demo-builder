@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { HiTrash, HiXMark } from "react-icons/hi2"
 import { convertBase64 } from "../../Util/Util"
 
@@ -123,6 +123,13 @@ interface ImageInputProps {
     setValue: (value: string) => void
 }
 const ImageInput: React.FC<ImageInputProps> = ({label, value, setValue}) => {
+    const [isImage, setIsImage] = useState(false)
+    useEffect(() => {
+        if(value.startsWith('data:image')){
+            setIsImage(true);
+        }
+    }
+    , [value])
     const imageInput = useRef<HTMLInputElement>(null);
     const handleFileRead = async (event:any) => {
         const file = event.target.files[0]
@@ -130,17 +137,26 @@ const ImageInput: React.FC<ImageInputProps> = ({label, value, setValue}) => {
         setValue(base64);
     }
     return (
-        <>
-        <label className="font-bold mt-2">{label}</label>
-        <img src={value} alt="logo" onClick={()=>imageInput.current?.click()} className="w-24 h-24 hover:cursor-pointer"/>
-        <input ref={imageInput} type="file" name="file" 
-                            className="upload-file" 
+        <div className="flex flex-col">
+        <label className="font-bold mt-2">
+            {label + " - "}
+            <span onClick={()=>setIsImage(true)} className={(isImage ? 'text-black ' :'text-gray-400  ')+ "hover:cursor-pointer"}>Image </span> 
+            <span onClick={()=>setIsImage(false)} className={(isImage ? 'text-gray-400  ' :'text-black ')+ "hover:cursor-pointer"}>URL</span>
+        </label>
+        {!isImage ?
+        <input className="border-2 border-gray-200 w-64 text-md bg-slate-50 p-1 h-8 rounded-lg" type="text" value={value} onChange={(e) => setValue(e.target.value)}/>
+        :
+        <div className="flex flex-col">
+        <img src={value} alt={label} onClick={()=>imageInput.current?.click()} className="w-24 h-24 hover:cursor-pointer border-2 rounded-md bg-slate-100"/>
+        <input className=" upload-file" ref={imageInput} type="file" name="file" 
                             id="file"
                             onChange={handleFileRead}
                             style={{display:'none'}}
                             formEncType="multipart/form-data" 
                             required/>
-        </>
+        </div>
+        }
+        </div>
     )
 }
 export {TextInput, CheckBoxInput, SelectInput, DeleteButton, RemoveButton, AddButton, CloseButton, ImageInput};

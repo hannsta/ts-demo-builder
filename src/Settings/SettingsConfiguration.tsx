@@ -19,6 +19,9 @@ import { KPIType } from "./KPIConfiguration";
 import UserConfiguration, { User } from "./UserConfiguration";
 import { AddButton, CloseButton, ImageInput, TextInput } from "./Inputs/InputMenus";
 import GitSettings from "./Git/GitSettings";
+import SimpleSageConfig, { SimpleSage } from "./StandardMenus/SimpleSageConfig";
+import SimpleSearchConfig, { SimpleSearch } from "./StandardMenus/SimpleSearchConfig";
+import SimpleFullAppConfig, { SimpleFullApp } from "./StandardMenus/SimpleFullAppConfig";
 
 export interface Settings {
     name: string,
@@ -30,6 +33,9 @@ export interface Settings {
     homePage: HomePage,
     myReports: MyReports,
     favorites: Favorites,
+    simpleSage: SimpleSage,
+    simpleSearch: SimpleSearch,
+    simpleFullApp: SimpleFullApp,
     users: User[]
 }
 interface SettingsProps {
@@ -49,6 +55,9 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     const [homePage, setHomePage] = useState<HomePage>(settings.homePage);
     const [myReports, setMyReports] = useState<MyReports>(settings.myReports);
     const [favorites, setFavorites] = useState<Favorites>(settings.favorites);
+    const [simpleSage, setSimpleSage] = useState<SimpleSage>(settings.simpleSage)
+    const [simpleSearch, setSimpleSearch] = useState<SimpleSearch>(settings.simpleSearch)
+    const [simpleFullApp, setSimpleFullApp] = useState<SimpleFullApp>(settings.simpleFullApp)
     const [style, setStyle] = useState<Style>(settings.style)
     const [users, setUsers] = useState<User[]>(settings.users)
     const imageInput = useRef<HTMLInputElement>(null)
@@ -56,6 +65,16 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     
     /* Set default values if settings are not provided, or are out of date */
     useEffect(() => {
+        if (!simpleSage || simpleSage == undefined){
+            console.log("setting simple sage")
+            setSimpleSage({enabled: false, worksheet: '', name: 'Natural Language', icon: 'HiSearchCircle'})
+        }
+        if (!simpleSearch){
+            setSimpleSearch({enabled: false, worksheet: '', name: 'Search', icon: 'HiSearch'})
+        }
+        if (!simpleFullApp){
+            setSimpleFullApp({enabled: false, name: 'Full App', icon: 'HiViewGrid'})
+        }
         if (!users){
             setUsers([])
         }
@@ -82,7 +101,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     }
     const applySettings = () => {
         window.history.pushState('', 'Application', '/');
-        setSettings({name, TSURL, logo, homeImage, subMenus, style, homePage, myReports, favorites, users})
+        setSettings({name, TSURL, logo, homeImage, subMenus, style, homePage, myReports, favorites, users, simpleSearch, simpleSage, simpleFullApp})
     }
     /* Function to save settings to file */
     const saveSettings = () =>{
@@ -163,9 +182,10 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                         </button>
                         </div>
                     </div>
-                    <ImageInput label="Home Image" value={homeImage} setValue={(homeImage) => setHomeImage(homeImage)}/>
+                    <div className="flex flex-row space-x-4">
+                    <ImageInput label="Home" value={homeImage} setValue={(homeImage) => setHomeImage(homeImage)}/>
                     <ImageInput label="Logo" value={logo} setValue={(logo) => setLogo(logo)}/>
-
+                    </div>
 
                 </div>
                 </div>
@@ -184,7 +204,6 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                         <SubMenuConfiguration
                             key={index}
                             subMenu={subMenu}
-                            TSURL={TSURL}
                             setSubMenu={(newSubMenu) => {
                                 const newSubMenus = [...subMenus]
                                 newSubMenus[index] = newSubMenu
@@ -207,7 +226,9 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                     <FavoritesConfig favorites={favorites} setFavorites={setFavorites}/>
                     <HomePageConfig homePage={homePage} setHomePage={setHomePage}/>
                     <MyReportsConfig myReports={myReports} setMyReports={setMyReports}/>
-
+                    <SimpleSageConfig simpleSage={simpleSage} setSimpleSage={setSimpleSage}/>
+                    <SimpleSearchConfig simpleSearch={simpleSearch} setSimpleSearch={setSimpleSearch}/>
+                    <SimpleFullAppConfig simpleFullApp={simpleFullApp} setSimpleFullApp={setSimpleFullApp}/>
                 </div>
 
                 {/* User Configuration */}

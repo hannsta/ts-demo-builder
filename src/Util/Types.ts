@@ -6,6 +6,9 @@ import { HomePage } from "../Settings/StandardMenus/HomePageConfig";
 import { DefaultUserRoles } from "../Settings/UserConfiguration";
 import { StyleOptionList, StyleOptions } from "./PreBuiltStyles";
 import { customCssInterface } from "@thoughtspot/visual-embed-sdk/lib/src/types";
+import { SimpleSage } from "../Settings/StandardMenus/SimpleSageConfig";
+import { SimpleSearch } from "../Settings/StandardMenus/SimpleSearchConfig";
+import { SimpleFullApp } from "../Settings/StandardMenus/SimpleFullAppConfig";
 
 export const defaultSettings: Settings = {
     name: 'ThoughtSpot Demo Builder',
@@ -31,6 +34,9 @@ export const defaultSettings: Settings = {
     homePage: {enabled: true, name: 'Home', icon: 'HiHome'} as HomePage,
     favorites: {enabled: true, name: 'Favorites', icon: 'HiStar'} as Favorites,
     myReports: {enabled: true, name: 'My Reports', icon: 'HiDocumentText', selfService: true} as MyReports,
+    simpleSage: {enabled: false, name: 'Natural Language', icon: 'HiSearchCircle', worksheet: ''} as SimpleSage,
+    simpleSearch: {enabled: false, name: 'Search', icon: 'HiSearch', worksheet:''} as SimpleSearch,
+    simpleFullApp: {enabled: false, name: 'Full App', icon: 'HiViewGrid', worksheet:''} as SimpleFullApp,
     users: [
       {
         name: 'Admin',

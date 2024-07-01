@@ -16,10 +16,9 @@ export enum ThoughtSpotObjectType {
 }
 export interface ThoughtSpotObjectConfigurationProps {
     object: ThoughtSpotObject,
-    TSURL: string,
     setObject: (object: ThoughtSpotObject) => void
 }
-const ThoughtSpotObjectConfiguration: React.FC<ThoughtSpotObjectConfigurationProps>  = ({object, TSURL, setObject}) => {
+const ThoughtSpotObjectConfiguration: React.FC<ThoughtSpotObjectConfigurationProps>  = ({object, setObject}) => {
     const [searchVisible, setSearchVisible] = useState<boolean>(false);
     useEffect(() => {
         setSearchVisible(false);
@@ -43,7 +42,7 @@ const ThoughtSpotObjectConfiguration: React.FC<ThoughtSpotObjectConfigurationPro
             </button>
             </div>
             {searchVisible && (
-                <ThoughtSpotObjectSearch type={object.type} TSURL={TSURL} setObject={setObject} closePopup={()=>setSearchVisible(false)}/>
+                <ThoughtSpotObjectSearch type={object.type} setObject={setObject} closePopup={()=>setSearchVisible(false)}/>
             )}
         </div>
         )}

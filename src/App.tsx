@@ -23,6 +23,9 @@ import { CleanPath, GetAvailableDemos, GetDemo } from './Settings/Git/GitSetting
 import { inject } from '@vercel/analytics';
 import FirstLoginWelcome from './Views/FirstLoginWelcome';
 import TopNav from './Views/TopNav';
+import SimpleSageView from './Views/ThoughtSpotEmbeds/SimpleSageView';
+import SimpleSearchView from './Views/ThoughtSpotEmbeds/SimpleSearchView';
+import SimpleFullAppView from './Views/ThoughtSpotEmbeds/FullAppView';
 
 /*  Main Application Component
 
@@ -56,6 +59,9 @@ export enum PageType {
   ANALYTICSHOME,
   FAVORITES,
   MYREPORTS,
+  SIMPLESAGE,
+  SIMPLESEARCH,
+  SIMPLEFULLAPP,
   SUBMENU
 }
 
@@ -280,7 +286,7 @@ function App() {
             setLoginPopupVisible={setLoginPopupVisible}
             setShowSage={setShowSage}
           />
-          
+          {/* Sage Popup */}
           {showSage && (
             <SageView setShowSage={setShowSage} setSagePrompt={setSagePrompt} selectedPage={selectedPage} sagePrompt={sagePrompt} sageLoaded={sageLoaded} setSageLoaded={setSageLoaded} />
           )}
@@ -289,11 +295,10 @@ function App() {
               <LeftNav settings={settings} setSelectedPage={setSelectedPage} showSettings={showSettings} setShowSettings={setShowSettings} setThoughtSpotObject={setSelectedThoughtSpotObject}/>
             
               {/* Main Content */}
-              <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)'}}>
+              <div className='absolute' style={{left:'4rem', width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)', overflow: 'hidden'}}>
                 {/* Home Image Page */}
                 {selectedPage && selectedPage.type == PageType.HOMEIMAGE && isLoggedIn && (
                   <div className='flex flex-col items-center justify-center w-full h-full'>
-                    here
                     <img src={settings.homeImage} alt="home" className='w-full'/>
                   </div>
                 )}
@@ -323,13 +328,21 @@ function App() {
 
 
 
-                    <div className='absolute flex flex-col' style={{overflow:'auto',left:'15rem', width:'calc(100vw - 19rem)', height:'calc(100vh - 4rem)'}}>
+                    <div className='absolute flex flex-col' style={(selectedPage.type != PageType.SIMPLESAGE && selectedPage.type !=PageType.SIMPLESEARCH && selectedPage.type !=PageType.SIMPLEFULLAPP) ?  {overflow:'auto',left:'15rem', width:'calc(100vw - 19rem)', height:'calc(100vh - 4rem)'} : {width:'100%', height:'100%',padding:'4rem'}}>
                       
                       {/* ThoughtSpot Object View */}
                       {selectedThoughtSpotObject && isLoggedIn && (
                         <ThoughtSpotObjectView user={user} setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
                       )}
-
+                      {selectedPage && selectedPage.type == PageType.SIMPLESAGE && (
+                        <SimpleSageView simpleSage={settings.simpleSage} />
+                      )}
+                      {selectedPage && selectedPage.type == PageType.SIMPLESEARCH && (
+                        <SimpleSearchView simpleSearch={settings.simpleSearch} />
+                      )}
+                      {selectedPage && selectedPage.type == PageType.SIMPLEFULLAPP && (
+                        <SimpleFullAppView simpleFullApp={settings.simpleFullApp} />
+                      )}
                       {/* Sub Menu Landing Page */}
                       {!selectedThoughtSpotObject && isLoggedIn && selectedPage?.subMenu && (
                         <div style={{backgroundColor:settings.style.backgroundColor}} className='p-8 h-full'>

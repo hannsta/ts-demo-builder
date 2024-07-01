@@ -1,5 +1,6 @@
 import { Page, SettingsContext, UserContext } from "../App";
 import { ThoughtSpotObject } from "../Settings/ThoughtSpotObjectConfiguration";
+import DataTable from "./DataTable";
 import KPIChartView from "./KPIChart";
 
 interface HomePageViewProps {
@@ -16,7 +17,7 @@ const HomePageView:React.FC<HomePageViewProps> = ({setSagePrompt, setShowSage, s
                     {({user}) => {
                        
                     return (
-                        <div className='flex flex-col items-center p-8' style={{background:settings.style.backgroundColor, height: 'calc(100vh - 4rem)', width: 'calc(100vw - 4rem)'}}>
+                        <div className='flex flex-col items-center p-8' style={{width:'calc(100vw - 4rem)', height: 'calc(100vh - 4rem)', background:settings.style.backgroundColor, overflow:'auto'}}>
                             <div className="flex flex-wrap justify-center gap-y-8 gap-x-8 mt-16 ">
                             {
                                 settings.subMenus.map((subMenu, index) => {
@@ -30,6 +31,20 @@ const HomePageView:React.FC<HomePageViewProps> = ({setSagePrompt, setShowSage, s
                                     setShowSage={setShowSage}
                                     setSelectedPage={setSelectedPage}
                                     setThoughtSpotObject={setThoughtSpotObject}
+                                    />            
+                                    );
+                                })
+                            }
+                            </div>
+                            <div className="flex flex-col justify-center mt-8 w-full">
+                            {
+                                settings.subMenus.map((subMenu, index) => {
+                                    if (subMenu.userPermissions && subMenu.userPermissions.length > 0 && subMenu.userPermissions.find((permission) => permission.user.name === user.name && permission.denied)) {
+                                        return null;
+                                    }
+                                    return (
+                                    <DataTable key={index} 
+                                    subMenu={subMenu} 
                                     />            
                                     );
                                 })

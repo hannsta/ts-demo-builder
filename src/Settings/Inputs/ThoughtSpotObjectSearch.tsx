@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { ThoughtSpotObject, ThoughtSpotObjectType } from "../ThoughtSpotObjectConfiguration"
 import { CloseButton } from "./InputMenus"
+import { SettingsContext } from "../../App"
 
 // This component is used to search for ThoughtSpot objects
 // It does this by making the metadata/list API call to ThoughtSpot
@@ -8,16 +9,17 @@ import { CloseButton } from "./InputMenus"
 
 
 interface ObjectSearchProps {
-    TSURL: string,
     type: ThoughtSpotObjectType,
     setObject: (object: ThoughtSpotObject) => void,
     closePopup: () => void
 }
 
-const ThoughtSpotObjectSearch: React.FC<ObjectSearchProps> = ({TSURL, type, setObject, closePopup}) => {
+const ThoughtSpotObjectSearch: React.FC<ObjectSearchProps> = ({type, setObject, closePopup}) => {
     const [search, setSearch] = useState<string>('')
     const [isLiveboard, setIsLiveboard] = useState<boolean>(true)
     const [results, setResults] = useState<ThoughtSpotObject[]>([])
+
+    const TSURL = useContext(SettingsContext).settings.TSURL;
     const searchObjects = async () => {
         var baseURL = TSURL.replace("#/","").replace("#","")
         baseURL += "callosum/v1/tspublic/v1/metadata/list?type="

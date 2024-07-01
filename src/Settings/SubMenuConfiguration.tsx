@@ -24,11 +24,10 @@ export interface SubMenu {
 
 interface SubMenuConfigurationProps {
     subMenu: SubMenu,
-    TSURL: string,
     setSubMenu: (subMenu: SubMenu) => void,
     deleteSubMenu: (subMenu: SubMenu) => void,
 }
-const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSURL, setSubMenu, deleteSubMenu}) => {
+const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, setSubMenu, deleteSubMenu}) => {
     const [showDetails, setShowDetails] = useState<boolean>(false);
     const [worksheetSearchVisible, setWorksheetSearchVisible] = useState<boolean>(false);
     useEffect(() => {
@@ -66,7 +65,6 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
         </div>
         {worksheetSearchVisible && (
                 <ThoughtSpotObjectSearch
-                    TSURL={TSURL}
                     type={ThoughtSpotObjectType.WORKSHEET}
                     setObject={(object) => setSubMenu({...subMenu, worksheet: object.uuid})}
                     closePopup={()=>setWorksheetSearchVisible(false)} />
@@ -87,7 +85,6 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, TSU
                                     newObjects[index] = newObject
                                     setSubMenu({...subMenu, objects: newObjects})
                                 }}
-                                TSURL={TSURL}
                             />
                             <RemoveButton onClick={() => setSubMenu({...subMenu, objects: subMenu.objects.filter((_, i) => i !== index)})}/>
                         </div>

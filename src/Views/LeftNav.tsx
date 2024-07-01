@@ -83,6 +83,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
               </div>
             );
           })}
+          {/* My Reports */}
           {settings.myReports && settings.myReports.enabled && user.selfService && (
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
@@ -101,6 +102,7 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
               )}
               </div>
           )}
+          {/* Favorites */}
           {settings.favorites && settings.favorites.enabled && (
             <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
@@ -119,6 +121,63 @@ const LeftNav: React.FC<LeftNavProps> = ({settings, showSettings, setSelectedPag
                   </div>                    
               )}
             </div>
+          )}
+          {/* Simple Search */}
+          {settings.simpleSearch && settings.simpleSearch.enabled && user.selfService && (
+            <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
+              setWideMode(false);
+              setSelectedPage({type: PageType.SIMPLESEARCH})
+              setThoughtSpotObject(null);
+            }} >
+              <div className="flex flex-col">
+                <div className="flex flex-row items-center align-center justify-center text-3xl rounded-lg hover:cursor-pointer">
+                  <HeroIcons.HiChartBar style={{color: settings.style.iconColor}}/>
+                </div>
+              </div>
+              {wideMode && (
+                  <div className="ml-3 text-lg" style={{color:settings.style.iconColor}}>
+                      {settings.simpleSearch.name}
+                  </div>                    
+              )}
+              </div>
+          )}
+          {/* Simple Sage */}
+          {settings.simpleSage && settings.simpleSage.enabled && user.selfService && (
+            <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
+              setWideMode(false);
+              setSelectedPage({type: PageType.SIMPLESAGE})
+              setThoughtSpotObject(null);
+            }} >
+              <div className="flex flex-col">
+                <div className="flex flex-row items-center align-center justify-center text-3xl rounded-lg hover:cursor-pointer">
+                  <HeroIcons.HiMagnifyingGlassCircle style={{color: settings.style.iconColor}}/>
+                </div>
+              </div>
+              {wideMode && (
+                  <div className="ml-3 text-lg" style={{color:settings.style.iconColor}}>
+                      {settings.simpleSage.name}
+                  </div>                    
+              )}
+              </div>
+          )}
+          {/* Simple Full App */}
+          {settings.simpleFullApp && settings.simpleFullApp.enabled && (
+            <div className="flex flex-row items-center p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
+              setWideMode(false);
+              setSelectedPage({type: PageType.SIMPLEFULLAPP})
+              setThoughtSpotObject(null);
+            }} >
+              <div className="flex flex-col">
+                <div className="flex flex-row items-center align-center justify-center text-3xl rounded-lg hover:cursor-pointer">
+                  <HeroIcons.HiTableCells style={{color: settings.style.iconColor}}/>
+                </div>
+              </div>
+              {wideMode && (
+                  <div className="ml-3 text-lg" style={{color:settings.style.iconColor}}>
+                      {settings.simpleFullApp.name}
+                  </div>                    
+              )}
+              </div>
           )}
            <div className="flex flex-row h-full items-end p-1 hover:cursor-pointer rounded-md hover:font-bold" onClick={()=>{
               setWideMode(false);
