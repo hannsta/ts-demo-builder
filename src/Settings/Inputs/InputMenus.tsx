@@ -125,7 +125,7 @@ interface ImageInputProps {
 const ImageInput: React.FC<ImageInputProps> = ({label, value, setValue}) => {
     const [isImage, setIsImage] = useState(false)
     useEffect(() => {
-        if(value.startsWith('data:image')){
+        if(value && value.startsWith('data:image')){
             setIsImage(true);
         }
     }
