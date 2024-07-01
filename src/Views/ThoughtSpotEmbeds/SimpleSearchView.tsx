@@ -8,7 +8,7 @@ const SimpleSearchView: React.FC<SimpleSearchProps> = ({simpleSearch}) => {
     return (
         <SearchEmbed
             frameParams={{width: '100%', height: '100%'}}
-            dataSource={simpleSearch.worksheet}
+            dataSource={simpleSearch && simpleSearch.worksheet ? simpleSearch.worksheet : ''}
         />
     )
 }

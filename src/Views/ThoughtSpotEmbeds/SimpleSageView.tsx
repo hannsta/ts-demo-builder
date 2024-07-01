@@ -8,7 +8,7 @@ const SimpleSageView: React.FC<SimpleSageProps> = ({simpleSage}) => {
     return (
         <SageEmbed
             frameParams={{width: '100%', height: '100%'}}
-            dataSource={simpleSage.worksheet}
+            dataSource={simpleSage && simpleSage.worksheet ? simpleSage.worksheet : ''}
         />
     )
 }
