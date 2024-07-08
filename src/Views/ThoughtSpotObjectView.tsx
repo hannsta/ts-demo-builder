@@ -7,6 +7,9 @@ import { useState } from "react";
 import { PageType } from "../App";
 import CustomActionPopup from "./Popups/CustomActionPopup";
 import { User } from "../Settings/UserConfiguration";
+import VizSelector, { Viz } from "./Popups/VizSelector";
+import { AnswerService, HostEvent } from "@thoughtspot/visual-embed-sdk";
+import { createClientWithoutAuth } from "../Util/Util";
 
 
 
@@ -23,6 +26,34 @@ interface ThoughtSpotObjectViewProps {
 const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thoughtSpotObject, type, subMenu, settings, updateFilters, setShowSage }) => {
     const [customActionPopupVisible, setCustomActionPopupVisible] = useState<boolean>(false);
     const [customActionData, setCustomActionData] = useState<any>(null);
+    const [vizSelectorVisible, setVizSelectorVisible] = useState<boolean>(false);
+
+    const PinViz = async (viz: Viz) => {
+        let client =  createClientWithoutAuth(settings.TSURL);
+        client.exportMetadataTML({
+            metadata: [
+                {
+                    identifier: thoughtSpotObject.uuid
+                }
+            ],
+            export_fqn: true
+        }).then((response) => {
+            let tml = JSON.parse(response[0].edoc)
+            let vizTML = viz.tml;
+            if (!tml.liveboard.visualizations) tml.liveboard.visualizations = [vizTML];
+            else tml.liveboard.visualizations.push(vizTML);
+            client.importMetadataTML({
+                metadata_tmls: [JSON.stringify(tml)]
+            }).then((response) => {       
+                var element: any = document.querySelector("#tsEmbed-pre-render-wrapper-liveboardEmbed")
+                if (element && element.__tsEmbed){
+                    element.__tsEmbed.navigateToLiveboard("")
+                    element.__tsEmbed.navigateToLiveboard(thoughtSpotObject.uuid)
+                }
+            })
+        })
+    }
+
     return (
         <div className='flex flex-col p-8 w-full h-full space-y-2' style={{background:settings.style.backgroundColor,overflow:'auto'}}>
             <div className="mb-4">
@@ -41,12 +72,18 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
                     </div>
                 )}
                 {type == PageType.MYREPORTS && (
-                    <button className="w-36 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded" onClick={() => {
-                        setShowSage(true);
-                    }}>
-                        Add a Viz
-                    </button>
-
+                    <>
+                        <button className="w-36 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded" onClick={() => {
+                            setShowSage(true);
+                        }}>
+                            Create a Viz
+                        </button>
+                        <button className="w-36 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded ml-2" onClick={() => {
+                            setVizSelectorVisible(true);
+                        }}>
+                            Add a Viz
+                        </button>
+                    </>
                 )}
 
             </div>
@@ -80,6 +117,9 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
             )}
             {customActionPopupVisible && (
                 <CustomActionPopup data={customActionData} closePopup={() => setCustomActionPopupVisible(false)}/>
+            )}
+            {vizSelectorVisible && (
+                <VizSelector liveboardId={settings.myReports.liveboardId} setVizId={PinViz} setVizSelectorVisible={setVizSelectorVisible}/>
             )}
         </div>
     );

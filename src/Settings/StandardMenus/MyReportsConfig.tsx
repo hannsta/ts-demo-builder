@@ -6,7 +6,8 @@ export interface MyReports {
     enabled: boolean,
     name: string,
     icon: string,
-    selfService: boolean
+    selfService: boolean,
+    liveboardId: string
 }
 export interface MyReportsConfigProps {
     myReports: MyReports,
@@ -21,6 +22,7 @@ const MyReportsConfig: React.FC<MyReportsConfigProps> = ({myReports, setMyReport
                 <IconSelection selectedIcon={myReports.icon} setSelectedIcon={(icon) => setMyReports({...myReports, icon})}/>
                 <TextInput label="Name" value={myReports.name} setValue={(name) => setMyReports({...myReports, name})}/>
                 <CheckBoxInput label="Self Service" value={myReports.selfService} setValue={(selfService) => setMyReports({...myReports, selfService})}/>
+                <TextInput label="Liveboard ID" value={myReports.liveboardId} setValue={(liveboardId) => setMyReports({...myReports, liveboardId})}/>
                 <div className='flex flex-row w-full justify-end items-center'>
                     <div className='flex flex-col mr-8 text-slate-400 font-bold'>
                         My Reports
