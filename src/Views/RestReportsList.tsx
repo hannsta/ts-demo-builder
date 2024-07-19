@@ -62,8 +62,8 @@ import { SettingsContext, TSLoginContext } from "../App";
               <div className="font-bold text-xl mb-2">{isMyReports ? "My Reports" : "My Favorites"}</div>
               {liveboards.map((liveboard, index) => {
                   return (
-                      <div onClick={()=>setThoughtSpotObject(liveboard)} className="flex flex-row space-x-2 hover:cursor-pointer hover:font-bold">
-                          {liveboard.name}
+                      <div onClick={()=>setThoughtSpotObject(liveboard)} className="flex flex-row space-x-2 hover:cursor-pointer hover:font-bold"
+                      dangerouslySetInnerHTML={{__html: liveboard.name}}>
                       </div> 
                   );
               })
