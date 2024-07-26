@@ -60,7 +60,8 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
                 <div className="font-bold text-xl mb-4" style={{color:settings.style.textColor}} dangerouslySetInnerHTML={{__html: thoughtSpotObject.name}}></div>
                 {subMenu?.filters && subMenu.filters.length > 0 && (
                     <div className='flex flex-col space-y-2  mb-4'>
-                        <div className="flex flex-row space-x-2">
+                        <div className="flex flex-row space-x-2">git reset --hard origin/main  # Replace 'main' with your branch name
+
                             {subMenu.filters.map((filter, index) => {
                                 return (
                                     <AttributeFilter key={index} filter={filter} worksheet={subMenu.worksheet} settings={settings} setFilter={(filter) => 
@@ -89,8 +90,8 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
             </div>
             {thoughtSpotObject.type == ThoughtSpotObjectType.LIVEBOARD && (
                 <LiveboardEmbed
-                    hiddenActions={user.userRole.name != "Custom" ? user.userRole.actions : undefined}
-                    visibleActions={user.userRole.name == "Custom" ? user.userRole.actions : undefined}
+                    hiddenActions={user.userRole.name != "Custom" ? user.userRole.actions.map(element => element.toLowerCase() as any) : undefined}
+                    visibleActions={user.userRole.name == "Custom" ? user.userRole.actions.map(element => element.toLowerCase() as any) : undefined}
                     onCustomAction={(data)=>{
                         console.log(data.data)
                         setCustomActionData(data.data);
