@@ -60,7 +60,7 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
                 <div className="font-bold text-xl mb-4" style={{color:settings.style.textColor}} dangerouslySetInnerHTML={{__html: thoughtSpotObject.name}}></div>
                 {subMenu?.filters && subMenu.filters.length > 0 && (
                     <div className='flex flex-col space-y-2  mb-4'>
-                        <div className="flex flex-row space-x-2">git reset --hard origin/main  # Replace 'main' with your branch name
+                        <div className="flex flex-row space-x-2">
 
                             {subMenu.filters.map((filter, index) => {
                                 return (
