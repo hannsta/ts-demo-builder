@@ -8,7 +8,7 @@ import { PageType } from "../App";
 import CustomActionPopup from "./Popups/CustomActionPopup";
 import { User } from "../Settings/UserConfiguration";
 import VizSelector, { Viz } from "./Popups/VizSelector";
-import { AnswerService, HostEvent } from "@thoughtspot/visual-embed-sdk";
+import { Action, AnswerService, HostEvent } from "@thoughtspot/visual-embed-sdk";
 import { createClientWithoutAuth } from "../Util/Util";
 
 
@@ -27,7 +27,6 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
     const [customActionPopupVisible, setCustomActionPopupVisible] = useState<boolean>(false);
     const [customActionData, setCustomActionData] = useState<any>(null);
     const [vizSelectorVisible, setVizSelectorVisible] = useState<boolean>(false);
-
     const PinViz = async (viz: Viz) => {
         let client =  createClientWithoutAuth(settings.TSURL);
         client.exportMetadataTML({
@@ -53,7 +52,7 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
             })
         })
     }
-
+    console.log(user.userRole.actions)
     return (
         <div className='flex flex-col p-8 w-full h-full space-y-2' style={{background:settings.style.backgroundColor,overflow:'auto'}}>
             <div className="mb-4">
@@ -90,8 +89,8 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
             </div>
             {thoughtSpotObject.type == ThoughtSpotObjectType.LIVEBOARD && (
                 <LiveboardEmbed
-                    hiddenActions={user.userRole.name != "Custom" ? user.userRole.actions.map(element => element.toLowerCase() as any) : undefined}
-                    visibleActions={user.userRole.name == "Custom" ? user.userRole.actions.map(element => element.toLowerCase() as any) : undefined}
+                    hiddenActions={user.userRole.name != "Custom" ? user.userRole.actions  : undefined}
+                    visibleActions={user.userRole.name == "Custom" ? user.userRole.actions : undefined}
                     onCustomAction={(data)=>{
                         console.log(data.data)
                         setCustomActionData(data.data);

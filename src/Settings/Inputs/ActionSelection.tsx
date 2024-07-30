@@ -10,7 +10,7 @@ interface ActionSelectionProps {
 const ActionSelection: React.FC<ActionSelectionProps> = ({user, setUser}) => {
     const [showActions, setShowActions] = useState<boolean>(false);
     //set default to list of Action enum
-    const [actions, setActions] = useState<string[]>(Object.keys(Action));
+    const [actions, setActions] = useState<Action[]>([]);
     return (
         <div className="flex flex-col">
             <label className="font-bold">Actions</label>
@@ -25,18 +25,23 @@ const ActionSelection: React.FC<ActionSelectionProps> = ({user, setUser}) => {
                 </div>
                 </div>
                 <div className="grid gap-4 grid-cols-3 align-center space-x-8">
-                {Object.keys(Action).map((action, index) => {
+                {Object.keys(Action).map((key, index) => {
+                    const action = Action[key as keyof typeof Action]; // Get the value corresponding to the key
                     return (
-                        <div key={index} style={{marginLeft:index == 0 ? '0rem' : '0rem'}} className={(user.userRole.actions.includes(action as Action) ? 'bg-green-400 color-white ' : '') + "flex flex-col w-48 items-center space-y-2 hover:cursor-pointer hover:bg-gray-200 p-2 rounded-lg"} onClick={() => {
-                            const updatedActions = [...user.userRole.actions];
-                            if(updatedActions.includes(action as Action)){
-                                updatedActions.splice(updatedActions.indexOf(action as Action), 1);
-                            }else{
-                                updatedActions.push(action as Action);
-                            }
-                            setUser({...user, userRole: {...user.userRole, actions: updatedActions}});
-                        }}>
-                            <div>{action}</div>
+                        <div 
+                            key={index} 
+                            className={(user.userRole.actions.includes(action as Action) ? 'bg-green-400 color-white ' : '') + "flex flex-col w-48 items-center space-y-2 hover:cursor-pointer hover:bg-gray-200 p-2 rounded-lg"} 
+                            onClick={() => {
+                                const updatedActions = [...user.userRole.actions];
+                                if(updatedActions.includes(action as Action)){
+                                    updatedActions.splice(updatedActions.indexOf(action as Action), 1);
+                                } else {
+                                    updatedActions.push(action as Action);
+                                }
+                                setUser({...user, userRole: {...user.userRole, actions: updatedActions}});
+                            }}
+                        >
+                            <div>{key}</div> {/* Display the key */}
                         </div>
                     )
                 })}
