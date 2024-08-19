@@ -1,7 +1,7 @@
 import { Settings } from "../Settings/SettingsConfiguration"
 import { SubMenu } from "../Settings/SubMenuConfiguration"
 import { HiXMark } from "react-icons/hi2"
-import { Page } from "../App"
+import { Page, SettingsContext } from "../App"
 import { SageEmbed } from "@thoughtspot/visual-embed-sdk/react"
 import { createRef, useEffect, useState } from "react"
 import { CloseButton } from "../Settings/Inputs/InputMenus"
@@ -23,6 +23,8 @@ const SageView = ({setShowSage, setSagePrompt, selectedPage, sagePrompt, sageLoa
         sageEmbed.style.zIndex = '9000';
     })
     return (
+        <SettingsContext.Consumer>
+        {({settings}) => (
         <div ref={ref} className="absolute bg-white top-0 right-0 flex flex-col p-2 z-20 overflow-auto" style={{height:sageLoaded? 'calc(100vh - 4rem)' :'500px',marginTop:'4rem',width:'700px',borderLeft:'1px solid #cccccc',borderBottom:'1px solid #cccccc'}}>
             <div className='flex flex-col p-4'>
             <div className="flex flex-row text-2xl hover:font-bold">
@@ -38,7 +40,7 @@ const SageView = ({setShowSage, setSagePrompt, selectedPage, sagePrompt, sageLoa
                 onSageEmbedQuery={()=>{
                     setSageLoaded(true);
                 }}
-                dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : ''}
+                dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : settings.subMenus[0].worksheet}
                 frameParams={{width: '100%', height: '100%'}}
                 searchOptions={{
                     searchQuery: sagePrompt,
@@ -65,6 +67,8 @@ const SageView = ({setShowSage, setSagePrompt, selectedPage, sagePrompt, sageLoa
                 )}
             {/* <button onClick={()=>pinViz()} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Pin Viz</button> */}
         </div> 
+        )}
+        </SettingsContext.Consumer>
     )
 }
 export default SageView;
