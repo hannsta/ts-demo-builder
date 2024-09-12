@@ -1,4 +1,4 @@
-import { AddButton, RemoveButton, TextInput } from "./Inputs/InputMenus";
+import { AddButton, RemoveButton, SelectInput, TextInput } from "./Inputs/InputMenus";
 
 interface FiltersConfigurationProps {
     filters: Filter[],
@@ -11,6 +11,7 @@ export interface Filter {
 export enum FilterType {
     ATTRIBUTE = "attribute",
     MEASURE = "measure",
+    DATE = "date"
 }
 
 const FiltersConfiguration: React.FC<FiltersConfigurationProps> = ({filters, setFilters}) => {
@@ -28,6 +29,12 @@ const FiltersConfiguration: React.FC<FiltersConfigurationProps> = ({filters, set
                             setFilters(updatedFilters);
                         }
                         }/>
+                        <SelectInput label={"Type"} value={filter.type} setValue={(type) => {
+                            const updatedFilters = [...filters];
+                            updatedFilters[index].type = type as FilterType;
+                            setFilters(updatedFilters);
+                        }
+                        } options={[FilterType.ATTRIBUTE, FilterType.MEASURE, FilterType.DATE]}/>
                         <RemoveButton onClick={() => {
                             const updatedFilters = [...filters];
                             updatedFilters.splice(index, 1);

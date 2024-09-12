@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Settings } from '../Settings/SettingsConfiguration';
-import { Filter } from '../Settings/FiltersConfiguration';
+import { Settings } from '../../Settings/SettingsConfiguration';
+import { Filter } from '../../Settings/FiltersConfiguration';
 import exp from 'constants';
 import { MultiSelect } from 'react-multi-select-component';
 import { RuntimeFilter, RuntimeFilterOp } from '@thoughtspot/visual-embed-sdk';

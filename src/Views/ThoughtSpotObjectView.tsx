@@ -2,7 +2,7 @@ import { LiveboardEmbed, PreRenderedLiveboardEmbed, RuntimeFilter, SearchEmbed }
 import { Settings } from "../Settings/SettingsConfiguration";
 import { ThoughtSpotObject, ThoughtSpotObjectType } from "../Settings/ThoughtSpotObjectConfiguration";
 import { SubMenu } from "../Settings/SubMenuConfiguration";
-import AttributeFilter from "./AttributeFilter";
+import AttributeFilter from "./Filters/AttributeFilter";
 import { useState } from "react";
 import { PageType } from "../App";
 import CustomActionPopup from "./Popups/CustomActionPopup";
@@ -10,6 +10,8 @@ import { User } from "../Settings/UserConfiguration";
 import VizSelector, { Viz } from "./Popups/VizSelector";
 import { Action, AnswerService, HostEvent } from "@thoughtspot/visual-embed-sdk";
 import { createClientWithoutAuth } from "../Util/Util";
+import { FilterType } from "../Settings/FiltersConfiguration";
+import DateFilter from "./Filters/DateFilter";
 
 
 
@@ -63,9 +65,20 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
 
                             {subMenu.filters.map((filter, index) => {
                                 return (
-                                    <AttributeFilter key={index} filter={filter} worksheet={subMenu.worksheet} settings={settings} setFilter={(filter) => 
-                                        updateFilters([filter])
-                                    }/>
+                                    <>
+                                    {filter.type == FilterType.ATTRIBUTE && (
+                                        <AttributeFilter key={index} filter={filter} worksheet={subMenu.worksheet} settings={settings} setFilter={(filter) => 
+                                            updateFilters([filter])
+                                        }/>
+                                    )}
+                                    {filter.type == FilterType.DATE && (
+                                        <DateFilter key={index} filter={filter} worksheet={subMenu.worksheet} settings={settings} setFilter={(filter) =>
+                                            updateFilters([filter])
+                                        }/>
+                                    )}
+
+                                    </>
+                                
                                 );
                             })}
                         </div>
