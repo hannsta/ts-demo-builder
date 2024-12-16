@@ -410,7 +410,7 @@ function App() {
               visibleActions={[Action.Save, Action.Pin, Action.DrillDown,Action.Explore,Action.SpotIQAnalyze,Action.Share,Action.Download,Action.AddFilter]}
               hideSageAnswerHeader={true}
               hideWorksheetSelector={true}
-              dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : settings.subMenus[0].worksheet}
+              dataSource={selectedPage?.subMenu ? selectedPage.subMenu.worksheet : (settings.subMenus[0] ? settings.subMenus[0].worksheet : '')}
               ref={sageEmbedRef}
               preRenderId="sageEmbed"
               frameParams={{width: '100%', height: '100%'}}
