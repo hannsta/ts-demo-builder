@@ -54,7 +54,7 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
             })
         })
     }
-    console.log(user.userRole.actions)
+    console.log(user)
     return (
         <div className='flex flex-col p-8 w-full h-full space-y-2' style={{background:settings.style.backgroundColor,overflow:'auto'}}>
             <div className="mb-4">
@@ -102,8 +102,8 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
             </div>
             {thoughtSpotObject.type == ThoughtSpotObjectType.LIVEBOARD && (
                 <LiveboardEmbed
-                    hiddenActions={user.userRole.name != "Custom" ? user.userRole.actions  : undefined}
-                    visibleActions={user.userRole.name == "Custom" ? user.userRole.actions : undefined}
+                    hiddenActions={user.userRole.hiddenActions ? user.userRole.hiddenActions : undefined}
+                    visibleActions={user.userRole.visibleActions ? user.userRole.visibleActions : undefined}
                     onCustomAction={(data)=>{
                         console.log(data.data)
                         setCustomActionData(data.data);
@@ -116,8 +116,8 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
             )}
             {thoughtSpotObject.type == ThoughtSpotObjectType.ANSWER && (
                 <SearchEmbed
-                    hiddenActions={user.userRole.actions}
-
+                    hiddenActions={user.userRole.hiddenActions}
+                    visibleActions={user.userRole.visibleActions}
                     onCustomAction={(data)=>{
                         console.log(data.data)
                         setCustomActionData(data.data);

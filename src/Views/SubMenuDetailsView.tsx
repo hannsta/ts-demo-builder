@@ -32,13 +32,14 @@ const SubMenuDetailsView: React.FC<SubMenuDetailsViewProps> = ({subMenu}) => {
             setWorksheetTML(tml);
         })
     }, [subMenu])
+
     return(
         <SettingsContext.Consumer>
             {({settings}) => (
         <div style={{background:settings.style.tileColor}} className="shadow-md hover:shadow-lg p-6 rounded-md flex flex-col space-x-2 mt-8 w-full">
             {worksheetTML && (
                 <>
-                    <div className='text-lg font-bold'>{worksheetTML.worksheet ? worksheetTML.worksheet.name : "Invalid Worksheet"}</div>  
+                    <div className='text-lg font-bold'>{worksheetTML.worksheet ? worksheetTML.worksheet.name : ( worksheetTML.model.name ?  worksheetTML.model.name: "Invalid Worksheet")}</div>  
                 </>
             )}
 

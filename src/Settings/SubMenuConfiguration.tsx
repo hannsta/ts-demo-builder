@@ -66,7 +66,10 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, set
         {worksheetSearchVisible && (
                 <ThoughtSpotObjectSearch
                     type={ThoughtSpotObjectType.WORKSHEET}
-                    setObject={(object) => setSubMenu({...subMenu, worksheet: object.uuid})}
+                    setObject={(object) => {
+                        setSubMenu({...subMenu, worksheet: object.uuid})
+                        setWorksheetSearchVisible(false)
+                    }}
                     closePopup={()=>setWorksheetSearchVisible(false)} />
                 )}
         {showDetails && (

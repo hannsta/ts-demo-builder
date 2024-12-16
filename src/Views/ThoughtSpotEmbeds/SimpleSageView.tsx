@@ -15,7 +15,7 @@ const SimpleSageView: React.FC<SimpleSageProps> = ({simpleSage}) => {
                 worksheetId: simpleSage.worksheet,
                 frameParams: {
                     width:'100%',
-                    height:'800px'
+                    height:'100%'
                 },
                 customizations:{
                     style:{
@@ -35,7 +35,14 @@ const SimpleSageView: React.FC<SimpleSageProps> = ({simpleSage}) => {
 
     },[])
     return (
-        <div id="conversation"></div>
+
+        <>
+        {simpleSage.worksheet ? 
+            <div className="h-full" id="conversation"></div>
+            :
+            <div>Please select a worksheet in the Settings menu</div>
+        }
+        </>
     )
 }
 export default SimpleSageView;

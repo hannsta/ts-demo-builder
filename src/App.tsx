@@ -393,7 +393,8 @@ function App() {
             <PreRenderedLiveboardEmbed
               key={user.name}
               ref={liveboardEmbedRef}
-              hiddenActions={user.userRole.actions}
+              visibleActions={user.userRole.visibleActions ? user.userRole.visibleActions : undefined}
+              //hiddenActions={user.userRole.hiddenActions ? user.userRole.hiddenActions : undefined}
               preRenderId="liveboardEmbed"
               liveboardId={''}//selectedThoughtSpotObject?.type == ThoughtSpotObjectType.LIVEBOARD && selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''
               />

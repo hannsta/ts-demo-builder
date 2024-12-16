@@ -5,25 +5,29 @@ import ActionSelection from "./Inputs/ActionSelection";
 export const DefaultUserRoles: UserRole[] = [
     {
         name: "Read Only",
-        actions: [Action.MakeACopy, Action.ExportTML, Action.ImportTML, Action.Explore, Action.Download, Action.Edit, Action.Save, Action.Share, Action.Pin, Action.Schedule, Action.SpotIQAnalyze]
+        hiddenActions: undefined,
+        visibleActions: [Action.DrillDown]
     },
     {
         name: "Analyst",
-        actions: [Action.Edit, Action.Save, Action.Share, Action.Pin]
+        visibleActions: [Action.Pin, Action.DrillDown, Action.SpotIQAnalyze, Action.SageAnswerFeedback],
+        hiddenActions: undefined
     },
     {
         name: "Power User",
-        actions: []
+        visibleActions: undefined,
+        hiddenActions: undefined
     },
     {
         name: "Custom",
-        actions: []
+        visibleActions: [],
+        hiddenActions: undefined
     }
 ]
 interface UserRole {
     name: string,
-    actions: Action[],
-
+    hiddenActions: Action[] | undefined,
+    visibleActions: Action[] | undefined
 }
 export interface User {
     name: string,
@@ -52,7 +56,7 @@ const UserConfiguration: React.FC<UserConfigurationProps> = ({user, setUser, del
                 if(updatedRole){
                     setUser({...user, userRole: updatedRole});
                 }else{
-                    setUser({...user, userRole: {name: "Custom", actions: []}});
+                    setUser({...user, userRole: {name: "Custom", hiddenActions: undefined, visibleActions:[]}});
                 }
             }} options={DefaultUserRoles.map(role => role.name)}/>
             

@@ -248,7 +248,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                         />
                     ))}
                     {users && (
-                        <AddButton isPrimary={true} label="Add User" onClick={() => setUsers([...users, {name: "", userRole: {name: "", actions: []}, selfService: true}])}/>
+                        <AddButton isPrimary={true} label="Add User" onClick={() => setUsers([...users, {name: "", userRole: {name: "", visibleActions: undefined, hiddenActions: []}, selfService: true}])}/>
                     )}
                 </div>
                 </div>

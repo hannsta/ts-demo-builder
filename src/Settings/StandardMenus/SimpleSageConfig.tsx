@@ -47,15 +47,20 @@ const SimpleSageConfig: React.FC<SimpleSageConfigProps> = ({simpleSage, setSimpl
                 {worksheetSearchVisible && (
                     <ThoughtSpotObjectSearch
                         type={ThoughtSpotObjectType.WORKSHEET}
-                        setObject={(object) => setSimpleSage({...simpleSage, worksheet: object.uuid})}
+                        setObject={(object) => {
+                            setSimpleSage({...simpleSage, worksheet: object.uuid})
+                            setWorksheetSearchVisible(false)
+                        }}
                         closePopup={()=>setWorksheetSearchVisible(false)} />
                 )}
                 <div className='flex flex-row w-full justify-end items-center'>
                     <div className='flex flex-col mr-8 text-slate-400 font-bold'>
-                        Sage
+                        Spotter
                     </div>
                     <button 
-                        onClick={() => setSimpleSage({...simpleSage, enabled: !simpleSage.enabled})}
+                        onClick={() => {
+                            setSimpleSage({...simpleSage, enabled: !simpleSage.enabled})
+                        }}
                     className={(simpleSage.enabled ? "bg-green-500 hover:bg-green-600" : "bg-gray-300 hover:bg-gray-400") + " w-24 h-10 text-white hover:text-white font-bold py-2 px-4 rounded"}>
                         {simpleSage.enabled ? "Enabled" : "Disabled"}
                     </button>

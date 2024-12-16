@@ -47,7 +47,10 @@ const SimpleSearchConfig: React.FC<SimpleSearchConfigProps> = ({simpleSearch, se
                 {worksheetSearchVisible && (
                     <ThoughtSpotObjectSearch
                         type={ThoughtSpotObjectType.WORKSHEET}
-                        setObject={(object) => setSimpleSearch({...simpleSearch, worksheet: object.uuid})}
+                        setObject={(object) => {
+                            setSimpleSearch({...simpleSearch, worksheet: object.uuid})
+                            setWorksheetSearchVisible(false)
+                        }}
                         closePopup={()=>setWorksheetSearchVisible(false)} />
                 )}
                 <div className='flex flex-row w-full justify-end items-center'>
