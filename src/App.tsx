@@ -26,6 +26,7 @@ import TopNav from './Views/TopNav';
 import SimpleSageView from './Views/ThoughtSpotEmbeds/SimpleSageView';
 import SimpleSearchView from './Views/ThoughtSpotEmbeds/SimpleSearchView';
 import SimpleFullAppView from './Views/ThoughtSpotEmbeds/FullAppView';
+import PresentMode from './Views/Popups/PresentMode';
 
 /*  Main Application Component
 
@@ -98,6 +99,7 @@ function App() {
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showSage, setShowSage] = useState<boolean>(false);
   const [loginPopupVisible, setLoginPopupVisible] = useState<boolean>(false);
+  const [presentModeVisible, setPresentModeVisible] = useState<boolean>(false);
 
   // State for the sage prompt
   const [sageLoaded, setSageLoaded] = useState<boolean>(false);
@@ -270,6 +272,9 @@ function App() {
       }
     }
   }
+  const presentMode = () =>{
+    setPresentModeVisible(true);
+  }
   return (
     <TSLoginContext.Provider value={{isLoggedIn, setIsLoggedIn}}>
       <SettingsContext.Provider value={{settings, setSettings}}>
@@ -332,7 +337,7 @@ function App() {
                       
                       {/* ThoughtSpot Object View */}
                       {selectedThoughtSpotObject && isLoggedIn && (
-                        <ThoughtSpotObjectView user={user} setShowSage={setShowSage} updateFilters={updateFilters} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
+                        <ThoughtSpotObjectView user={user} setShowSage={setShowSage} updateFilters={updateFilters} presentMode={presentMode} settings={settings} type={selectedPage?.type ? selectedPage.type : null} subMenu={selectedPage?.subMenu ? selectedPage.subMenu : null} thoughtSpotObject={selectedThoughtSpotObject}/>
                       )}
                       {selectedPage && selectedPage.type == PageType.SIMPLESAGE && (
                         <SimpleSageView simpleSage={settings.simpleSage} />
@@ -416,6 +421,9 @@ function App() {
               frameParams={{width: '100%', height: '100%'}}
               />
             </div>
+          )}
+          {presentModeVisible && (
+            <PresentMode setPresentModeVisible={setPresentModeVisible} liveboardId={selectedThoughtSpotObject?.type == ThoughtSpotObjectType.LIVEBOARD && selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''}/>
           )}
       </UserContext.Provider>
     </SettingsContext.Provider>      

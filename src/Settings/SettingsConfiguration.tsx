@@ -22,6 +22,7 @@ import GitSettings from "./Git/GitSettings";
 import SimpleSageConfig, { SimpleSage } from "./StandardMenus/SimpleSageConfig";
 import SimpleSearchConfig, { SimpleSearch } from "./StandardMenus/SimpleSearchConfig";
 import SimpleFullAppConfig, { SimpleFullApp } from "./StandardMenus/SimpleFullAppConfig";
+import OtherSettingsConfiguration, { OtherSettings } from "./OtherSettingsConfiguration";
 
 export interface Settings {
     name: string,
@@ -36,7 +37,8 @@ export interface Settings {
     simpleSage: SimpleSage,
     simpleSearch: SimpleSearch,
     simpleFullApp: SimpleFullApp,
-    users: User[]
+    users: User[],
+    otherSettings: OtherSettings
 }
 interface SettingsProps {
     settings: Settings,
@@ -58,6 +60,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     const [simpleSage, setSimpleSage] = useState<SimpleSage>(settings.simpleSage)
     const [simpleSearch, setSimpleSearch] = useState<SimpleSearch>(settings.simpleSearch)
     const [simpleFullApp, setSimpleFullApp] = useState<SimpleFullApp>(settings.simpleFullApp)
+    const [otherSettings, setOtherSettings] = useState<OtherSettings>(settings.otherSettings)
     const [style, setStyle] = useState<Style>(settings.style)
     const [users, setUsers] = useState<User[]>(settings.users)
     const imageInput = useRef<HTMLInputElement>(null)
@@ -101,7 +104,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     }
     const applySettings = () => {
         window.history.pushState('', 'Application', '/');
-        setSettings({name, TSURL, logo, homeImage, subMenus, style, homePage, myReports, favorites, users, simpleSearch, simpleSage, simpleFullApp})
+        setSettings({name, TSURL, logo, homeImage, subMenus, style, homePage, myReports, favorites, users, simpleSearch, simpleSage, simpleFullApp, otherSettings})
     }
     /* Function to save settings to file */
     const saveSettings = () =>{
@@ -250,6 +253,12 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                     {users && (
                         <AddButton isPrimary={true} label="Add User" onClick={() => setUsers([...users, {name: "", userRole: {name: "", visibleActions: undefined, hiddenActions: []}, selfService: true}])}/>
                     )}
+                </div>
+
+                {/* Other Settings */}
+                <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
+                    <div className="font-bold text-lg mt-1 mb-1">Other Settings</div>
+                    <OtherSettingsConfiguration otherSettings={otherSettings} setOtherSettings={setOtherSettings}/>
                 </div>
                 </div>
                 </div>

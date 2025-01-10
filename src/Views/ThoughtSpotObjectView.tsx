@@ -12,6 +12,8 @@ import { Action, AnswerService, HostEvent } from "@thoughtspot/visual-embed-sdk"
 import { createClientWithoutAuth } from "../Util/Util";
 import { FilterType } from "../Settings/FiltersConfiguration";
 import DateFilter from "./Filters/DateFilter";
+import { FaCog } from "react-icons/fa";
+import { HiComputerDesktop } from "react-icons/hi2";
 
 
 
@@ -22,13 +24,15 @@ interface ThoughtSpotObjectViewProps {
     subMenu: SubMenu | null,
     settings: Settings,
     updateFilters: (runtimeFilters: RuntimeFilter[]) => void,
+    presentMode: () => void,
     setShowSage: (showSage: boolean) => void
 
 }
-const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thoughtSpotObject, type, subMenu, settings, updateFilters, setShowSage }) => {
+const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thoughtSpotObject, type, subMenu, settings, updateFilters,presentMode, setShowSage }) => {
     const [customActionPopupVisible, setCustomActionPopupVisible] = useState<boolean>(false);
     const [customActionData, setCustomActionData] = useState<any>(null);
     const [vizSelectorVisible, setVizSelectorVisible] = useState<boolean>(false);
+    const [moreOptionsVisible, setMoreOptionsVisible] = useState<boolean>(false);
     const PinViz = async (viz: Viz) => {
         let client =  createClientWithoutAuth(settings.TSURL);
         client.exportMetadataTML({
@@ -58,7 +62,19 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
     return (
         <div className='flex flex-col p-8 w-full h-full space-y-2' style={{background:settings.style.backgroundColor,overflow:'auto'}}>
             <div className="mb-4">
-                <div className="font-bold text-xl mb-4" style={{color:settings.style.textColor}} dangerouslySetInnerHTML={{__html: thoughtSpotObject.name}}></div>
+                <div className="flex flex-row items-center mb-4">
+                    <div className="font-bold text-xl"  style={{color:settings.style.textColor}} dangerouslySetInnerHTML={{__html: thoughtSpotObject.name}}></div>
+                    <div className="text-gray-300 ml-2 hover:cursor-pointer" onClick={()=>setMoreOptionsVisible(!moreOptionsVisible)}>
+                    <FaCog></FaCog>
+                    </div>
+                    {moreOptionsVisible && (
+                        <div className="flex flex-row ml-2 space-x-2">
+                            <div className="text-gray-300 ml-2 hover:cursor-pointer" onClick={presentMode}>
+                                <HiComputerDesktop></HiComputerDesktop>
+                            </div>
+                        </div>
+                    )}
+                </div>
                 {subMenu?.filters && subMenu.filters.length > 0 && (
                     <div className='flex flex-col space-y-2  mb-4'>
                         <div className="flex flex-row space-x-2">
