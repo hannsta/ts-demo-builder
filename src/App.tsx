@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import SettingsConfiguration, { Settings } from './Settings/SettingsConfiguration';
 import useLocalStorage from './Util/LocalStorage';
@@ -27,6 +27,12 @@ import SimpleSageView from './Views/ThoughtSpotEmbeds/SimpleSageView';
 import SimpleSearchView from './Views/ThoughtSpotEmbeds/SimpleSearchView';
 import SimpleFullAppView from './Views/ThoughtSpotEmbeds/FullAppView';
 import PresentMode from './Views/Popups/PresentMode';
+import { ChatIcon } from './Views/BodylessSpotter/Chat/Icon';
+import { Chat } from './Views/BodylessSpotter/Chat/Chat';
+import { Thread } from './Views/BodylessSpotter/Services/chat-service-completions';
+import { useStore } from './Views/BodylessSpotter/Store';
+import { FaCross } from 'react-icons/fa';
+import { CloseButton } from './Settings/Inputs/InputMenus';
 
 /*  Main Application Component
 
@@ -110,6 +116,12 @@ function App() {
   const liveboardEmbedRef = useEmbedRef<typeof LiveboardEmbed>();
   const sageEmbedRef = useEmbedRef<typeof SageEmbed>();
   
+  const [showChat, setShowChat] = useState<boolean>(false);
+  const threadRef = useRef<Thread>();
+  const clearMessages = useStore((state: any) => state.clearMessages);
+
+
+
   // Function to move the sage embed to the front or back of the page
   const updateSageVisibility = () => {
     let sageEmbed: any = document.getElementById("tsEmbed-pre-render-wrapper-sageEmbed");
@@ -124,6 +136,12 @@ function App() {
   }  
   useEffect(() => {
     setSageLoaded(false);
+    if (selectedPage?.subMenu?.worksheet){
+      threadRef.current = new Thread(selectedPage?.subMenu?.worksheet, settings.TSURL);
+    }else{
+      threadRef.current = new Thread(settings.subMenus[0]?.worksheet, settings.TSURL);
+    }
+    clearMessages();
   },[selectedPage?.subMenu])
 
   useEffect(() => {
@@ -425,6 +443,21 @@ function App() {
           {presentModeVisible && (
             <PresentMode setPresentModeVisible={setPresentModeVisible} liveboardId={selectedThoughtSpotObject?.type == ThoughtSpotObjectType.LIVEBOARD && selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''}/>
           )}
+          {!showChat ? 
+          <div  style={{display:'flex',position:'fixed',bottom:24, right:24, zIndex:9999, width:64, height:64}}>
+            <div className="p-4" style={{width:64, height:64, borderRadius: 100, backgroundColor:settings.style.headerColor}}>
+              <div className='hover:cursor-pointer' onClick={()=>setShowChat(true)}>
+              <ChatIcon/>
+              </div>
+            </div>
+          </div>
+            :
+            <div className='hover:cursor-pointer bg-white border-2 rounded-md shadow-md align-center flex-col p-6' style={{display:'flex',position:'fixed',bottom:24, right:24, zIndex:9999,height:'calc(100vh - 8rem)', width:600}}>
+            <CloseButton onClick={() => setShowChat(false)}/>         
+            <Chat className="chat-container" threadRef={threadRef} />
+            </div>
+          }
+
       </UserContext.Provider>
     </SettingsContext.Provider>      
     </TSLoginContext.Provider>

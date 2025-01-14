@@ -9,7 +9,8 @@ interface OtherSettingsConfigurationProps {
     setOtherSettings: (otherSettings: OtherSettings) => void
 }
 export interface OtherSettings {
-    tabSwitchFrequency: number
+    tabSwitchFrequency: number,
+    bodyLessSpotterName: string
 }
 
 const OtherSettingsConfiguration: React.FC<OtherSettingsConfigurationProps> = ({otherSettings, setOtherSettings}) => {
@@ -19,6 +20,9 @@ const OtherSettingsConfiguration: React.FC<OtherSettingsConfigurationProps> = ({
             >
                 <TextInput label={'Tab Switch Frequency (sec)'} value={otherSettings && otherSettings.tabSwitchFrequency ? otherSettings.tabSwitchFrequency.toString() : '30'} setValue={(val)=>{
                     setOtherSettings({...otherSettings, tabSwitchFrequency: Number(val)});
+                }}/>
+                <TextInput label={'Bodyless Spotter Name'} value={otherSettings.bodyLessSpotterName} setValue={(val)=>{
+                    setOtherSettings({...otherSettings, bodyLessSpotterName: val});
                 }}/>
             </div>
         </div>

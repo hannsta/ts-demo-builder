@@ -30,7 +30,7 @@ const TopNav: React.FC<TopNavProps> = ({user, setUser, showSettings, setShowSett
                     </div>
                     <div className='flex flex-row space-x-4'>
 
-                        <button onClick={()=>setShowSage(true)} style={{color:settings.style.headerTextColor}} className="flex flex-row items-center p-2 rounded-lg hover:bg-gray-200"> Ask Sage </button>
+                        {/* <button onClick={()=>setShowSage(true)} style={{color:settings.style.headerTextColor}} className="flex flex-row items-center p-2 rounded-lg hover:bg-gray-200"> Ask Sage </button> */}
                         <UserProfile setUser={setUser} user={user}/>
                     </div>
                     {showSettings && (

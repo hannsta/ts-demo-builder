@@ -54,7 +54,7 @@ export const defaultSettings: Settings = {
         selfService: true
       }
     ],
-    otherSettings: {tabSwitchFrequency: 30}
+    otherSettings: {tabSwitchFrequency: 30, bodyLessSpotterName: 'Spotter'}
   }
   export const FontFamilies = [
     "Fjalla One",
