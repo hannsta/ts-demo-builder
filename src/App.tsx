@@ -457,9 +457,14 @@ function App() {
             </div>
           </div>
             :
-            <div className='hover:cursor-pointer bg-white border-2 rounded-md shadow-md align-center flex-col p-6' style={{display:'flex',position:'fixed',bottom:24, right:24, zIndex:9999,height:'calc(100vh - 8rem)', width:600}}>
-            <CloseButton onClick={() => setShowChat(false)}/>         
-            <Chat className="chat-container" threadRef={threadRef} />
+            <div className=' bg-white border-2 shadow-md align-center flex-col' style={{display:'flex',position:'fixed',bottom:24, right:24, zIndex:9999,height:'calc(100vh - 8rem)', width:600, borderRadius:10}}>
+              <div className='flex align-center items-center justify-between p-4 py-6'  style={{height:'2rem', background:settings.style.headerColor, borderTopLeftRadius:10, borderTopRightRadius:10}}>
+                <div className="font-bold" style={{color:'white'}}>{settings.otherSettings?.bodyLessSpotterName? settings.otherSettings?.bodyLessSpotterName : 'My Analytics Assistant'}</div>
+                <CloseButton onClick={() => setShowChat(false)}/>  
+              </div>
+              <div className="p-4 hover:cursor-pointer" style={{height:'calc(100vh - 12rem)'}}>
+                <Chat className="chat-container" threadRef={threadRef} />
+              </div>       
             </div>
           }
 

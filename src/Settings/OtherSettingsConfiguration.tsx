@@ -21,7 +21,7 @@ const OtherSettingsConfiguration: React.FC<OtherSettingsConfigurationProps> = ({
                 <TextInput label={'Tab Switch Frequency (sec)'} value={otherSettings && otherSettings.tabSwitchFrequency ? otherSettings.tabSwitchFrequency.toString() : '30'} setValue={(val)=>{
                     setOtherSettings({...otherSettings, tabSwitchFrequency: Number(val)});
                 }}/>
-                <TextInput label={'Bodyless Spotter Name'} value={otherSettings.bodyLessSpotterName} setValue={(val)=>{
+                <TextInput label={'Bodyless Spotter Name'} value={otherSettings?.bodyLessSpotterName ? otherSettings?.bodyLessSpotterName : 'My Analytics Assistant'}  setValue={(val)=>{
                     setOtherSettings({...otherSettings, bodyLessSpotterName: val});
                 }}/>
             </div>
