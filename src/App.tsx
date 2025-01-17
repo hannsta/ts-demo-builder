@@ -120,7 +120,9 @@ function App() {
   const threadRef = useRef<Thread>();
   const clearMessages = useStore((state: any) => state.clearMessages);
 
-
+  useEffect(()=>{
+    startNewThread();
+  },[showChat])
 
   // Function to move the sage embed to the front or back of the page
   const updateSageVisibility = () => {
@@ -134,14 +136,17 @@ function App() {
       sageEmbed.style.zIndex = 0;
     }
   }  
-  useEffect(() => {
-    setSageLoaded(false);
+  const startNewThread = () =>{
     if (selectedPage?.subMenu?.worksheet){
       threadRef.current = new Thread(selectedPage?.subMenu?.worksheet, settings.TSURL);
     }else{
       threadRef.current = new Thread(settings.subMenus[0]?.worksheet, settings.TSURL);
     }
     clearMessages();
+  }
+  useEffect(() => {
+    setSageLoaded(false);
+    startNewThread();
   },[selectedPage?.subMenu])
 
   useEffect(() => {

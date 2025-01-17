@@ -47,14 +47,6 @@ export const Chat: React.FC<ChatProps> = ({ threadRef, className }) => {
     setLoading("Setting up the intelligence");
     threadRef.current?.isReady.then(() => {
       setLoading(false);
-      console.log(threadRef.current);
-      // threadRef.current.setWaitCb(() => {
-      //   //@ts-ignore
-      //   let { promise, resolve, reject } = Promise.withResolvers();
-      //   setShowWait(true);
-      //   showWaitResolver.current = resolve;
-      //   return promise;
-      // });
     });
   }, [threadRef.current]);
 

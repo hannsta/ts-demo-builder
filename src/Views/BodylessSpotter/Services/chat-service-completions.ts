@@ -8,7 +8,7 @@ export class Thread {
   public conversation: any;
   public messages: any[] = [];
   constructor(worksheetId: string, TSURL: string) {
-    console.log("initting")
+    console.log("initting",worksheetId,TSURL)
 
     this.isReady = this.init(worksheetId, TSURL);
     console.log("inited")
