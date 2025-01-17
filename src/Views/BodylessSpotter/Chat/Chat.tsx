@@ -64,7 +64,7 @@ export const Chat: React.FC<ChatProps> = ({ threadRef, className }) => {
           <div className="h-full flex align-center items-center justify-center flex-col">
             <img src={settings.logo} alt="logo"  className="h-40 mb-2"/>
             <div className="text-2xl font-bold">
-            {settings.otherSettings.bodyLessSpotterName}
+            {settings.otherSettings.bodyLessSpotterName ? settings.otherSettings.bodyLessSpotterName : 'My Analytics Assistant'}
             </div>
           </div>
         )}
