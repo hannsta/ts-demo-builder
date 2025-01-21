@@ -12,6 +12,7 @@ const PresentMode: React.FC<PresentModeProps> = ({ setPresentModeVisible, livebo
     const [tabIds, setTabIds] = useState<string[]>([]);
     const [loaded, setLoaded] = useState<boolean>(false);
     const currentTabIndex = useRef(0); // Mutable ref to store the current index
+    const intervalTriggered = useRef(false);
     const embedRef = useEmbedRef<typeof LiveboardEmbed>();
     const intervalRef = useRef<NodeJS.Timeout | null>(null); // Ref to store the interval
     const settings = useContext(SettingsContext).settings
@@ -54,8 +55,10 @@ const PresentMode: React.FC<PresentModeProps> = ({ setPresentModeVisible, livebo
 
     const onLoad = () => {
         setTimeout(()=>{
+            if (intervalTriggered.current) return;
             //Start interval to cycle through visualizations
             intervalRef.current = setInterval(() => {
+                intervalTriggered.current = true;
                 if (!loaded) return;
                 if (tabIds.length > 1){
                     currentTabIndex.current = (currentTabIndex.current + 1) % tabIds.length;
@@ -67,6 +70,7 @@ const PresentMode: React.FC<PresentModeProps> = ({ setPresentModeVisible, livebo
 
             }, (settings.otherSettings && settings.otherSettings.tabSwitchFrequency) ? settings.otherSettings.tabSwitchFrequency  * 1000 : 30000);
         },2000)
+
     };
 
     return (
