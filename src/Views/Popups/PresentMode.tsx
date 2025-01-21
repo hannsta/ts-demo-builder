@@ -32,7 +32,7 @@ const PresentMode: React.FC<PresentModeProps> = ({ setPresentModeVisible, livebo
                 const tml = JSON.parse(result[0].edoc);
                 console.log(tml)
                 // @ts-ignore
-                if (tml.liveboard.layout.tabs && tml.liveboard.layout.tabs.length > 1){
+                if (tml.liveboard.layout && tml.liveboard.layout.tabs && tml.liveboard.layout.tabs.length > 1){
                     tml.liveboard.layout.tabs.forEach((tab: any) => {
                         tabList.push(tab.id);
                     });
