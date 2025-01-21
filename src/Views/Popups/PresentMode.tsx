@@ -10,6 +10,7 @@ interface PresentModeProps {
 
 const PresentMode: React.FC<PresentModeProps> = ({ setPresentModeVisible, liveboardId }) => {
     const [tabIds, setTabIds] = useState<string[]>([]);
+    const [loaded, setLoaded] = useState<boolean>(false);
     const currentTabIndex = useRef(0); // Mutable ref to store the current index
     const embedRef = useEmbedRef<typeof LiveboardEmbed>();
     const intervalRef = useRef<NodeJS.Timeout | null>(null); // Ref to store the interval
@@ -31,10 +32,13 @@ const PresentMode: React.FC<PresentModeProps> = ({ setPresentModeVisible, livebo
                 const tml = JSON.parse(result[0].edoc);
                 console.log(tml)
                 // @ts-ignore
-                tml.liveboard.layout.tabs.forEach((tab: any) => {
-                    tabList.push(tab.id);
-                });
+                if (tml.liveboard.layout.tabs && tml.liveboard.layout.tabs.length > 1){
+                    tml.liveboard.layout.tabs.forEach((tab: any) => {
+                        tabList.push(tab.id);
+                    });
+                }
                 setTabIds(tabList);
+                setLoaded(true);
             })
             .catch((error) => {
                 console.error(error);
@@ -52,9 +56,15 @@ const PresentMode: React.FC<PresentModeProps> = ({ setPresentModeVisible, livebo
         setTimeout(()=>{
             //Start interval to cycle through visualizations
             intervalRef.current = setInterval(() => {
-                if (!tabIds.length) return;
-                currentTabIndex.current = (currentTabIndex.current + 1) % tabIds.length;
-                embedRef.current.trigger(HostEvent.SetActiveTab, {tabId: tabIds[currentTabIndex.current]})
+                if (!loaded) return;
+                if (tabIds.length > 1){
+                    currentTabIndex.current = (currentTabIndex.current + 1) % tabIds.length;
+                    embedRef.current.trigger(HostEvent.SetActiveTab, {tabId: tabIds[currentTabIndex.current]})
+                }else{
+                    console.log("here")
+                    embedRef.current.trigger(HostEvent.Reload)
+                }
+
             }, (settings.otherSettings && settings.otherSettings.tabSwitchFrequency) ? settings.otherSettings.tabSwitchFrequency  * 1000 : 30000);
         },2000)
     };
@@ -74,7 +84,7 @@ const PresentMode: React.FC<PresentModeProps> = ({ setPresentModeVisible, livebo
                     Close
                 </button>
                 <div className="flex w-full h-full">
-                    {tabIds.length > 0 && (
+                    {loaded && (
                         <LiveboardEmbed
                             ref={embedRef}
                             liveboardId={liveboardId}
