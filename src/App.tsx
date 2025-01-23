@@ -448,25 +448,32 @@ function App() {
           {presentModeVisible && (
             <PresentMode setPresentModeVisible={setPresentModeVisible} liveboardId={selectedThoughtSpotObject?.type == ThoughtSpotObjectType.LIVEBOARD && selectedThoughtSpotObject?.uuid ? selectedThoughtSpotObject.uuid : ''}/>
           )}
-          {!showChat ? 
-          <div  style={{display:'flex',position:'fixed',bottom:24, right:24, zIndex:9999, width:64, height:64}}>
-            <div className="p-4" style={{width:64, height:64, borderRadius: 100, backgroundColor:settings.style.headerColor}}>
-              <div className='hover:cursor-pointer' onClick={()=>setShowChat(true)}>
-              <ChatIcon/>
-              </div>
-            </div>
-          </div>
-            :
-            <div className=' bg-white border-2 shadow-md align-center flex-col' style={{display:'flex',position:'fixed',bottom:24, right:24, zIndex:9999,height:'calc(100vh - 8rem)', width:600, borderRadius:10}}>
-              <div className='flex align-center items-center justify-between p-4 py-6'  style={{height:'2rem', background:settings.style.headerColor, borderTopLeftRadius:10, borderTopRightRadius:10}}>
-                <div className="font-bold" style={{color:'white'}}>{settings.otherSettings?.bodyLessSpotterName? settings.otherSettings?.bodyLessSpotterName : 'My Analytics Assistant'}</div>
-                <CloseButton onClick={() => setShowChat(false)}/>  
-              </div>
-              <div className="p-4 hover:cursor-pointer" style={{height:'calc(100vh - 12rem)'}}>
-                <Chat className="chat-container" threadRef={threadRef} />
-              </div>       
-            </div>
+          {
+            isLoggedIn && !presentModeVisible && (
+              <>
+              {!showChat ? 
+                <div  style={{display:'flex',position:'fixed',bottom:24, right:24, zIndex:9999, width:64, height:64}}>
+                  <div className="p-4" style={{width:64, height:64, borderRadius: 100, backgroundColor:settings.style.headerColor != '#ffffff' ? settings.style.headerColor : settings.style.userIconColor}}>
+                    <div className='hover:cursor-pointer' onClick={()=>setShowChat(true)}>
+                    <ChatIcon/>
+                    </div>
+                  </div>
+                </div>
+                  :
+                  <div className=' bg-white border-2 shadow-md align-center flex-col' style={{display:'flex',position:'fixed',bottom:24, right:24, zIndex:9999,height:'calc(100vh - 8rem)', width:600, borderRadius:10}}>
+                    <div className='flex align-center items-center justify-between p-4 py-6'  style={{height:'2rem', background:settings.style.headerColor, borderTopLeftRadius:10, borderTopRightRadius:10}}>
+                      <div className="font-bold" style={{color:'white'}}>{settings.otherSettings?.bodyLessSpotterName? settings.otherSettings?.bodyLessSpotterName : 'My Analytics Assistant'}</div>
+                      <CloseButton onClick={() => setShowChat(false)}/>  
+                    </div>
+                    <div className="p-4 hover:cursor-pointer" style={{height:'calc(100vh - 12rem)'}}>
+                      <Chat className="chat-container" threadRef={threadRef} />
+                    </div>       
+                  </div>
+                }
+                </>
+            )
           }
+
 
       </UserContext.Provider>
     </SettingsContext.Provider>      

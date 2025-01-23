@@ -76,17 +76,6 @@ const PresentMode: React.FC<PresentModeProps> = ({ setPresentModeVisible, livebo
     return (
         <div className="fixed inset-0 flex flex-col items-center justify-center bg-gray-900 bg-opacity-50 z-50 w-screen h-screen">
             <div className="bg-white p-4 w-screen h-screen" id="present-mode">
-                <button
-                    onClick={() => {
-                        // Clear the interval when closing
-                        if (intervalRef.current) {
-                            clearInterval(intervalRef.current);
-                        }
-                        setPresentModeVisible(false);
-                    }}
-                >
-                    Close
-                </button>
                 <div className="flex w-full h-full">
                     {loaded && (
                         <LiveboardEmbed
@@ -99,6 +88,20 @@ const PresentMode: React.FC<PresentModeProps> = ({ setPresentModeVisible, livebo
                     )}
                 </div>
             </div>
+            <div className="fixed" style={{bottom:25, right: 25}}>
+                <button
+                        onClick={() => {
+                            // Clear the interval when closing
+                            if (intervalRef.current) {
+                                clearInterval(intervalRef.current);
+                            }
+                            setPresentModeVisible(false);
+                        }}
+                    >
+                        Close
+                </button>
+            </div>
+
         </div>
     );
 };
