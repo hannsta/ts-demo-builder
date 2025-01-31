@@ -1,4 +1,4 @@
-import { ConversationEmbed, EmbedEvent } from "@thoughtspot/visual-embed-sdk";
+import { ConversationEmbed, EmbedEvent, RuntimeFilterOp } from "@thoughtspot/visual-embed-sdk";
 import { SageEmbed } from "@thoughtspot/visual-embed-sdk/react";
 import { useEffect } from "react";
 import { SimpleSage } from "../../Settings/StandardMenus/SimpleSageConfig";
@@ -17,6 +17,13 @@ const SimpleSageView: React.FC<SimpleSageProps> = ({simpleSage}) => {
                     width:'100%',
                     height:'100%'
                 },
+                runtimeFilters: [
+                    {
+                        columnName: 'Store Region',
+                        operator: RuntimeFilterOp.IN,
+                        values: ['east']
+                    }
+                ],
                 customizations:{
                     style:{
                         customCSS:{

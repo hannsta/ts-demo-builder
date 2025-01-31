@@ -53,15 +53,17 @@ const SubMenuConfiguration: React.FC<SubMenuConfigurationProps> = ({subMenu, set
                 </div>
             </div>
             <div className='flex flex-row w-full justify-end space-x-4 mt-2'>
-                <button
-                    className="w-24 h-10 bg-gray-200 hover:bg-gray-400 text-black hover:text-white font-bold py-2 px-4 rounded"
-                    onClick={() => setShowDetails(!showDetails)}
-                >
-                    {showDetails ? "Collapse" : "Expand"}
-                </button>
                 <DeleteButton onClick={() => deleteSubMenu(subMenu)}/>
             </div>
         
+        </div>
+        <div>
+        <button
+                className="text-black hover:text-blue-600 text-blue-400 font-bold py-2 px-4 rounded"
+                onClick={() => setShowDetails(!showDetails)}
+            >
+                {showDetails ? "Hide Configuration Options" : "Show Configuration Options"}
+        </button>
         </div>
         {worksheetSearchVisible && (
                 <ThoughtSpotObjectSearch

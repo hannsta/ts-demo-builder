@@ -134,6 +134,7 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
                 <SearchEmbed
                     hiddenActions={user.userRole.hiddenActions}
                     visibleActions={user.userRole.visibleActions}
+                    dataPanelV2={true}
                     onCustomAction={(data)=>{
                         console.log(data.data)
                         setCustomActionData(data.data);

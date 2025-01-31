@@ -63,7 +63,7 @@ const SubMenuDetailsView: React.FC<SubMenuDetailsViewProps> = ({subMenu}) => {
                     <div className="flex flex-col mt-4 h-full">
                         <div className="font-bold text-lg">Search</div>
                         <div className="text-gray-400">Search the worksheet</div>
-                        <SearchEmbed dataSource={subMenu.worksheet} frameParams={{width: '100%', height: '650px'}}/>
+                        <SearchEmbed dataPanelV2={true} dataSource={subMenu.worksheet} frameParams={{width: '100%', height: '650px'}}/>
                     </div>
                 )}
                 {selectedSearchType === SearchType.GUIDED && (
