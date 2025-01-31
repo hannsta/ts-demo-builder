@@ -137,6 +137,7 @@ function App() {
     }
   }  
   const startNewThread = () =>{
+    if (!isLoggedIn) return;
     if (selectedPage?.subMenu?.worksheet){
       threadRef.current = new Thread(selectedPage?.subMenu?.worksheet, settings.TSURL);
     }else{
@@ -261,12 +262,17 @@ function App() {
       console.error('Error logging in', error);
     });
     //test existing login with rest API call
-    let client =  createClientWithoutAuth(settings.TSURL);
-    client.getSystemInformation().then((data: any) => {
-      setIsLoggedIn(true);
-    }).catch((error: any) => {
-      console.log("Not logged in yet");
-    })
+    try{
+      let client =  createClientWithoutAuth(settings.TSURL);
+      client.getSystemInformation().then((data: any) => {
+        setIsLoggedIn(true);
+      }).catch((error: any) => {
+        console.log("Not logged in yet");
+      })
+    }catch(e: any){
+      console.log("Not Logged In Yet")
+    }
+
   }, [settings])
   
   
