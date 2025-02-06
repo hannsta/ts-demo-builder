@@ -54,7 +54,7 @@ import { Message, Worksheet } from "../Store";
   
   function getTokensFromColumnNames(columnNames: string[]) {
 
-    return columnNames.map((c) => `[${c}]`).join(" ");
+    return columnNames.slice(0, 25).map((c) => `[${c}]`).join(" ");
   }
   
   function prettifyDateVal(val: any) {
