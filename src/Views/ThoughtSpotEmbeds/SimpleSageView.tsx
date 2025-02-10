@@ -27,6 +27,7 @@ const SimpleSageView: React.FC<SimpleSageProps> = ({simpleSage}) => {
                     }
                 ],
                 customizations:{
+                    iconSpriteUrl:"https://cdn.jsdelivr.net/gh/hannsta/ts-demo-builder@main/public/sparklesicon.svg",
                     content:{
                         strings:{
                             'Spotter': settings.otherSettings?.spotterName ? settings.otherSettings.spotterName :'Spotter'
