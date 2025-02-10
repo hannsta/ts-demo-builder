@@ -10,7 +10,8 @@ interface OtherSettingsConfigurationProps {
 }
 export interface OtherSettings {
     tabSwitchFrequency: number,
-    bodyLessSpotterName: string
+    bodyLessSpotterName: string,
+    spotterName: string
 }
 
 const OtherSettingsConfiguration: React.FC<OtherSettingsConfigurationProps> = ({otherSettings, setOtherSettings}) => {
@@ -20,6 +21,9 @@ const OtherSettingsConfiguration: React.FC<OtherSettingsConfigurationProps> = ({
             >
                 <TextInput label={'Tab Switch Frequency (sec)'} value={otherSettings && otherSettings.tabSwitchFrequency ? otherSettings.tabSwitchFrequency.toString() : '30'} setValue={(val)=>{
                     setOtherSettings({...otherSettings, tabSwitchFrequency: Number(val)});
+                }}/>
+                <TextInput label={'Spotter Name'} value={otherSettings?.spotterName ? otherSettings?.spotterName : 'Spotter'}  setValue={(val)=>{
+                    setOtherSettings({...otherSettings, spotterName: val});
                 }}/>
                 <TextInput label={'Bodyless Spotter Name'} value={otherSettings?.bodyLessSpotterName ? otherSettings?.bodyLessSpotterName : 'My Analytics Assistant'}  setValue={(val)=>{
                     setOtherSettings({...otherSettings, bodyLessSpotterName: val});
