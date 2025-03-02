@@ -38,7 +38,7 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
             {({settings}) => (
         <div 
         style={{minWidth: '600px', color: settings.style.textColor, backgroundColor: settings.style.tileColor}}
-        className="shadow-md hover:shadow-lg p-6 rounded-md flex flex-col space-x-2 ">
+        className="shadow-md shadow-gray-100 border-2 border-gray-100 hover:shadow-lg p-6 rounded-xl flex flex-col space-x-2 ">
             <div className="flex flex-row">
             <div onClick={()=>setSelectedPage({
                             type: PageType.SUBMENU,
@@ -48,7 +48,7 @@ const KPIChartView: React.FC<KPIChartProps> = ({subMenu, setSagePrompt, setShowS
             </div>
             <div className="flex flex-col ml-auto">
                 <div className="text-lg font-normal">{subMenu.kpiChart ? subMenu.kpiChart.title : ''}</div>
-                <div className="text-4xl font-bold mr-4 mt-2">{data && numberWithCommas(Math.round(data[data.length-1][1]))}</div>
+                <div className="text-2xl font-bold mr-4 mt-2">{data && numberWithCommas(Math.round(data[data.length-1][1]))}</div>
             </div> 
             </div>
             {subMenu.kpiChart &&  (
