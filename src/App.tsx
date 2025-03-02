@@ -249,7 +249,7 @@ function App() {
       logLevel: LogLevel.ERROR,
       customizations:{
         style: {
-            customCSSUrl: 'https://cdn.jsdelivr.net/gh/hannsta/general@latest/fonts.css',
+            customCSSUrl: 'https://cdn.jsdelivr.net/gh/hannsta/general@latest/fonts2.css',
             customCSS: CSSOverrides(settings) as customCssInterface 
         }
     }

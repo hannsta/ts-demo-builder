@@ -63,6 +63,7 @@ export const defaultSettings: Settings = {
     "Open Sans",
     "Space Grotesk",
     "Seymour One",
+    "IBM Plex Sans"
 ]
 export const CSSOverrides = (settings: Settings) => {
   
