@@ -5,7 +5,7 @@ export async function getDefaultInsuranceAssistantPrompt(wsId: string, TSURL: st
   const sampleData = await getSampleData(wsId, TSURL);
   return `For the below conversation, for each user message, return "get_data: <a friendly message asking the user to wait>"
   whenever the user sends a very specific question related to data attached below or a follow up to a previously
-  asked data question. Otherwise responds as if you are an analytics helper assitant.
+  asked data question. Otherwise try to be helpful an provide simple responses to their questions.
   
   This is a csv sample of the dataset we have access to:
   ${sampleData}`;
