@@ -491,6 +491,7 @@ function App() {
 
 export default App;
 const stringToFlags = (input: string): Record<string, boolean> => {
+  if (input == undefined) return {}
   const lines = input.split('\n').map(line => line.trim()).filter(Boolean);
   const result: Record<string, boolean> = {};
   for (const line of lines) {
