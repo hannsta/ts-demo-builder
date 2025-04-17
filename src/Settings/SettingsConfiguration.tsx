@@ -17,7 +17,7 @@ import FavoritesConfig, { Favorites } from "./StandardMenus/FavoritesConfig";
 import { defaultSettings } from "../Util/Types";
 import { KPIType } from "./KPIConfiguration";
 import UserConfiguration, { User } from "./UserConfiguration";
-import { AddButton, CloseButton, ImageInput, TextInput } from "./Inputs/InputMenus";
+import { AddButton, CloseButton, ImageInput, TextAreaInput, TextInput } from "./Inputs/InputMenus";
 import GitSettings from "./Git/GitSettings";
 import SimpleSageConfig, { SimpleSage } from "./StandardMenus/SimpleSageConfig";
 import SimpleSearchConfig, { SimpleSearch } from "./StandardMenus/SimpleSearchConfig";
@@ -27,6 +27,7 @@ import OtherSettingsConfiguration, { OtherSettings } from "./OtherSettingsConfig
 export interface Settings {
     name: string,
     TSURL: string,
+    tsFlags: string,
     logo: string,
     homeImage: string,
     subMenus: SubMenu[],
@@ -51,6 +52,7 @@ interface SettingsProps {
 const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, setLoginPopupVisible, setShowSettings}) => {
     const [name, setName] = useState<string>(settings.name)
     const [TSURL, setTSURL] = useState<string>(settings.TSURL)
+    const [tsFlags, setTsFlags] = useState<string>(settings.tsFlags)
     const [logo, setLogo] = useState<string>(settings.logo)
     const [homeImage, setHomeImage] = useState<string>(settings.homeImage)
     const [subMenus, setSubMenus] = useState<SubMenu[]>(settings.subMenus ? settings.subMenus : []);
@@ -104,7 +106,7 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
     }
     const applySettings = () => {
         window.history.pushState('', 'Application', '/');
-        setSettings({name, TSURL, logo, homeImage, subMenus, style, homePage, myReports, favorites, users, simpleSearch, simpleSage, simpleFullApp, otherSettings})
+        setSettings({name, TSURL, tsFlags, logo, homeImage, subMenus, style, homePage, myReports, favorites, users, simpleSearch, simpleSage, simpleFullApp, otherSettings})
     }
     /* Function to save settings to file */
     const saveSettings = () =>{
@@ -172,7 +174,8 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                 {/* High Level Configuration */}
                 <div className="flex flex-col space-y-2 pb-4 bg-gray-100 rounded-md mt-8 p-4" >
                     <div className="font-bold text-lg mt-1 mb-1">Configuration</div> 
-                <div className="flex flex-col my-2 bg-white p-4 rounded-md">
+                <div className="flex flex-row w-full bg-white p-4 rounded-md justify-between">
+                <div className="flex flex-col my-2 space-y-2" >
                     <TextInput label="Application Name" value={name} setValue={(name) => setName(name)}/>
                     <div className="flex flex-row space-x-4">
                         <TextInput label="ThoughtSpot URL" value={TSURL} setValue={(TSURL) => setTSURL(TSURL)}/>
@@ -190,6 +193,12 @@ const SettingsConfiguration: React.FC<SettingsProps> = ({settings, setSettings, 
                     <ImageInput label="Logo" value={logo} setValue={(logo) => setLogo(logo)}/>
                     </div>
 
+                </div>
+                <div className="flex flex-col my-2 mr-8">
+                    <TextAreaInput 
+                    helpInfo="Each configuration flag should be seperated into a new line" 
+                    placeholder="isLiveboardStylingEnabled=true" label="Early Access Flags" value={tsFlags} setValue={(tsFlags) => setTsFlags(tsFlags)}/>
+                </div>
                 </div>
                 </div>
 

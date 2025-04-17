@@ -1,4 +1,4 @@
-import { LiveboardEmbed, PreRenderedLiveboardEmbed, RuntimeFilter, SearchEmbed } from "@thoughtspot/visual-embed-sdk/react";
+import { LiveboardEmbed, PreRenderedLiveboardEmbed, RuntimeFilter, SearchEmbed, useEmbedRef } from "@thoughtspot/visual-embed-sdk/react";
 import { Settings } from "../Settings/SettingsConfiguration";
 import { ThoughtSpotObject, ThoughtSpotObjectType } from "../Settings/ThoughtSpotObjectConfiguration";
 import { SubMenu } from "../Settings/SubMenuConfiguration";
@@ -14,6 +14,7 @@ import { FilterType } from "../Settings/FiltersConfiguration";
 import DateFilter from "./Filters/DateFilter";
 import { FaCog } from "react-icons/fa";
 import { HiComputerDesktop } from "react-icons/hi2";
+import { lb } from "date-fns/locale";
 
 
 
@@ -33,6 +34,7 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
     const [customActionData, setCustomActionData] = useState<any>(null);
     const [vizSelectorVisible, setVizSelectorVisible] = useState<boolean>(false);
     const [moreOptionsVisible, setMoreOptionsVisible] = useState<boolean>(false);
+    const lbRef = useEmbedRef<typeof LiveboardEmbed>();
     const PinViz = async (viz: Viz) => {
         let client =  createClientWithoutAuth(settings.TSURL);
         client.exportMetadataTML({
@@ -58,7 +60,11 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
             })
         })
     }
-    console.log(user)
+    const updateRuntimeFilters = (runtimeFilters: RuntimeFilter[]) =>{
+        if (lbRef.current){
+            lbRef.current.trigger(HostEvent.UpdateRuntimeFilters, runtimeFilters);
+        }
+      }
     return (
         <div className='flex flex-col p-8 w-full h-full space-y-2' style={{background:settings.style.backgroundColor,overflow:'auto'}}>
             <div className="mb-4">
@@ -84,12 +90,12 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
                                     <>
                                     {filter.type == FilterType.ATTRIBUTE && (
                                         <AttributeFilter key={index} filter={filter} worksheet={subMenu.worksheet} settings={settings} setFilter={(filter) => 
-                                            updateFilters([filter])
+                                            updateRuntimeFilters([filter])
                                         }/>
                                     )}
                                     {filter.type == FilterType.DATE && (
                                         <DateFilter key={index} filter={filter} worksheet={subMenu.worksheet} settings={settings} setFilter={(filter) =>
-                                            updateFilters([filter])
+                                            updateRuntimeFilters([filter])
                                         }/>
                                     )}
 
@@ -118,6 +124,8 @@ const ThoughtSpotObjectView: React.FC<ThoughtSpotObjectViewProps> = ({user, thou
             </div>
             {thoughtSpotObject.type == ThoughtSpotObjectType.LIVEBOARD && (
                 <LiveboardEmbed
+                    ref={lbRef}
+                    isLiveboardCompactHeaderEnabled={true}
                     hiddenActions={user.userRole.hiddenActions ? user.userRole.hiddenActions : undefined}
                     visibleActions={user.userRole.visibleActions ? user.userRole.visibleActions : undefined}
                     onCustomAction={(data)=>{

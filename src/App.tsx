@@ -243,10 +243,12 @@ function App() {
 
     // Initialize the ThoughtSpot SDK
     // Current using AuthType.None for no authentication
+    console.log(stringToFlags(settings.tsFlags),"tsflags")
     init({ 
-      thoughtSpotHost: settings.TSURL, 
+      thoughtSpotHost: settings.TSURL , 
       authType: AuthType.None,
       logLevel: LogLevel.ERROR,
+      additionalFlags: settings.tsFlags ? stringToFlags(settings.tsFlags) : {},
       customizations:{
         style: {
             customCSSUrl: 'https://cdn.jsdelivr.net/gh/hannsta/general@latest/fonts2.css',
@@ -488,3 +490,12 @@ function App() {
 }
 
 export default App;
+const stringToFlags = (input: string): Record<string, boolean> => {
+  const lines = input.split('\n').map(line => line.trim()).filter(Boolean);
+  const result: Record<string, boolean> = {};
+  for (const line of lines) {
+      const [key, value] = line.split('=');
+      if (key) result[key.trim()] = value?.trim()?.toLowerCase() === 'true';
+  }
+  return result;
+};

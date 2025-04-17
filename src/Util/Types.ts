@@ -13,6 +13,7 @@ import { SimpleFullApp } from "../Settings/StandardMenus/SimpleFullAppConfig";
 export const defaultSettings: Settings = {
     name: 'ThoughtSpot Demo Builder',
     TSURL: '',
+    tsFlags:'',
     logo: '',
     homeImage: '',
     subMenus: [] as SubMenu[],

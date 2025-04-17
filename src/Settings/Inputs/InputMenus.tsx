@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { HiTrash, HiXMark } from "react-icons/hi2"
+import { HiInformationCircle, HiTrash, HiXMark } from "react-icons/hi2"
 import { convertBase64 } from "../../Util/Util"
 
 // Generic Input Components
@@ -10,13 +10,46 @@ import { convertBase64 } from "../../Util/Util"
 interface TextInputProps {
     label: string,
     value: string,
+    placeholder?: string,
+    helpInfo?: string,
     setValue: (value: string) => void
 }
-const TextInput: React.FC<TextInputProps> = ({label, value, setValue}) => {
+const TextInput: React.FC<TextInputProps> = ({label, value, placeholder, helpInfo, setValue}) => {
     return (
         <div className="flex flex-col">
-            <label className='font-bold'>{label}</label>
-            <input className="border-2 border-gray-200 w-64 text-md bg-slate-50 p-1 h-8 rounded-lg" type="text" value={value} onChange={(e) => setValue(e.target.value)}/>
+            <div className="flex flex-row space-x-2">
+            <label className='font-bold'>{label}
+            </label>
+            {helpInfo && <HelperInfo text={helpInfo}></HelperInfo>}
+            </div>
+            <input
+            placeholder={placeholder}
+             className="border-2 border-gray-200 w-64 text-md bg-slate-50 p-1 h-8 rounded-lg" type="text" value={value} onChange={(e) => setValue(e.target.value)}/>
+        </div>
+    )
+}
+// Text Input Component
+interface TextAreaInputProps {
+    label: string,
+    value: string,
+    placeholder?: string,
+    helpInfo?: string,
+    setValue: (value: string) => void
+}
+const TextAreaInput: React.FC<TextAreaInputProps> = ({label, value, placeholder, helpInfo, setValue}) => {
+    return (
+        <div className="flex flex-col">
+            <div className="flex flex-row space-x-2">
+            <label className="font-bold mb-1">{label}
+            </label>
+            {helpInfo && <HelperInfo text={helpInfo}></HelperInfo>}
+            </div>
+            <textarea
+                placeholder={placeholder}
+                className="border-2 border-gray-200 w-96 h-32 text-md bg-slate-50 p-2 rounded-lg resize-y"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+            />
         </div>
     )
 }
@@ -104,6 +137,28 @@ const AddButton: React.FC<AddButtonProps> = ({label, isPrimary, onClick}) =>
     </button>
     )
 }
+interface HelperInfoProps {
+    text: string
+}
+const HelperInfo: React.FC<HelperInfoProps> = ({ text }) => {
+    const [canSeeInfo, setCanSeeInfo] = useState<boolean>(false);
+
+    return (
+        <div
+            className="relative flex items-center"
+            onMouseEnter={() => setCanSeeInfo(true)}
+            onMouseLeave={() => setCanSeeInfo(false)}
+        >
+            <HiInformationCircle className="text-gray-500 hover:text-gray-700 cursor-pointer" />
+
+            {canSeeInfo && (
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-gray-800 text-white text-xs rounded px-2 py-1 z-10 shadow-lg">
+                    {text}
+                </div>
+            )}
+        </div>
+    );
+};
 interface CloseButtonProps {
     onClick: () => void
 }
@@ -159,4 +214,4 @@ const ImageInput: React.FC<ImageInputProps> = ({label, value, setValue}) => {
         </div>
     )
 }
-export {TextInput, CheckBoxInput, SelectInput, DeleteButton, RemoveButton, AddButton, CloseButton, ImageInput};
+export {TextInput, HelperInfo, TextAreaInput, CheckBoxInput, SelectInput, DeleteButton, RemoveButton, AddButton, CloseButton, ImageInput};
