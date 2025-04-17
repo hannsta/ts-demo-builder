@@ -248,7 +248,7 @@ function App() {
       thoughtSpotHost: settings.TSURL , 
       authType: AuthType.None,
       logLevel: LogLevel.ERROR,
-      additionalFlags: settings.tsFlags ? stringToFlags(settings.tsFlags) : {},
+      additionalFlags: settings.tsFlags && settings.tsFlags.length > 0  ? stringToFlags(settings.tsFlags) : {},
       customizations:{
         style: {
             customCSSUrl: 'https://cdn.jsdelivr.net/gh/hannsta/general@latest/fonts2.css',
