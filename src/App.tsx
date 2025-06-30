@@ -243,7 +243,6 @@ function App() {
 
     // Initialize the ThoughtSpot SDK
     // Current using AuthType.None for no authentication
-    console.log(stringToFlags(settings.tsFlags),"tsflags")
     init({ 
       thoughtSpotHost: settings.TSURL , 
       authType: AuthType.None,
@@ -256,7 +255,18 @@ function App() {
         }
     }
     // On successful login - note this will only be executed when the liveboard is displayed so we first have to test with API call below.
-    }).on(AuthStatus.SUCCESS, () => {
+    }).on(AuthStatus.SUCCESS, (data: any) => {
+      //@ts-ignore
+      window.pendo.initialize({
+        visitor: {
+          id: data.userName,
+          cluster: data.clusterName,
+        },
+        account: {
+          id: "thoughtspot"
+        }
+      })
+      console.log("callback",data)
       setLoginPopupVisible(false);
       setIsLoggedIn(true);
     })
@@ -267,6 +277,7 @@ function App() {
     try{
       let client =  createClientWithoutAuth(settings.TSURL);
       client.getSystemInformation().then((data: any) => {
+        console.log("sysinfo",data)
         setIsLoggedIn(true);
       }).catch((error: any) => {
         console.log("Not logged in yet");
