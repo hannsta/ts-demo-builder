@@ -256,17 +256,22 @@ function App() {
     }
     // On successful login - note this will only be executed when the liveboard is displayed so we first have to test with API call below.
     }).on(AuthStatus.SUCCESS, (data: any) => {
-      //@ts-ignore
-      window.pendo.initialize({
-        visitor: {
-          id: data.userName,
-          cluster: data.clusterName,
-        },
-        account: {
-          id: "thoughtspot"
-        }
-      })
-      console.log("callback",data)
+      try{
+        //@ts-ignore
+        window.pendo.initialize({
+          visitor: {
+            id: data.userName,
+            cluster: data.clusterName,
+          },
+          account: {
+            id: "thoughtspot"
+          }
+        })
+        console.log("callback",data)
+      }catch (e: any){
+        console.log("pendo init failed")
+      }
+
       setLoginPopupVisible(false);
       setIsLoggedIn(true);
     })
